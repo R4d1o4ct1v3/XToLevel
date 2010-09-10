@@ -1,0 +1,436 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\..\FrameXML\UI.xsd"> 
+
+<Script file="AverageFrame_Blocky.lua"/>
+
+<!-- Templates -->
+<Texture name="XToLevel_AverageFrame_Blocky_CounterBackground" file="Interface\AddOns\XToLevel\textures\counter_back.tga" virtual="true">
+    <TexCoords left="0" right="0.77"  top="0" bottom="0.27" /> 
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="0" y="0" />
+        </Anchor>
+        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+            <Offset x="0" y="0" />
+        </Anchor>
+    </Anchors>
+</Texture>
+
+<!-- file="Interface\AddOns\XToLevel\textures\progress_box_back.tga" -->
+
+<Texture name="XToLevel_AverageFrame_Blocky_ProgressBarBackground" file="Interface\AddOns\XToLevel\textures\progress_box_back.tga" virtual="true">
+    <TexCoords left="0" right="0.77"  top="0" bottom="0.27" />
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="0" y="0" />
+        </Anchor>
+        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+            <Offset x="0" y="0" />
+        </Anchor>
+    </Anchors>
+</Texture>
+
+<Texture name="XToLevel_AverageFrame_Blocky_ProgressBarOverlay" file="Interface\AddOns\XToLevel\textures\progress_box_bar.tga" virtual="true">
+    <TexCoords left="0.035" right="0.73"  top="0.035" bottom="0.24" />
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="0" y="0" />
+        </Anchor>
+        <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT">
+            <Offset x="0" y="0" />
+        </Anchor>
+    </Anchors>
+</Texture>
+
+<Texture name="XToLevel_AverageFrame_Blocky_CounterIcon" virtual="true">
+    <TexCoords left="0" right="1"  top="0" bottom="1" /> 
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="1" y="-1" />
+        </Anchor>
+    </Anchors>
+</Texture>
+
+<Frame name="XToLevel_AverageFrame_Blocky_Counter" virtual="true">
+    <Size>
+        <AbsDimension x="48" y="18" />
+    </Size>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="2" y="-2" />
+        </Anchor>
+    </Anchors>
+    <Layers>
+        <Layer level="BACKGROUND">
+            <Texture name="$parentBackground" inherits="XToLevel_AverageFrame_Blocky_CounterBackground"></Texture>
+        </Layer>
+    </Layers>
+    <Frames>
+        <Frame name="$parentValue">
+            <Size>
+                <AbsDimension x="32" y="16" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                    <Offset x="16" y="0" />
+                </Anchor>
+            </Anchors>
+            <Layers>
+                <Layer level="OVERLAY">
+                    <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" text="N/A" justifyH="CENTER" justifyV="MIDDLE">
+                        <Color r="1" g="1" b="1" a="1"/>
+                        <FontHeight val="10"/>
+                        <Anchors>
+                            <Anchor point="CENTER" relativeTo="$parent" x="0" y="0" />
+                        </Anchors>
+                    </FontString>
+                </Layer>
+            </Layers>
+        </Frame>
+    </Frames>
+    <Scripts>
+	    <OnLoad>
+	        this:RegisterForDrag("LeftButton");
+	    </OnLoad>
+	    <OnLeave>
+	        XToLevel.AverageFrameAPI["Blocky"]:HideTooltip();
+	    </OnLeave>
+	    <OnDragStart>
+	        XToLevel.AverageFrameAPI["Blocky"]:StartDrag()
+	    </OnDragStart>
+	    <OnDragStop>
+	        XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
+	    </OnDragStop>
+	    <OnMouseUp>
+            if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+                XToLevel.Config:Open("average")
+            end
+        </OnMouseUp>
+	</Scripts>
+</Frame>
+
+<Frame name="XToLevel_AverageFrame_Blocky_Progress" virtual="true">
+    <Size>
+        <AbsDimension x="48" y="18" />
+    </Size>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+            <Offset x="2" y="-2" />
+        </Anchor>
+    </Anchors>
+    <Layers>
+		<Layer level="BACKGROUND">
+            <Texture name="$parentBackground" inherits="XToLevel_AverageFrame_Blocky_ProgressBarBackground"></Texture>
+        </Layer>
+    </Layers>
+    <Frames>
+        <Frame name="$parentBar">
+            <Size>
+                <AbsDimension x="44" y="13"></AbsDimension>
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                    <Offset x="2" y="-2" />
+                </Anchor>
+            </Anchors>
+            <Layers>
+                <Layer level="ARTWORK">
+                    <Texture name="$parentColor" inherits="XToLevel_AverageFrame_Blocky_ProgressBarOverlay"></Texture>
+                </Layer>
+            </Layers>
+        </Frame>
+        <Frame name="$parentValue">
+            <Size>
+                <AbsDimension x="48" y="16" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                    <Offset x="0" y="0" />
+                </Anchor>
+            </Anchors>
+            <Layers>
+                <Layer level="OVERLAY">
+                    <FontString name="$parentText" font="Fonts\FRIZQT__.TTF" text="0" justifyH="CENTER" justifyV="MIDDLE">
+                        <Color r="1" g="1" b="1" a="1"/>
+                        <FontHeight val="10"/>
+                        <Anchors>
+                            <Anchor point="CENTER" relativeTo="$parent" x="0" y="0" />
+                            <Anchor point="CENTER" relativeTo="$parent" x="0" y="0" />
+                        </Anchors>
+                        <Shadow>
+                            <Color r="0" g="0" b="0" a="0.95" />
+                            <Offset x="1" y="-1" />
+                        </Shadow>
+                    </FontString>
+                </Layer>
+            </Layers>
+        </Frame>
+    </Frames>
+    <Scripts>
+        <OnLoad>
+            this:RegisterForDrag("LeftButton");
+        </OnLoad>
+        <OnLeave>
+            XToLevel.AverageFrameAPI["Blocky"]:HideTooltip();
+        </OnLeave>
+        <OnDragStart>
+            XToLevel.AverageFrameAPI["Blocky"]:StartDrag()
+        </OnDragStart>
+        <OnDragStop>
+            XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
+        </OnDragStop>
+        <OnMouseUp>
+            if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+                XToLevel.Config:Open("average")
+            end
+        </OnMouseUp>
+    </Scripts>
+</Frame>
+                            
+<!-- Actual Frame -->
+<Frame name="XToLevel_AverageFrame_Blocky_PlayerFrame" parent="UIParent" frameStrata="LOW" enableMouse="true" resizable="false"  movable="true" clampedToScreen="true" hidden="false">
+    <Size>
+        <AbsDimension x="254" y="56" />
+    </Size>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativeTo="WorldFrame" relativePoint="TOPLEFT">
+            <Offset x="25" y="-100" />
+        </Anchor>
+    </Anchors>
+    <Scripts>
+        <OnEvent>
+            XToLevel.AverageFrameAPI["Blocky"]:OnEvent();
+        </OnEvent>
+    </Scripts>
+    <Frames>
+        <!--
+            Counters
+        -->
+        <Frame name="$parentCounter">
+            <Size>
+                <AbsDimension x="1" y="1" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                    <Offset x="0" y="0" />
+                </Anchor>
+            </Anchors>
+            <Frames>
+            
+                <!-- 
+                    Kill Counter
+                 -->
+                <Frame name="$parentKills" inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="2" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\mob_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('kills');
+                        </OnEnter>
+                    </Scripts>              
+                </Frame>
+                
+                <!-- 
+                    Quest Counter
+                 -->
+                <Frame name="$parentQuests"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="52" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\quest_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+	                    <OnEnter>
+				            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('quests');
+				        </OnEnter>
+                    </Scripts>
+                </Frame>
+                
+                <!-- 
+                    Dungeon Counter
+                 -->
+                <Frame name="$parentDungeons"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="52" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\dungeon_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('dungeons');
+                        </OnEnter>
+                    </Scripts>  
+                </Frame>
+                
+                <!-- 
+                    Battle Counter
+                 -->
+                <Frame name="$parentBattles"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="102" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\battle_horde_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('bg');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+                
+                <!-- 
+                    Battle Counter
+                 -->
+                <Frame name="$parentObjectives"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="152" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\objective_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('bg');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+                
+                <!-- 
+                    Progress Counter
+                -->
+                <Frame name="$parentProgress"  inherits="XToLevel_AverageFrame_Blocky_Progress">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="202" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('experience');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+				
+				<!-- 
+                    Timer
+                 -->
+                <Frame name="$parentTimer"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="252" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\timer_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('timer');
+                        </OnEnter>
+						<OnMouseUp>
+							if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+								XToLevel.Config:Open("timer")
+							end
+						</OnMouseUp>
+                    </Scripts> 
+                </Frame>
+            </Frames>
+         </Frame>
+    </Frames>
+</Frame>
+
+<Frame name="XToLevel_AverageFrame_Blocky_PetFrame" parent="UIParent" frameStrata="LOW" enableMouse="true" resizable="false"  movable="true" clampedToScreen="true" hidden="false">
+    <Size>
+        <AbsDimension x="254" y="56" />
+    </Size>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativeTo="XToLevel_AverageFrame_Blocky_PlayerFrame" relativePoint="TOPLEFT">
+            <Offset x="75" y="0" />
+        </Anchor>
+    </Anchors>
+    <Frames>
+        <!--
+            Counters
+        -->
+        <Frame name="$parentCounter">
+            <Size>
+                <AbsDimension x="1" y="1" />
+            </Size>
+            <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                    <Offset x="0" y="0" />
+                </Anchor>
+            </Anchors>
+            <Frames>
+                
+                <!-- 
+                    Pet Counter
+                 -->
+                <Frame name="$parentKills" inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="2" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\pet_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('pet');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+                
+                
+                <!-- 
+                    Progress Counter
+                -->
+                <Frame name="$parentProgress"  inherits="XToLevel_AverageFrame_Blocky_Progress">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="202" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('pet xp');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+            </Frames>
+         </Frame>
+    </Frames>
+</Frame>
+
+</Ui>

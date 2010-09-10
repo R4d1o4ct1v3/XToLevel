@@ -1,0 +1,93 @@
+The following describes how to use custom patterns in the XToLevel LDB text output.
+Custom patterns should be entered into the text box in the config window, after selecting "custom" from the dropdown.
+
+Note! Storing your patters in a safe place outside the game is a good idea. 
+      Patterns *might* be lost during patches and addon updates.
+
+There are two methods to create patters:
+1: The simplyfied <tag> version, specially created to make simple patters easy to create.
+2: The custom {tag} version, used internally by the application. A bit more complex, but a lot more flexible.
+
+---------------------------
+-- 1. The simple version --
+---------------------------
+This is a simplified version, which is good for creating simple patterns.
+
+Availble tags:
+* <kills> - The amount of kills a player needs to level.
+* <quests> - The amount of quests a player needs to level.
+* <bgs> - The amount of battlegrounds a player needs to level.
+* <bgo> - The amount of battleground objectives a player needs to level.
+* <xp> - The percentage or the number of bars of XP gained or remaining for the current level.
+* <xpnum> - The XP gained or remaining for the current level.
+* <rested> - The EXTRA experience you will collect for mob kills.
+* <restedp> - The percentage of your current level the rested bonus covers. (150% or 30 bars is the ceiling)
+* <pet> - The amount of kills a hunter pet needs to level.
+* <petxp> - The percentage or the number of bars of your pet's XP gained or remaining for the current level.
+* <petxpnum> - Your pet's XP gained or remaining for the current level.
+* <timer> - The estimated time remaining until you reach your next level, based on your current XP per hour.
+
+(Note, that the <xp> and <petxp> values inlucde the % char at the end.)
+
+Each of those tags *can be* defined with a number of attributes:
+* label - A string to be added in front of the tag's value.
+* seperator - A character that is to be used as a seperater between tags, if needed.
+* post - A character to be added to the value. (Will be colored by XP progress if enabled.)
+
+(Note, that none of them are required. You can leave out all of them if you want.)
+
+Examples:
+- <kills label="" post="K"><quests label="" post="Q" seperator=" ">
+ Output: 100K 20Q
+ 
+- <pet label="Pet Kills" post="-"> [<petxp label="" post="-">]
+ Output: Pet Kills: 100- [25%-]
+ 
+- <xpnum label="XP"> [<xp>] <rested label="R"> [<restedp>] <petxpnum label="Pet"> [<petxp>]
+ Output: XP: 1,234 [23.4%] R: 3.210 [145%] Pet: 341 [30.4%]
+
+ 
+-----------------------------
+-- 2. The complete version --
+-----------------------------
+
+The patterns use a very basic HTML-like syntax, using {} rather than <>.
+For example:
+ - K: {kills} Q: {quests} XP: {xp}
+ 
+Note that it is *possible* to nest certain tags within each other (see the "countdown" pattern for example), but this is highly unpredictable,
+and this was never, and is not now, a planned feature. Experiment if you want, but I will not consider weird behavior in nested tags as bugs.
+Disabling the parent tag in the in-game configuration will also disable any nested tags.
+
+Available tags are:
+* {kills} - The amount of kills a player needs to level.
+* {quests} - The amount of quests a player needs to level.
+* {bgs} - The amount of battlegrounds a player needs to level.
+* {bgo} - The amount of battleground objectives a player needs to level.
+* {xp} - The percentage or the number of bars of XP gained or remaining for the current level.
+* {xpnum} The XP gained or remaining for the current level.
+* {pet} - The amount of kills a hunter pet needs to level.
+* {petxp} - The percentage or the number of bars of your pet's XP gained or remaining for the current level.
+* {petxpnum} - Your pet's XP gained or remaining for the current level.
+* {timer} - The estimated time remaining until you reach your next level, based on your current XP per hour.
+
+Inside each of these tags, you can use the following values:
+* {$label} - Will be replaced by a locale specific label defined in the locale files.
+* {$value} - Will be replaced by the tag's value.
+* {$seperator:*} - Will be used to seperate tags when needed. The * char should be replaced with whatever char you want.
+
+Additionally, you can use the following tags to color the output:
+* {color=RRGGBB} - The RGB color will be applied to all enclosed text.
+				   NOTE! Nesting these tags will not work!
+* {progress} - Applies the color representing the XP progress to the enclosed text.
+			   Only usable inside one of the tags mentioned above.!
+			   
+Example:
+ - {kills}{seperator: }{color=FF0000}{$label}:{/color} {progress}{$value}{/progress}{/kills}
+ 
+These are the built in patterns.
+ - Default:  {kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}{pet}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/pet}{petxp}{$seperator: }{progress}[{$value}]{/progress}{/petxp}
+ - minimal: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/petxp}
+ - minimal_dashed: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/petxp}
+ - brackets: {kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}{pet}{$seperator:-}{progress}[{$value}]{/progress}{/pet}{petxp}{progress}[{$value}]{/progress}{/petxp}
+ - countdown: {xpnum}{color=cfcfdf}XP:{/color}{$seperator: }{progress}{$value}{/progress}{xp} {color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/xp}{$seperator: }{/xpnum}{rested}{color=cfcfdf}R:{/color}{$seperator: }{progress}{$value}{/progress} {restedp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/restedp}{$seperator: }{/rested}{petxpnum}{$seperator: }{color=cfcfdf}Pet: {/color}{progress}{$value}{/progress} {petxp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/petxp}{/petxpnum}

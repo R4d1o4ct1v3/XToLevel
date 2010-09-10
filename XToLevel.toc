@@ -1,0 +1,50 @@
+## Interface: 30300
+## Title: XToLevel
+## Author: Atli Þór
+## Version: 3.3.5_14r
+## Notes: Shows mobs, quests, dungeons and battles needed until you and/or your pet reach your next level.
+## eMail: atli@advefir.com
+## URL: http://www.wowinterface.com/downloads/info14368-XToLevel.html
+## X-Category: Quest
+## OptionalDeps: LibStub, CallbackHandler-1.0, LibDataBroker-1.1, AceTimer-3.0
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariablesPerCharacter: sConfig,sData
+
+# 3rd party libriaries
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\AceTimer-3.0\AceTimer-3.0.xml
+
+# Localization
+Locale.lua
+locale\enUS.lua
+locale\frFR.lua
+locale\deDE.lua
+locale\esES.lua
+locale\dkDK.lua
+
+# Main script
+Main.lua
+
+# Own libraries
+Tables.lua
+Libs.lua
+
+# Configuration
+Config.lua
+
+# Control objects
+objects\Messages.lua
+objects\LDB.lua
+objects\Tooltip.lua
+objects\Average.lua
+objects\Player.lua
+objects\Pet.lua
+
+# Frames
+frames\GlobalTemplates.xml
+frames\AverageFrame_Classic.xml
+frames\AverageFrame_Blocky.xml
+# frames\Config.xml

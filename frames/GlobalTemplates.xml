@@ -1,0 +1,274 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\..\FrameXML\UI.xsd">
+
+    <!-- 
+ - A Color Picker implementation.
+ -->
+    <Frame name="XToLevel_ColorPicker" virtual="true">
+        <Size>
+            <AbsDimension x="14" y="14" />
+        </Size>
+        <Backdrop></Backdrop>
+        <Layers>
+            <Layer level="BORDER">
+                <Texture name="$parentBackground">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="1.5" y="-1.5" />
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="-1.5" y="1.5" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="0.0" g="0.0" b="0.0" a="1.0" />
+                </Texture>
+            </Layer>
+            <Layer level="BACKGROUND">
+                <Texture name="$parentEdge">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="0" y="0" />
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="0" y="0" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="1.0" g="1.0" b="1.0" a="1.0" />
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <Texture name="$parentColor">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="2.0" y="-2.0" />
+                            </Offset>
+                        </Anchor>
+                        <Anchor point="BOTTOMRIGHT" relativeTo="$parent">
+                            <Offset>
+                                <AbsDimension x="-2.0" y="2.0" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <Color r="1.0" g="0.0" b="0.0" a="1.0" />
+                </Texture>
+            </Layer>
+            <Layer level="ARTWORK">
+                <FontString name="$parentText" font="Fonts\FRIZQT__.TTF"
+                    text="Color Picker">
+                    <Anchors>
+                        <Anchor point="LEFT" relativePoint="RIGHT">
+                            <Offset>
+                                <AbsDimension x="3" y="0" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <FontHeight>
+                        <AbsValue val="10" />
+                    </FontHeight>
+                    <Color r="1" g="0.8196079" b="0" />
+                    <Shadow>
+                        <Color r="0" g="0" b="0" />
+                        <Offset>
+                            <AbsDimension x="1" y="-1" />
+                        </Offset>
+                    </Shadow>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Scripts>
+            <OnEnter>
+                self.mouseOver = true;
+                _G[self:GetName().."Edge"]:SetTexture(0.85, 0.75, 0.0, 1.0);
+            </OnEnter>
+            <OnLeave>
+                self.mouseOver = nil;
+                _G[self:GetName().."Edge"]:SetTexture(1.0, 1.0, 1.0, 1.0);
+            </OnLeave>
+            <OnMouseUp>
+                if self.mouseOver then
+                    local refColor = _G[self:GetName() .. "Color"];
+                    local acColor = self.currentColor or {1, 1, 1, 1};
+    
+                    local callback = function(restore)
+                        if restore then
+                            acColor[1], acColor[2], acColor[3], acColor[4] = unpack(restore);
+                        else
+                            acColor[4], acColor[1], acColor[2], acColor[3] = OpacitySliderFrame:GetValue(),
+                            ColorPickerFrame:GetColorRGB();
+                            if not ColorPickerFrame.hasOpacity then -- If no alpha, remove the 0 returned by the opacity slider.
+                                acColor[4] = nil;
+                            end
+                            if acColor[4] ~= nil then -- Turn alpha into opacity.
+                                acColor[4] = 1.0 - acColor[4];
+                            end
+                        end
+                        self.currentColor = acColor;
+                        refColor:SetTexture(acColor[1], acColor[2], acColor[3], acColor[4]);
+                        if self.colorChangeCallback then
+                        self:colorChangeCallback();
+                    end
+                    end
+        
+                    ColorPickerFrame:Hide();
+                    ColorPickerFrame.func, ColorPickerFrame.opacityFunc, ColorPickerFrame.cancelFunc = callback,
+                    callback, callback;
+                    ColorPickerFrame.previousValues = {acColor[1], acColor[2], acColor[3], acColor[4]};
+        
+                    if acColor[4] ~= nil then -- Turn alpah into opacity.
+                        acColor[4] = 1.0 - acColor[4];
+                    end
+                    ColorPickerFrame.hasOpacity, ColorPickerFrame.opacity = (acColor[4] ~= nil), acColor[4];
+                    ColorPickerFrame:SetColorRGB(acColor[1], acColor[2],
+                    acColor[3]);
+        
+                    ColorPickerFrame:Show();
+                end
+            </OnMouseUp>
+            <OnAttributeChanged>
+            	if arg1 ~= nil and arg1 == "currentcolor" and type(arg2) == "table" then
+           			_G[this:GetName() .. "Color"]:SetTexture(unpack(arg2 or {1, 1, 1, nil}))
+            	end
+            </OnAttributeChanged>
+        </Scripts>
+    </Frame>
+
+    <Button name="XToLevel_Config_DropDown" virtual="true">
+        <Size>
+            <AbsDimension x="150" y="32" />
+        </Size>
+        <Layers>
+            <Layer>
+                <Texture name="$parentLeft"
+                    file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                    <Size>
+                        <AbsDimension x="25" y="64" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="TOPLEFT">
+                            <Offset>
+                                <AbsDimension x="0" y="17" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <TexCoords left="0" right="0.1953125" top="0"
+                        bottom="1" />
+                </Texture>
+                <Texture name="$parentMiddle"
+                    file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                    <Size>
+                        <AbsDimension x="100" y="64" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeTo="$parentLeft"
+                            relativePoint="RIGHT" />
+                    </Anchors>
+                    <TexCoords left="0.1953125" right="0.8046875" top="0"
+                        bottom="1" />
+                </Texture>
+                <Texture name="$parentRight"
+                    file="Interface\Glues\CharacterCreate\CharacterCreate-LabelFrame">
+                    <Size>
+                        <AbsDimension x="25" y="64" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="LEFT" relativeTo="$parentMiddle"
+                            relativePoint="RIGHT" />
+                    </Anchors>
+                    <TexCoords left="0.8046875" right="1" top="0"
+                        bottom="1" />
+                </Texture>
+                <FontString name="$parentText" font="Fonts\FRIZQT__.TTF"
+                    text="English" justifyH="RIGHT">
+                    <Size>
+                        <AbsDimension x="125" y="10" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" relativeTo="$parentRight">
+                            <Offset>
+                                <AbsDimension x="-43" y="2" />
+                            </Offset>
+                        </Anchor>
+                    </Anchors>
+                    <FontHeight>
+                        <AbsValue val="10" />
+                    </FontHeight>
+                    <Color r="1" g="1" b="1" />
+                    <Shadow>
+                        <Color r="0" g="0" b="0" />
+                        <Offset>
+                            <AbsDimension x="1" y="-1" />
+                        </Offset>
+                    </Shadow>
+                </FontString>
+            </Layer>
+        </Layers>
+        <Frames>
+            <Button name="$parentButton">
+                <Size>
+                    <AbsDimension x="24" y="24" />
+                </Size>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeTo="$parentRight">
+                        <Offset>
+                            <AbsDimension x="-16" y="-18" />
+                        </Offset>
+                    </Anchor>
+                </Anchors>
+                <Scripts>
+                    <OnClick>
+                        ToggleDropDownMenu(nil, nil, self:GetParent());
+                        PlaySound("igMainMenuOptionCheckBoxOn");
+                    </OnClick>
+                </Scripts>
+                <NormalTexture name="$parentNormalTexture"
+                    file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+                    <Size>
+                        <AbsDimension x="24" y="24" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" />
+                    </Anchors>
+                </NormalTexture>
+                <PushedTexture name="$parentPushedTexture"
+                    file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
+                    <Size>
+                        <AbsDimension x="24" y="24" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" />
+                    </Anchors>
+                </PushedTexture>
+                <DisabledTexture name="$parentDisabledTexture"
+                    file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
+                    <Size>
+                        <AbsDimension x="24" y="24" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" />
+                    </Anchors>
+                </DisabledTexture>
+                <HighlightTexture name="$parentHighlightTexture"
+                    file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+                    <Size>
+                        <AbsDimension x="24" y="24" />
+                    </Size>
+                    <Anchors>
+                        <Anchor point="RIGHT" />
+                    </Anchors>
+                </HighlightTexture>
+            </Button>
+        </Frames>
+        <Scripts>
+            <OnHide>CloseDropDownMenus();</OnHide>
+        </Scripts>
+    </Button>
+</Ui>

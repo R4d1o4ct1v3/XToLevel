@@ -1,0 +1,185 @@
+Version 3.3.5_14r
+ - Added a "Time to level" feature. This shows you roughly how much time it will take you to reach you next level, based on how fast you are gaining XP.
+   This is available both in the "Blocky" (default) window, and as a LDB data source (named TimeToLevel). Note that the LDB data source for this feature is 
+   separate from the rest of the XToLevel LDB data. This is mostly for performance reasons. (Updating the entire XToLevel data-source every couple of
+   seconds is extremely expensive.)
+ - The tooltip for mobs now shows how many of those mobs you need to kill to reach your next level. (Can be disabled.)
+ - The Mob XP algorithm has been tweaked to take heirloom items into account, and to assume level 68 players will be leveling in Northrend not Outlands.
+ - Added the option to display rested and raw XP values in custom LDB patterns. (See customPatterns.txt for details.)
+ - Added options to have the LDB XP values count down rather than up. (Default setting is still up.)
+ - Added a new LDB pattern, "countdown", which will show a countdown for the XP and Rested values.
+ - That addon will no longer reset the size of the tooltip.
+ - Fixed a bug that caused the LDB label to display even when disabled.
+ - Silenced an error message that may have been displayed under certain circumstances, when attempting to right-click the info window or the LDB source to open
+   the config. It seems that when the XToLevel section is not visible in the config window (when you so many addons listed that you need to scroll down to see it)
+   it is not possible to automatically jump to that section. I'm still looking for workarounds, but I haven't found one yet. -- Until I do those affected will need
+   do manually open the config window.
+
+Version 3.3.3_13r
+ - The configuration for the addon has been moved into WoW's Interface options window. It can still be opened and used much the same as before.
+ - You will now have to reload the UI to swap languages. (This was done to conserve memory. Shaves like 10% of the total being used by the addon.)
+ - The Dungeon info in the Tooltip has been changed in order to properly display the rested bonus, if any.
+ - Fixed a bug that caused a dungeon that was entered directly from whitin another dungeon to be counted with the first one.
+ - Fixed a bug where the dungeon counter would not reset when entering a dungeon while still inside another dungeon, thus merging them into one.
+ - Fixed a bug in the Dungeon tooltip section, where the average XP for the kills would always display 0.
+ - Fixed a bug that, under certain circumstances, could cause an error when leaving a dungeon.
+ - Fixed a bug that caused the dungeon info to be displayed in the LDB tooltip even when it had been disabled in the config.
+
+Version 3.3.3_12r
+ - Major revision of the code structure. If upgrading from a previous version, it is highly recommended that you completely remove the old version before installing this one.
+ - A new look has been added for the Average display window. The old version can still be used if you prefer that. (See the "Average" tab in the configuration.)
+ - The addon now records XP gained while inside non-raid dungeons, and displays it in a similar way the Battleground info is displayed.
+ - Improvements in the new Average window ("Blocky", as I chose to call it):
+   - Less text, more graphics. Instead of a label, each section is now prefixed with an icon.
+   - Each section now appears as a small, separate box, rather than a line in a bigger box. (Note that they are still tethered together... yet.)
+   - The tooltip now shows only information relating to the section the mouse is hovering over. (The old, combined style can be enabled in the config.)
+ - Improvements to the Classic average window:
+   - The XP details for both the player and, if applicable, the pet can now be displayed in the window.
+   - Like the new look, each section now displayes separate tooltip details.
+ - The XP information for both the LDB and Average window can be displayed as either percentage done, or number of "bars" remaining.
+ - Fixed various minor bugs relating to how the Battleground counter handled unusual circumstances (DCs and such).
+
+Version 3.3.0_11r
+ - A message will now be shown in the chat and floating-error areas when a hunter pet gains a level, much like the one you get when a player gains a level.
+ - Lowered the default amount of records used for battle and objective average calculations from 30 to 15. Note that this will only affect new users of the addon. If you are already using it, the update will not change your values (even if you just used the default).
+ - Fixed a bug that caused the pet displays to pop up and show garbage data when a Warlock leveled.
+ - Fixed a bug that caused the battle and objective averages to ignore the selected limit in the amount of records to be used.
+ - Cleaned the "customPatterns.txt" file up a bit. (Nothing major though.)
+
+Version 3.3.0_10r
+ - Added a Danish translation, which can now be enabled via the configuration window. (Thanks to Xyrec for that!)
+ - Fixed a regression bug that cause an error message to appear during login for players with active pets.
+ - Added experimental support for players using the Recruit A Friend feature. (This is disabled by default. See the "Data" tab of the configuration window.)
+   When enabled, and in proximity to a RAF linked player, all calculations are made assuming triple XP gains via kills and quests.
+   NOTE! I can not test this myself, as I am not eligible for RAF, so please report any problems you may encounter.
+
+Version 3.3.0_9r
+ - Updated to work properly with the 3.3 patch.
+ - Fixed a regression bug that caused the "Pet Kills" option for the Average Window to be ignored.
+ - Fixed a regression bug that caused a display bug in the built in LDB patters when hunter pets reached the same level as the hunter.
+ - Fixed a regression bug that sometimes caused a null comparison error when loging into a character. (It had no side-effects, though.)
+ - Updated the French locale. (Thanks to carignou and lalrobin for their contributions!)
+
+Version 3.2.2_8r
+ - The configuration window has been re-designed from scratch in order to retire the old Waterfall GUI, 
+   which accounted for roughly 2/3 of the memory being used by the addon.
+   As a result, the addon now uses up to 3 times less memory than the previous versions, depending on the situation.
+ - You can now clear kill, quest and battle records, used by the average calculations, via the "Data" tab of the configuration window.
+ - Several code optimizations have been implemented to fix a "resource-leak" in the LDB data-source.
+
+Version 3.2.2_7r
+ - You can now choose how many kills, quests and battles the Average Window uses for it's calculations.
+ - Added the ability to toggle on an off the debug information that was showing. (See the General tab of the config window.)
+   I had this hard-coded in, either on or off, but I kept forgetting to turn it off before uploading new versions xD
+
+Version 3.2.2_6r
+ - The color of the floating and chat messages can now be changed via the configuration window.
+ - Hunters will now see the data for their last active pet while their pet is inactive.
+   This allows the hunter to mount and dismiss the pet, as well as other things of that nature, without the pet data disappearing.
+ - Fixed a bug that caused the average window to show empty battleground lines for max level hunters with lower level pets active.
+ - Fixed a bug that caused the battleground objective messages to be shown regardless of whether they had been disabled. 
+ - Fixed a bug that caused the tooltip to show an empty list of required battlegrounds for max level players.
+   The list is still shown for max level players if there is anything to be shown. 
+   (This can be disabled in the Tooltip tab of the config window.)
+ 
+Version 3.2.0_5r
+ [b]Battleground support[/b]
+  - The addon now records experience gained in battlegrounds.
+    It counts the number of battlegrounds needed, as well as individual battleground objectives needed.
+  - Both the Average Window and LDB text now show those details.
+  - The tooltip has been altered to display more detailed information on battleground experience.
+    This includes a separate counter for each battleground instance, as well as details on the current or last battle.
+
+ [b]Custom LDB patterns[/b]
+  - The LDT output now supports custom text patterns.
+  - A detailed explanation of how to construct a pattern can be found in the "curstomPatterns.txt" file.
+ 
+ [b]Other[/b]
+  - The German locale has been corrected. Thanks to Marcel and Axel for their help with that!
+  - The Average Window will now also show the Tooltip when the mouse is over it.
+  - You can now clear the stored kill, quest and battleground data.
+    This is done by using the command /xtl clear [kills | quests | bgs]
+    NOTE! This will permanently delete the data. Use with caution!
+  - Fixed a bug that sometimes caused a LUA error when level 70+ players entered certain vehicles.
+
+Version 3.2.0_4r
+ - Added several new ways to display the LDB text. The default layout has also been improved.
+ - The previously lime-green text in the LDB text now changes colors according to your (or you pet's) progress through
+   your (or you pet's) current level. This can be disabled in the Config window.
+ - You can now choose which of the available locale translations you want to use via the General
+   tab in the Configuration window. It will still default to your client's locale if nothing is selected.
+ - Minor changes (hopefully improvements) have been made to the non-English translations, and previously untranslated parts
+   of the Configuration Window have now been translated.
+ - The translations, previously contained in the Locale.lua file, have been moved into separate files in the locale directory.
+ - The debug text that showed up in the chat window when a hunter with a pet killed a mob has been removed. (Sorry about that xD)
+ - Fixed a bug where a low-level pet's kill estimate would show 1 after being retrieved in exchange for a level-capped pet.
+
+Version 3.2.0_3r
+ - Fixed a bug in the LDB data-source which caused the label to be invisible in TitanPanel. (/facepalm)
+
+Version 3.2.0_2r
+ - Added LDB support.
+   This means that LDB front-end addons, such as TitanPanel and Fortress, can now be used to
+   display the data in an more detailed and customized way.
+
+Version 3.2.0_1r
+ - The addon will now also show kills required for hunter pets.
+ - You can now choose to hide the "XToLevel" header in the Average display window.
+ - Fixed a bug that sometimes caused kill estimates to be to high for high-level players in low-level zones.
+ - The Average window's default position has been moved from below the minimap to below the player frame.
+   It's old position sometimes caused other addons to mistake it for a minimap button.
+   
+Version 3.1.3_1r
+ - Updated the interface version to support the 3.1.x patches.
+
+Version 3.0.3_2r
+ 
+ [b]Added language support[/b]
+ - Added support for the French, German and Spanish clients.
+ - Users of the above clients can choose to have the addon use English rather then their default language.
+ 
+ Note that the translations for all the new languages may not be entirely correct.
+ I speak none of the new languages, so I just used the Google translator to translate the phrases.
+ You can edit the translations by editing the Locale.lua file.
+ If you do, please share it :)
+ 
+ [b]Average display changes[/b]
+ - A frame has been added to the Average Display window. (It can be disabled from the configuration window.)
+ - The Average Display window can now be locked into place.
+ - You can now right-click the Average Display window to bring up the Configuration window. (This can be disabled.)
+ - Shadows have been added to the text in the Average Display window. This helps keep it visible on bright backgrounds.
+ - The Average Display window will now properly resize to fit it's data.
+ 
+ [b]Bug fixes[/b]
+ - Fixed a bug that caused the configuration window to ignore all changes made to it.
+ - Fixed a bug that sometimes caused an error when creating caracters in certain zones.
+ - Fixed a bug that caused the mob kill estimates to be to low in certain zones.
+
+Version 3.0.3_2b1
+ - Added experimental support for the French client. (Thanks to trucdudur for the help with that!)
+   Note that the addon will still use English for messages and other text.
+ - Fixed a bug in the "Average display" configuration window. It will now properly disable/enable all options.
+ 
+Version 3.0.3 (WotLK)
+ - The addon now loads correctly for levels 70-79.
+
+Version 2.4
+ - The mob and quest estimate is now calculated based on the last 10 kills / quests, rather than the enitre session.
+ - You can now chose to hide the mob and / or quest estimates from the config window.
+ - Fixed a bug that sometimes caused the average display to freeze or show negative values after gaining a level.
+
+Version 2.1
+ - Fixed a minor display error that sometimes occurred when gaining a level.
+
+Version 2.0
+ - Added support for the 2.4 patch
+ - A small movable window added that shows the estimated mobs / quests needed to level.
+ - All /xtl and /xtolevel command options removed. It will now always just bring up the config window.
+
+Version 1.1
+ - GUI Config window added.
+ - Code re-written to incorporate a few basic Ace2 libraries and the Waterfall GUI.
+
+Version 1.0
+ - Original release.
+

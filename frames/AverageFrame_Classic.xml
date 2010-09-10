@@ -1,0 +1,50 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\..\FrameXML\UI.xsd"> 
+
+<Script file="AverageFrame_Classic.lua"/>
+
+<!-- Templates -->
+<FontString name="XToLevel_h1" inherits="SystemFont_Med1" justifyH="LEFT" virtual="true">
+    <Color r="0.25" g="1.0" b="0.5" a="1.0"/>
+    <Shadow><Offset x="1" y="-1"/><Color r="0" g="0" b="0" a="1.0"/></Shadow>
+</FontString>
+<FontString name="XToLevel_span" inherits="GameTooltipTextSmall" justifyH="LEFT" virtual="true">
+    <Shadow><Offset x="1" y="-1"/><Color r="0" g="0" b="0" a="1.0"/></Shadow>
+</FontString>
+
+<!-- Main frame -->
+<Frame name="XToLevel_AverageFrame_Classic" parent="UIParent" frameStrata="LOW" enableMouse="true" resizable="false" movable="true" clampedToScreen="true" hidden="false">
+	<Anchors>
+		<Anchor point="TOPLEFT" relativeTo="WorldFrame" relativePoint="TOPLEFT">
+			<Offset x="25" y="-100" />
+		</Anchor>
+    </Anchors>
+	<Backdrop bgFile="Interface\TutorialFrame\TutorialFrameBackground" edgeFile="Interface\DialogFrame\UI-DialogBox-Border">
+		<EdgeSize>
+			<AbsValue val="8"/>
+		</EdgeSize>
+		<BackgroundInsets>
+			<AbsInset left="2" right="2" top="2" bottom="2"/>
+		</BackgroundInsets>
+	</Backdrop>
+	<Scripts>
+		<OnLoad>
+            this:RegisterForDrag("LeftButton");
+		</OnLoad>
+        <OnMouseUp>
+			if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+				XToLevel.Config:Open("window")
+			end
+		</OnMouseUp>
+		<OnEvent>
+			XToLevel.AverageFrameAPI["Classic"]:OnEvent();
+		</OnEvent>
+		<OnDragStart>
+            XToLevel.AverageFrameAPI["Classic"]:StartDrag();
+		</OnDragStart>
+		<OnDragStop>
+			XToLevel.AverageFrameAPI["Classic"]:StopDrag()
+		</OnDragStop>
+    </Scripts>
+</Frame>
+
+</Ui>
