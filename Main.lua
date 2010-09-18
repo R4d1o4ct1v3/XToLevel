@@ -1,14 +1,14 @@
----
+﻿---
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 3.3.3_14r
--- @copyright Atli Þór (atli@advefir.com)
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
 
 --[[
-Copyright (C) 2008-2010  Atli Þór <atli@advefir.com>
+Copyright (C) 2008-2010  Atli Þór <atli.j@advefir.com>
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -51,8 +51,7 @@ XToLevel.onUpdateTotal = 0
 ---
 -- ON_EVENT handler. Set in the XToLevelDisplay XML file. Called for every event
 -- and only used to attach the callback functions to their respective event.
----
-function XToLevel:MainOnEvent()
+function XToLevel:MainOnEvent(event, arg1, arg2)
     if event == "PLAYER_LOGIN" then
         self:OnPlayerLogin()
     elseif event == "CHAT_MSG_COMBAT_XP_GAIN" then
@@ -89,12 +88,11 @@ function XToLevel:MainOnEvent()
 		self:OnTimePlayedMsg(arg1, arg2)
     end
 end
-XToLevel.frame:SetScript("OnEvent", function() XToLevel:MainOnEvent(event) end);
+XToLevel.frame:SetScript("OnEvent", function(self, event, arg1, arg2) XToLevel:MainOnEvent(event, arg1, arg2) end);
 
 ---
 -- Registers events listeners and slash commands. Note, the callbacks for
 -- the events are defined in the MainOnEvent function.
----
 function XToLevel:RegisterEvents(level)
 	if not level then
 		level = UnitLevel("player")
@@ -168,9 +166,7 @@ function XToLevel:UnregisterEvents()
 	self.frame:UnregisterEvent("TIME_PLAYED_MSG")
 end
 
----
--- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
----
+--- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
 function XToLevel:OnPlayerLogin()
     self:RegisterEvents()
     XToLevel.Config:Verify()
@@ -203,8 +199,7 @@ function XToLevel:OnPlayerLogin()
 	XToLevel.Tooltip:Initialize()
 end
 
----
--- Fires when the player's equipment changes
+--- Fires when the player's equipment changes
 -- @param slot The number of the slot that changed.
 -- @param hasItem Whether or not the slot is filled.
 function XToLevel:OnEquipmentChanged(slot, hasItem)
@@ -215,10 +210,13 @@ end
 -- PLAYER_LEVEL_UP callback. Displays the level up messages, updates the player and pet objects,
 -- and updates the average and LDB displays.
 -- @param newLevel The new level of the player. Passed from the event parameters.
----
 function XToLevel:OnPlayerLevelUp(newLevel)
-    XToLevel.Messages.Floating:PrintLevel(newLevel)
-    XToLevel.Messages.Chat:PrintLevel(newLevel)
+    -- No point showing the "Level Reached" message on Cataclysm. The new UI takes care of that nicely enough.
+    local _, _, _, interfaceNum = GetBuildInfo()
+    if tonumber(interfaceNum) < 40000 then
+        XToLevel.Messages.Floating:PrintLevel(newLevel)
+        XToLevel.Messages.Chat:PrintLevel(newLevel)
+    end
 	
 	XToLevel.Player.level = newLevel
 	XToLevel.Player.timePlayedLevel = 0
@@ -235,13 +233,11 @@ function XToLevel:OnPlayerLevelUp(newLevel)
 	end
 end
 
----
--- CHAT_XP_GAIN callback. Triggered whenever a message is displayed in the chat 
+--- CHAT_XP_GAIN callback. Triggered whenever a message is displayed in the chat 
 -- window, indicating that the player has gained XP (both kill, quest and BG objectives).
 -- Parses the message and updates the XToLevel.Player, XToLevel.Pet and XToLevel.Display objects according 
 -- to the type of message received.
 -- @param message The message string passed by the event, as displayed in the chat window.
----
 function XToLevel:OnChatXPGain(message)
     -- Note that this event is fired by kills, quests and BG objectives.
     local xp, mobName = XToLevel.Lib:ParseChatXPMessage(message)
@@ -304,7 +300,6 @@ end
 --- PLAYER_XP_UPDATE callback. Triggered when the player's XP changes.
 -- Syncronizes the XP of the XToLevel.Player object and updates the average and ldb 
 -- displays. Also updates the sData.player values with the current once.
----
 function XToLevel:OnPlayerXPUpdate()
     XToLevel.Player:SyncData()
     XToLevel.Average:Update()
@@ -315,12 +310,10 @@ function XToLevel:OnPlayerXPUpdate()
     sData.player.questAverage = XToLevel.Player:GetAverageQuestXP()
 end
 
----
--- UNIT_PET callback. Triggered when the player pet changes.
+--- UNIT_PET callback. Triggered when the player pet changes.
 -- If the type indicates this is a player pet (read: hunter pet), initalizes the
 -- XToLevel.Pet object and updates the displays.
 -- @param type The type of pet this is, as passed by the event.
----
 function XToLevel:OnUnitPet(type)
     -- Note, it appears this event is now fired before the PLAYER_LOGIN event
     -- so the player won't be initialized the first time it is fired. (regression bugs wtf!)
@@ -332,14 +325,12 @@ function XToLevel:OnUnitPet(type)
 	end
 end
 
----
--- UNIT_PET_EXPERIENCE callback. Triggered when the pet's XP changes.
+--- UNIT_PET_EXPERIENCE callback. Triggered when the pet's XP changes.
 -- Calculates the change and displays a message based on that. If the change is 
 -- positive it displays a "kills needed" message, if it is negative it displays
 -- a "gained level" message. Note that the "kills needed" message attempts to 
 -- use the nextMobName attribute (via the GetName method) which is set to the
 -- last mob name the player recorded.
----
 function XToLevel:OnUnitPetExperience()
 	if not XToLevel.Player:IsBattlegroundInProgress() and XToLevel.Pet.isActive then
 		local update, killsRemaining, mobName;
@@ -364,11 +355,9 @@ function XToLevel:OnUnitPetExperience()
 	end
 end
 
----
--- PET_UI_UPDATE callback. This event only fires after a new pet has been trained
+--- PET_UI_UPDATE callback. This event only fires after a new pet has been trained
 -- (as far as I know). Included here to circumvent a problem with the UNIT_PET
 -- event firing to early when a new pet is trained.
----
 function XToLevel:OnPetUiUpdate()
 	-- 
 	XToLevel.Pet:Initialize()
@@ -377,9 +366,7 @@ function XToLevel:OnPetUiUpdate()
 	XToLevel.LDB:Update()
 end
 
----
--- PLAYER_ENTERING_BATTLEGROUND callback.
----
+--- PLAYER_ENTERING_BATTLEGROUND callback.
 function XToLevel:OnPlayerEnteringBattleground()
 	if XToLevel.Player.isActive then
 		XToLevel.Player:BattlegroundStart(false)
@@ -388,8 +375,7 @@ function XToLevel:OnPlayerEnteringBattleground()
 	end
 end
 
----
--- LFG_PROPOSAL_SUCCEEDED callback.
+--- LFG_PROPOSAL_SUCCEEDED callback.
 -- Called when all members of a PUG, assembled via the LFG system, have accepted
 -- the invite. (Used here to detect whether a player is entering a dungeon
 -- whiles inside another one.)
@@ -397,9 +383,7 @@ function XToLevel:OnLfgProposalSucceeded()
 	self.hasLfgProposalSucceeded = true
 end
 
----
--- PLAYER_LEAVING_Instance callback.
----
+--- PLAYER_LEAVING_Instance callback.
 function XToLevel:PlayerLeavingInstance(force)
     if force == true or (XToLevel.Player:IsDungeonInProgress() and (UnitIsDeadOrGhost("player") == nil)) then
         local zoneName = GetRealZoneText()
@@ -424,13 +408,11 @@ function XToLevel:PlayerLeavingInstance(force)
     end
 end
 
----
--- PLAYER_ENTERING_WORLD callback. Triggered whenever a loading screen completes.
+--- PLAYER_ENTERING_WORLD callback. Triggered whenever a loading screen completes.
 -- Determines whether the player has left an battleground (a loading screen is
 -- only shown in a BG when leaving) and closes the XToLevel.Player bg instance, printing
 -- the "bgs required" message. It also checks if the player has entered or
 -- left an instance and calls the appropriate functions.
----
 function XToLevel:OnPlayerEnteringWorld()
 	if self.hasLfgProposalSucceeded then
 		local inInstance, type = IsInInstance()
@@ -466,15 +448,13 @@ function XToLevel:OnPlayerEnteringWorld()
 	end
 end
 
----
--- PLAYER_UNGHOST callback. Called when the a player returns from ghost mode.
+--- PLAYER_UNGHOST callback. Called when the a player returns from ghost mode.
 -- Determines whether the player returned to life ouside of an instance after
 -- dying inside an instance. Note that when resurected by another player inside
 -- the instance, after releasing, the player momentarily comes back to life
 -- outside the instance, which would cause the instance to be closed.
 -- To avoid that, I only close the instance if a player has asked for a spirit 
 -- heal and no resurection requests have been detected. 
----
 function XToLevel:OnPlayerUnghost()
     if self.playerHasXpLossRequest and not self.playerHasResurrectRequest then
         if XToLevel.Player:IsDungeonInProgress() then
@@ -486,39 +466,31 @@ function XToLevel:OnPlayerUnghost()
     end
 end
 
----
--- CONFIRM_XP_LOSS callback. Triggered when a spirit healer dialog is opened.
+--- CONFIRM_XP_LOSS callback. Triggered when a spirit healer dialog is opened.
 -- Note that does NOT mean a spirit heal has been accepted, only the dialog showed.
----
 function XToLevel:OnConfirmXpLoss()
     self.playerHasXpLossRequest = true;
 end
 
----
--- RESURECT_REQUEST callback. Triggered when a player resurection dialog is opened.
----
+--- RESURECT_REQUEST callback. Triggered when a player resurection dialog is opened.
 function XToLevel:OnResurrectRequest()
     self.playerHasResurrectRequest = true;
 end
 
----
--- PLAYER_ALIVE callback. Triggered on spirit realease, or after aceppting resurection
+--- PLAYER_ALIVE callback. Triggered on spirit realease, or after aceppting resurection
 -- before releasing. It also fires after entering or leaving an instance.
 -- (Possibly even after every load screen, but I haven't confirmed that.)
----
 function XToLevel:OnPlayerAlive()
     self.playerHasXpLossRequest = false
     self.playerHasResurrectRequest = false
 end
 
----
--- callback for ZONE_CHANGED_NEW_AREA, ZONE_CHANGED_INDOORS and ZONE_CHANGED.
+--- callback for ZONE_CHANGED_NEW_AREA, ZONE_CHANGED_INDOORS and ZONE_CHANGED.
 -- Basically fired everytime the player moves into a new area, sub-area or the
 -- indoor/outdoor status changes.
 -- Determines whether the zone name of the BG in progres needs to be set, and if
 -- not it checks if the name of the BG matches the zone. If not the player has
 -- left the BG are and the BG in progress is stopped.
----
 function XToLevel:OnAreaChanged()
 	if XToLevel.Player:IsBattlegroundInProgress() and XToLevel.Player.isActive then
 		local oldZone = sData.player.bgList[1].name
@@ -562,12 +534,10 @@ function XToLevel:TimePlayedTriggerCallback()
 	end
 end
 
----
--- Callback for the /xtl and /xtolevel slash commands.
+--- Callback for the /xtl and /xtolevel slash commands.
 -- Without parametes, it simply opens the configuration dialog.
 -- Various commands may exist for debuggin purposes, but none are essential to
 -- the application.
----
 function XToLevel:OnSlashCommand(arg1)
 	if arg1 == "clear kills" then
 		XToLevel.Player:ClearKillList()
@@ -629,9 +599,9 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("  killTotal: ".. tostring(data.killTotal))
         end
     elseif arg1 == "debug" then
-    	local diff = time() - tonumber(sData.player.timer.start)
-		console:log(tostring(diff))
+		local version, internalVersion, date, uiVersion = GetBuildInfo()
+		console:log(tostring(version) .. " - " .. tostring(internalVersion) .. " - " .. tostring(date) .. " - " .. tostring(uiVersion))
 	else
-		XToLevel.Config:Open()
+		XToLevel.Config:Open("messages")
 	end
 end

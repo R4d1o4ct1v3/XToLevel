@@ -1,3 +1,19 @@
+Version 4.0.1_16
+ - Note! This version is meant for both WotLK and Cataclysm Beta users.
+ - Removed the "Level reached" message for Cataclysm users. The Cataclysm UI already has a pretty nice message for level-ups so this is kind of redundant, really.
+ - Fixed minor inconsintencies with the player kill calculations.
+ - Removed the duplicate message shown when you kill something.
+ - The "Reset Session" button in the Timer config panel now works properly again.
+ - The TOC version number has been downgraded to WotLK. Cataclysm Beta users will have to enable out-of-date addons to use it. (It's either that or the other way around.)
+ 
+Version 4.0.1_15b
+ - Cataclysm Beta (4.0.1.12857) compatibility fixes.
+ - "Kills to level" estimate in mob tooltips for players level 80 or higher has been disabled. The old formulas for calculating these estimates do not apply to the new levels.
+ - The inital estimates for all the data displayed in the window or LDB displays will also be incorrect, for the same reason as above. (Note that these are ONLY
+   the inital estimates. Once you start killing/questing/etc... the numbers will become accurate again.)
+ - Various parts of the addon have not been thouroughly tested yet. Expect some errors. All error reports are most appreciated. I will keep the addon description up to date with
+   known errors.
+
 Version 3.3.5_14r
  - Added a "Time to level" feature. This shows you roughly how much time it will take you to reach you next level, based on how fast you are gaining XP.
    This is available both in the "Blocky" (default) window, and as a LDB data source (named TimeToLevel). Note that the LDB data source for this feature is 

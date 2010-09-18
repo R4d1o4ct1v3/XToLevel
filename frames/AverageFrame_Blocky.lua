@@ -173,7 +173,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
         if sConfig.averageDisplay.mode == 1 then
             -- Update the player frame
             local level = UnitLevel("player")
-            local maxLevel = XToLevel.Player.GetMaxLevel()
+            local maxLevel = XToLevel.Player:GetMaxLevel()
 	        if type(level) == "number" and type(maxLevel) == "number" and level < maxLevel then
 	            XToLevel_AverageFrame_Blocky_PlayerFrame:Show()
 		        self:StackPlayer()

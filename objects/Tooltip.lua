@@ -1,8 +1,8 @@
----
+﻿---
 -- Contains definitions for the Tooltip display.
 -- @file XToLevel.Display.lua
 -- @release 3.3.3_14r
--- @copyright Atli Þór (atli@advefir.com)
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
 
@@ -34,12 +34,12 @@ XToLevel.Tooltip =
 	-- Callback for the GameTooltip:OnShow hook
 	-- Adds the number of kills needed to unfriendly NPC tooltips.
 	OnShow_HookCallback = function(self, ...)
-		if sConfig.general.showNpcTooltipData then
+		if sConfig.general.showNpcTooltipData and UnitLevel("player") < 80 then -- TODO: Fix the need for the level restriction
 			local name, unit = GameTooltip:GetUnit()
 			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 then
 				local level = UnitLevel(unit)
 				if XToLevel.Tooltip.OnShow_XpData[level] == nil then
-					XToLevel.Tooltip.OnShow_XpData[level] = XToLevel.Lib:MobXP(UnitLevel("player"), UnitLevel(unit))
+					XToLevel.Tooltip.OnShow_XpData[level] = XToLevel.Lib:round(XToLevel.Lib:MobXP(UnitLevel("player"), UnitLevel(unit)), 0)
 				end
 				if XToLevel.Tooltip.OnShow_XpData[level] > 0 then
 					local color

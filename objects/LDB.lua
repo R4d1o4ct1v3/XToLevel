@@ -1,8 +1,8 @@
----
+﻿---
 -- Contains definitions for the LDB data source.
 -- @file XToLevel.Display.lua
--- @release 3.3.3_14r
--- @copyright Atli Þór (atli@advefir.com)
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
 
@@ -422,7 +422,7 @@ XToLevel.LDB =
     end,
 	
 	UpdateTimer = function(self)
-		if sConfig.ldb.showLabel ~= this.timerLabelShown then
+		if sConfig.ldb.showLabel ~= self.timerLabelShown then -- changed
 			self.timerObject.label = sConfig.ldb.showLabel and L["XToLevel"] or nil
 		end
 		if sConfig.timer.enabled then

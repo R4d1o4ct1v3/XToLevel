@@ -257,10 +257,10 @@ XToLevel.AverageFrameAPI["Classic"] =
             self.lines[lineName]:SetScript("OnEnter", function() self:ShowTooltip(toolTip) end)
             self.lines[lineName]:SetScript("OnLeave", function() self:HideTooltip() end)
         end
-        self.lines[lineName]:SetScript("OnMouseDown", function()self:StartDrag() end)
-        self.lines[lineName]:SetScript("OnMouseUp", function() 
+        self.lines[lineName]:SetScript("OnMouseDown", function() self:StartDrag() end)
+        self.lines[lineName]:SetScript("OnMouseUp", function(_, button) 
             self:StopDrag()
-            if arg1 == "RightButton" and sConfig.general.allowSettingsClick then
+            if button == "RightButton" and sConfig.general.allowSettingsClick then
                 XToLevel.Config:Open("window")
             end
         end)

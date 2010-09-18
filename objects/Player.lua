@@ -1,8 +1,8 @@
----
+﻿---
 -- Controls all Playe related functionality.
 -- @file XToLevel.Player.lua
--- @release 3.3.3_13r
--- @copyright Atli Þór (atli@advefir.com)
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
 
@@ -80,6 +80,8 @@ XToLevel.Player = {
 	-- Constructor
 	Initialize = function(self)
 		self:SyncData()
+		
+		self.maxLevel = self:GetMaxLevel();
         
 		if self.level == self.maxLevel then
 			self.isActive = false
@@ -90,8 +92,6 @@ XToLevel.Player = {
         self.killAverage = nil
 		self.bgObjAverage = nil
         self.questAverage = nil
-
-        self.maxLevel = self:GetMaxLevel();
 		
 		if sConfig.timer.enabled then
 			self.timerHandler = XToLevel.timer:ScheduleRepeatingTimer(XToLevel.Player.TriggerTimerUpdate, self.xpPerSecTimeout)
@@ -104,7 +104,7 @@ XToLevel.Player = {
     -- This assumes a 10 level increase per expansion, starting at level 60.
     ---
     GetMaxLevel = function(self)
-        return (60 + (10 * GetAccountExpansionLevel()));
+        return XToLevel.MAX_PLAYER_LEVELS[GetAccountExpansionLevel()]
     end,
     
     ---
@@ -284,6 +284,12 @@ XToLevel.Player = {
         self.currentXP = self.currentXP + xpGained
         
         local killXP = self:GetUnrestedXP(xpGained)
+        
+        if self.restedXP > killXP then
+            self.restedXP = self.restedXP - killXP
+        elseif self.restedXP > 0 then
+            self.restedXP = 0
+        end
     
 		self.killAverage = nil
         table.insert(sData.player.killList, 1, {mob=mobName, xp=killXP})

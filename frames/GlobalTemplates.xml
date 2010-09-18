@@ -134,8 +134,8 @@
                 end
             </OnMouseUp>
             <OnAttributeChanged>
-            	if arg1 ~= nil and arg1 == "currentcolor" and type(arg2) == "table" then
-           			_G[this:GetName() .. "Color"]:SetTexture(unpack(arg2 or {1, 1, 1, nil}))
+            	if name ~= nil and name == "currentcolor" and type(value) == "table" then
+           			_G[this:GetName() .. "Color"]:SetTexture(unpack(value or {1, 1, 1, nil}))
             	end
             </OnAttributeChanged>
         </Scripts>

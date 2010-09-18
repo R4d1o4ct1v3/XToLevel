@@ -1,8 +1,12 @@
---[[
- File: Libs.lua
- Description:
-   A collection of globally available functions, used througout the addon.
+﻿---
+-- A collection of globally available functions, used througout the addon.
+-- @file Libs.lua
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
+---
+--module "XToLevel.Lib" -- For documentation purposes. Do not uncomment!
 
+--[[
  Functions:
    ZoneID() - Returns the ID of the zone the player is current in
    IsPlayerRafEligable() - Determines whether the player is eligable for the 3x RAF bonus.
@@ -183,7 +187,7 @@ end
 -- Used to find the Zero Difference used to calculate XP from low level mobs
 ---
 function XToLevel.Lib:ZeroDifference(charLevel)
-	for i,v in ipairs(ZD_Table) do
+	for i,v in ipairs(XToLevel.ZD_Table) do
 		if charLevel >= v[1] and charLevel <= v[2] then
 			return v[3];
 		end
@@ -196,7 +200,7 @@ end
 ---
 function XToLevel.Lib:IsInBattleground()
 	local currentZone = GetRealZoneText()
-	for key, val in ipairs(BG_NAMES) do
+	for key, val in ipairs(XToLevel.BG_NAMES) do
 		if val == currentZone then
 			return true
 		end
@@ -254,6 +258,8 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel)
 		addValue = 235 -- Outlands
     elseif (zoneID or 0) == 4 then 
         addValue = 580 -- Northrend
+	elseif (zoneID or 0) == 5 then 
+        addValue = 580 -- Cataclysm
 	end
 	
 	local XP = 0
@@ -268,7 +274,7 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel)
 		XP = ((charLevel * 5 + addValue)) * (1 + (0.05 * (maxMobLevel - charLevel)))
 	elseif (charLevel > mobLevel) then
 		local ZD = XToLevel.Lib:ZeroDifference(charLevel)
-		XP = ((charLevel * 5 + addValue)) * (1 - ((charLevel - mobLevel) / ZD)) -- TODO: FIND THE BUG!
+		XP = ((charLevel * 5 + addValue)) * (1 - ((charLevel - mobLevel) / ZD))
 	end
 	
 	return XP * (1 + XToLevel.Lib:GetHeirloomXpBonus())

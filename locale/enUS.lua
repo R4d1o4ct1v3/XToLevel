@@ -1,4 +1,4 @@
-LOCALE["enUS"] = {
+﻿LOCALE["enUS"] = {
     --[[
       || Messages
     --]]
@@ -214,4 +214,7 @@ LOCALE["enUS"] = {
     ['Show Dungeon Info'] = "Show Dungeon Info",
 	['Show Pet Details'] = "Show Pet Details",
     ['Show Timer Details'] = "Show Timer Details",
+    
+    -- Timer
+    ['Reset Timer Dialog'] = 'Are you sure you want to reset the timer?';
 }

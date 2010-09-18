@@ -89,7 +89,7 @@
     </Frames>
     <Scripts>
 	    <OnLoad>
-	        this:RegisterForDrag("LeftButton");
+	        self:RegisterForDrag("LeftButton");
 	    </OnLoad>
 	    <OnLeave>
 	        XToLevel.AverageFrameAPI["Blocky"]:HideTooltip();
@@ -101,7 +101,7 @@
 	        XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
 	    </OnDragStop>
 	    <OnMouseUp>
-            if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+            if sConfig.general.allowSettingsClick and button == "RightButton" then
                 XToLevel.Config:Open("average")
             end
         </OnMouseUp>
@@ -167,7 +167,7 @@
     </Frames>
     <Scripts>
         <OnLoad>
-            this:RegisterForDrag("LeftButton");
+            self:RegisterForDrag("LeftButton");
         </OnLoad>
         <OnLeave>
             XToLevel.AverageFrameAPI["Blocky"]:HideTooltip();
@@ -179,7 +179,7 @@
             XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
         </OnDragStop>
         <OnMouseUp>
-            if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+            if sConfig.general.allowSettingsClick and button == "RightButton" then
                 XToLevel.Config:Open("average")
             end
         </OnMouseUp>
@@ -356,7 +356,7 @@
                             XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('timer');
                         </OnEnter>
 						<OnMouseUp>
-							if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+							if sConfig.general.allowSettingsClick and button == "RightButton" then
 								XToLevel.Config:Open("timer")
 							end
 						</OnMouseUp>

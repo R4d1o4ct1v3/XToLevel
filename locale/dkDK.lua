@@ -1,4 +1,4 @@
-LOCALE["dkDK"] = {
+﻿LOCALE["dkDK"] = {
     --[[
       || Messages
     --]]
@@ -214,4 +214,7 @@ LOCALE["dkDK"] = {
     ['Show Dungeon Info'] = "Vis Dungeon Info",
 	['Show Pet Details'] = "Vis Pet Detaljer",
     ['Show Timer Details'] = "Vis Timer Info",
+    
+    -- Timer
+    ['Reset Timer Dialog'] = 'Are you sure you want to reset the timer?';
 }

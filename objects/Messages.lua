@@ -1,8 +1,8 @@
----
+﻿---
 -- Contains definitions for Chat and Floating Error window message controls.
 -- @file objects/Messages.lua
--- @release 3.3.3_13r
--- @copyright Atli Þór (atli@advefir.com)
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Messages" -- For documentation purposes. Do not uncomment!
 

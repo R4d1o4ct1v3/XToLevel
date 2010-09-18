@@ -1,9 +1,9 @@
----
+﻿---
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 3.3.3_14r
--- @copyright Atli Þór (atli@advefir.com)
+-- @release 4.0.1_16
+-- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
 
@@ -154,8 +154,8 @@ XToLevel.Config =
 	    --
 	    StaticPopupDialogs['XToLevelConfig_MessageColorsReset'] = {
 			text = L['Color Reset Dialog'],
-			button1 = "Yes",
-			button2 = "No",
+			button1 = L["Yes"],
+			button2 = L["No"],
 			OnAccept = function()
 				sConfig.messages.colors = {
 					playerKill = {0.72, 1, 0.71, 1},
@@ -180,8 +180,8 @@ XToLevel.Config =
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPlayerKills'] = {
 			text = L['Reset Player Kill Dialog'],
-			button1 = "Yes",
-			button2 = "No",
+			button1 = L["Yes"],
+			button2 = L["No"],
 			OnAccept = function()
 				XToLevel.Player:ClearKills();
 	            XToLevel.Average:Update();
@@ -194,8 +194,8 @@ XToLevel.Config =
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPlayerQuests'] = {
 			text = L['Reset Player Quest Dialog'],
-			button1 = "Yes",
-			button2 = "No",
+			button1 = L["Yes"],
+			button2 = L["No"],
 			OnAccept = function()
 				XToLevel.Player:ClearQuests();
 				XToLevel.Average:Update();
@@ -208,8 +208,8 @@ XToLevel.Config =
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetBattles'] = {
 			text = L['Reset Battleground Dialog'],
-			button1 = "Yes",
-			button2 = "No",
+			button1 = L["Yes"],
+			button2 = L["No"],
 			OnAccept = function()
 				XToLevel.Player:ClearBattlegrounds();
 				XToLevel.Average:Update();
@@ -222,8 +222,8 @@ XToLevel.Config =
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPetKills'] = {
 			text = L['Reset Pet Kill Dialog'],
-			button1 = "Yes",
-			button2 = "No",
+			button1 = L["Yes"],
+			button2 = L["No"],
 			OnAccept = function()
 				XToLevel.Pet:ClearKills();
 				XToLevel.Average:Update();
@@ -236,13 +236,27 @@ XToLevel.Config =
 		}
 		StaticPopupDialogs['XToLevelConfig_ResetDungeons'] = {
 	        text = L['Reset Dungeon Dialog'],
-	        button1 = "Yes",
-	        button2 = "No",
+	        button1 = L["Yes"],
+	        button2 = L["No"],
 	        OnAccept = function()
 	            XToLevel.Player:ClearDungeonList();
 	            XToLevel.Average:Update();
 	            XToLevel.LDB:BuildPattern();
 	            XToLevel.LDB:Update();
+	        end,
+	        timeout = 0,
+	        whileDead = true,
+	        hideOnEscape = true,
+	    }
+        StaticPopupDialogs['XToLevelConfig_ResetTimer'] = {
+	        text = L['Reset Timer Dialog'],
+	        button1 = L["Yes"],
+	        button2 = L["No"],
+	        OnAccept = function()
+	            sData.player.timer.start = time()
+				sData.player.timer.total = 0
+				XToLevel.Average:UpdateTimer()
+				XToLevel.LDB:UpdateTimer()
 	        end,
 	        timeout = 0,
 	        whileDead = true,
@@ -258,7 +272,7 @@ XToLevel.Config =
 		if type(self.panel_alias[panel]) == "string" and self.panels[self.panel_alias[panel]] then
 			InterfaceOptionsFrame_OpenToCategory(self.panels[self.panel_alias[panel]])
 		else
-			InterfaceOptionsFrame_OpenToCategory("XToLevel_Config_XToLevel_MainPanel")
+			InterfaceOptionsFrame_OpenToCategory(self.panels["XToLevel_MainPanel"])
 			console:log("Invalid panel ('" .. tostring(panel) .."'). Opening default instead.")
 		end
     end,
@@ -302,10 +316,10 @@ XToLevel.Config =
         mainPanel.childFrame["AboutFrame"].lineTop = 12
         mainPanel.childFrame["AboutFrame"].lines = { }
         
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "3.3.3_14r|r |cFFAAFFAA(2010-07-11)", "00FF00")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_15b|r |cFFAAFFAA(2010-09-09)", "00FF00")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Author", L["Author"], "Atli þór Jónsson", "E07B02")
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli@advefir.com", "FFFFFF")
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "wowinterface.com/downloads/info14368-XToLevel.html", "FFFFFF")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Category", L["Category"], "Quests & Leveling, Battlegrounds, Dungeons, Pets.", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "License", L["License"], L['All Rights Reserved'] .. " (See LICENSE.txt)", "FFFFFF")
         
@@ -325,7 +339,7 @@ XToLevel.Config =
 	        function(self)
 	            local localeValue = sConfig.general.displayLocale;
 	            local languageName = nil;
-	            for language, locale in pairs(DISPLAY_LOCALES) do
+	            for language, locale in pairs(XToLevel.DISPLAY_LOCALES) do
 	                if locale == localeValue then
 	                    languageName = language;
 	                end
@@ -342,7 +356,7 @@ XToLevel.Config =
 	            
 	            local rawLanguage = UIDropDownMenu_GetText(generalPanel.childFrame["LocaleSelect"]);
 	            local newLocale = nil;
-	            for lang, locale in pairs(DISPLAY_LOCALES) do
+	            for lang, locale in pairs(XToLevel.DISPLAY_LOCALES) do
 	                if rawLanguage == lang then
 	                    newLocale = locale;
 	                end
@@ -491,7 +505,7 @@ XToLevel.Config =
     	self:CreateH2(windowPanel, "ActiveHeader", L['Active Window Header'], 0)
         self:CreateSelectBox(windowPanel, "WindowSelect", {"None", "Blocky", "Classic"}, "Blocky",
 	        -- OnShow
-	        function()
+	        function(self)
 	           local chosenType = sConfig.averageDisplay.mode or nil
 	           local chosenWindow = false
 	           if chosenType == 1 then
@@ -500,24 +514,25 @@ XToLevel.Config =
 	               chosenWindow = "Classic"
 	           end
 	           if not chosenWindow then
-                    chosenWindow = this.default
+                    chosenWindow = self.default
                 end
-                UIDropDownMenu_SetSelectedName(this, chosenWindow, true);
-                UIDropDownMenu_SetText(this, chosenWindow);
+                UIDropDownMenu_SetSelectedName(self, chosenWindow, true);
+                UIDropDownMenu_SetText(self, chosenWindow);
 	        end,
 	        -- OnChange
 	        function(selectBox)
-	           local choice = UIDropDownMenu_GetText(selectBox)
-	           local number = 0
-	           for i, value in ipairs(AVERAGE_WINDOWS) do
-	               if value == choice then
-	                   number = i
-	               end
-	           end
-	           sConfig.averageDisplay.mode = number
-	           XToLevel.Average:Update()
-	           XToLevel.LDB:BuildPattern()
-	           XToLevel.LDB:Update()
+				local choice = UIDropDownMenu_GetText(selectBox)
+
+				local number = 0
+				for i, value in ipairs(AVERAGE_WINDOWS) do
+				   if value == choice then
+					   number = i
+				   end
+				end
+				sConfig.averageDisplay.mode = number
+				XToLevel.Average:Update()
+				XToLevel.LDB:BuildPattern()
+				XToLevel.LDB:Update()
 	        end
 	    )
 	   
@@ -628,13 +643,13 @@ XToLevel.Config =
         self:CreateH2(ldbPanel, "TextPatternHeader", L['LDB Pattern Header'])
         self:CreateSelectBox(ldbPanel, "LDBPatternSelect", {"default", "minimal", "minimal_dashed", "brackets", "countdown", "custom"}, "default",
             -- OnShow
-            function()
+            function(self)
                local chosenType = sConfig.ldb.textPattern or nil
                 if not chosenType then
-                    chosenType = this.default
+                    chosenType = self.default
                 end
-                UIDropDownMenu_SetSelectedName(this, chosenType, true);
-                UIDropDownMenu_SetText(this, chosenType);
+                UIDropDownMenu_SetSelectedName(self, chosenType, true);
+                UIDropDownMenu_SetText(self, chosenType);
             end,
             -- OnChange
             function(selectBox)
@@ -858,10 +873,10 @@ XToLevel.Config =
 		self:CreateDescription(timerPanel, "TimerModeDescriotion", desc, 66, "FFFFFF")
 		self:CreateSelectBox(timerPanel, "TimerModeSelect", {"Session", "Level"}, "Session",
             -- OnShow
-            function()
+            function(self)
                local chosenType = sConfig.timer.mode == 1 and "Session" or "Level"
-                UIDropDownMenu_SetSelectedName(this, chosenType, true);
-                UIDropDownMenu_SetText(this, chosenType);
+                UIDropDownMenu_SetSelectedName(self, chosenType, true);
+                UIDropDownMenu_SetText(self, chosenType);
             end,
             -- OnChange
             function(selectBox)
@@ -883,10 +898,7 @@ XToLevel.Config =
 		
 		self:CreateButton(timerPanel, "ResetSessionButton", L["Reset Session"] or "Reset Session", nil, nil, function() end, 
 			function()
-				sData.player.timer.start = time()
-				sData.player.timer.total = 0
-				XToLevel.Average:UpdateTimer()
-				XToLevel.LDB:UpdateTimer()
+				StaticPopup_Show("XToLevelConfig_ResetTimer");
 			end
 		)
 		
@@ -1176,7 +1188,7 @@ XToLevel.Config =
         parent.insertHeight = parent.insertHeight + 30
         
         parent.childFrame[fieldName]:SetScript("OnHide", function(self) CloseDropDownMenus() end)
-        parent.childFrame[fieldName]:SetScript("OnShow", function()
+        parent.childFrame[fieldName]:SetScript("OnShow", function(self)
             if not parent.childFrame[fieldName].initialized then
                 parent.childFrame[fieldName].initialized = true
                 local cb_init_fn = function()
@@ -1186,9 +1198,9 @@ XToLevel.Config =
                     while i <= num do
                         info = {}
                         info.text = fields[i]
-                        info.func = function() 
-                            UIDropDownMenu_SetSelectedID(parent.childFrame[fieldName], this:GetID(), 0);
-                            if onShow ~= nil and type(onShow) == "function" then
+                        info.func = function(self) 
+                            UIDropDownMenu_SetSelectedID(parent.childFrame[fieldName], self:GetID(), 0);
+                            if onChange ~= nil and type(onChange) == "function" then
                                 onChange(parent.childFrame[fieldName])
                             end
                         end
@@ -1196,10 +1208,10 @@ XToLevel.Config =
                         i = i + 1
                     end
                 end
-                UIDropDownMenu_Initialize(this, cb_init_fn)
+                UIDropDownMenu_Initialize(self, cb_init_fn)
             end
             if onShow ~= nil and type(onShow) == "function" then
-                onShow()
+                onShow(self)
             end
         end)
     end,
@@ -1277,7 +1289,7 @@ XToLevel.Config =
     	
     	
     	-- Set events
-    	parent.childFrame[fieldName].value:SetScript("OnShow", function() this:SetCursorPosition(1) end)
+    	parent.childFrame[fieldName].value:SetScript("OnShow", function(self) self:SetCursorPosition(1) end)
         parent.childFrame[fieldName].value:SetScript("OnEditFocusLost", function() 
         	local newValue = tonumber(parent.childFrame[fieldName].value:GetText())
         	if type(newValue) ~= "number" or newValue < min or newValue > max then
@@ -1287,8 +1299,8 @@ XToLevel.Config =
     			parent.childFrame[fieldName].slider:SetValue(newValue)
         	end
     	end)
-        parent.childFrame[fieldName].value:SetScript("OnEnterPressed", function() this:ClearFocus();  end)
-        parent.childFrame[fieldName].value:SetScript("OnTabPressed", function() this:ClearFocus(); end)
+        parent.childFrame[fieldName].value:SetScript("OnEnterPressed", function(self) self:ClearFocus();  end)
+        parent.childFrame[fieldName].value:SetScript("OnTabPressed", function(self) self:ClearFocus(); end)
         parent.childFrame[fieldName].slider:SetScript("OnValueChanged",
         	function(self, value)
         		parent.childFrame[fieldName].value:SetText(tostring(value))

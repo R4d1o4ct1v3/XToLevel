@@ -28,10 +28,10 @@
 	</Backdrop>
 	<Scripts>
 		<OnLoad>
-            this:RegisterForDrag("LeftButton");
+            self:RegisterForDrag("LeftButton");
 		</OnLoad>
         <OnMouseUp>
-			if sConfig.general.allowSettingsClick and arg1 == "RightButton" then
+			if sConfig.general.allowSettingsClick and button == "RightButton" then
 				XToLevel.Config:Open("window")
 			end
 		</OnMouseUp>
