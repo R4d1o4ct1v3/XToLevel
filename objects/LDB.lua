@@ -353,6 +353,9 @@ XToLevel.LDB =
 					local progressDisplay = playerProgress
 					if sConfig.ldb.text.xpCountdown then
 						progressDisplay = 100 - playerProgress
+                        if progressDisplay < 1 then
+                            progressDisplay = '<1' 
+                        end
 					end
                     pattern = string.gsub(pattern, '%$%$xp%$%$', progressDisplay .. "%%");
                 end
