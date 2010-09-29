@@ -69,7 +69,7 @@ function XToLevel.Average:UpdateTimer(secondsToLevel)
                     m = m + 1
                 end
                 formattedTime = string.format("%dm",m)
-            else
+            elseif secondsToLevel < 86400 then
                 local h, m
                 h = tonumber(date("%H", secondsToLevel))
                 m = tonumber(date("%M", secondsToLevel))
@@ -77,6 +77,14 @@ function XToLevel.Average:UpdateTimer(secondsToLevel)
                     h = h + 1
                 end
                 formattedTime = string.format("%dh",h)
+            else
+                local h, d
+                h = tonumber(date("%H", secondsToLevel))
+                d = floor(secondsToLevel / 86400)
+                if h > 12 then
+                    d = d + 1
+                end
+                formattedTime = string.format("%dd",d)
             end
             XToLevel.AverageFrameAPI[self.activeAPI]:SetTimer(formattedTime)
         else

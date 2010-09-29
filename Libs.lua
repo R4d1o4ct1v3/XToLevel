@@ -571,8 +571,12 @@ function XToLevel.Lib:Split(str, delim, maxNb)
     return result
 end
 
+---
+-- Formats a timestamp into a human-readable Date-Time string
+-- following a "5d 12h 36m 48s" format.
 function XToLevel.Lib:TimeFormat(timestamp)
 	if type(timestamp) == "number" and timestamp > 0 then
+        local day = floor(timestamp / 86400)
 		local hour = date("%H", timestamp)
 		local minute = date("%M", timestamp)
 		local second = date("%S", timestamp)
@@ -591,12 +595,14 @@ function XToLevel.Lib:TimeFormat(timestamp)
 			end
 			
 			local output = ""
-			if minute == "0" and hour == "0" then
+			if day == 0 and minute == "0" and hour == "0" then
 				return second .. "s"
-			elseif hour == "0" then
+			elseif day == 0 and hour == "0" then
 				return minute .. "m " .. second .. "s"
-			else
+			elseif day == 0 then
 				return hour .. "h " .. minute .. "m " .. second .. "s"
+            else
+                return day .. "d " .. hour .. "h " .. minute .. "m " .. second .. "s"
 			end
 		end
 	else
