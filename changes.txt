@@ -1,3 +1,8 @@
+Version 4.0.1_17
+ - Fixed a bug that caused an error when switching between the Classic and "Blocky" window modes.
+ - Added a day value in TimeToLevel displays. It previously only showed the time values.
+ - Added a workaround for a possible API bug which appears to have rarely caused the TimeToLevel "Level" mode to be way off in it's estimate. (If you are having any problems with this feature, please report it!)
+
 Version 4.0.1_16
  - Note! This version is meant for both WotLK and Cataclysm Beta users.
  - Removed the "Level reached" message for Cataclysm users. The Cataclysm UI already has a pretty nice message for level-ups so this is kind of redundant, really.
