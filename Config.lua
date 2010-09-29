@@ -524,7 +524,7 @@ XToLevel.Config =
 				local choice = UIDropDownMenu_GetText(selectBox)
 
 				local number = 0
-				for i, value in ipairs(AVERAGE_WINDOWS) do
+				for i, value in ipairs(XToLevel.AVERAGE_WINDOWS) do
 				   if value == choice then
 					   number = i
 				   end

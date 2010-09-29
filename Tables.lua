@@ -1,4 +1,10 @@
-﻿XToLevel.MAX_PLAYER_LEVELS =
+﻿XToLevel.AVERAGE_WINDOWS =
+{
+    [1] = "Blocky",
+    [2] = "Classic"
+}
+
+XToLevel.MAX_PLAYER_LEVELS =
 {
     [0] = 60, -- Classic
     [1] = 70, -- Burning Crusade
