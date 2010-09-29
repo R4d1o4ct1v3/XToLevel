@@ -523,6 +523,14 @@ end
 
 --- Passes the time played info into the Player object.
 function XToLevel:OnTimePlayedMsg(total, level)
+    -- Possible that the argument order gets mixed up?
+    -- (See bug #7)
+    if total < level then
+       local tmp = level
+       level = total
+       total = tmp
+    end
+    
 	XToLevel.Player:UpdateTimePlayed(total, level)
 end
 
