@@ -296,6 +296,7 @@ XToLevel.Player = {
 		if(# sData.player.killList > self.killListLength) then
 			table.remove(sData.player.killList)
 		end
+        sData.player.total.mobKills = (sData.player.total.mobKills or 0) + 1
 
         return killXP
 	end,
@@ -311,6 +312,7 @@ XToLevel.Player = {
 		if(# sData.player.questList > self.questListLength) then
 			table.remove(sData.player.questList)
 		end
+        sData.player.total.quests = (sData.player.total.quests or 0) + 1
 	end,
 	
 	---
@@ -392,6 +394,7 @@ XToLevel.Player = {
                 sData.player.bgList[1].totalXP = sData.player.bgList[1].totalXP + xpGained
                 sData.player.bgList[1].objTotal = sData.player.bgList[1].objTotal + xpGained
                 sData.player.bgList[1].objCount = sData.player.bgList[1].objCount + 1
+                sData.player.total.objectives = (sData.player.total.objectives or 0) + 1
                 return true
             else
                 return self:AddBattlegroundKill(xpGained, 'Unknown')
@@ -414,6 +417,7 @@ XToLevel.Player = {
             sData.player.bgList[1].totalXP = sData.player.bgList[1].totalXP + xpGained
             sData.player.bgList[1].killCount = sData.player.bgList[1].killCount + 1
             sData.player.bgList[1].killTotal = sData.player.bgList[1].killTotal + xpGained
+            sData.player.total.pvpKills = (sData.player.total.pvpKills or 0) + 1
         else
             console:log("Attempt to add a BG kill without starting a BG.")
         end
@@ -525,6 +529,7 @@ XToLevel.Player = {
             if type(rested) == "number" and rested > 0 then
             	sData.player.dungeonList[1].rested = sData.player.dungeonList[1].rested + rested
         	end
+            sData.player.total.dungeonKills = (sData.player.total.dungeonKills or 0) + 1
             self:UpdateDungeonName()
             return true
         else

@@ -107,6 +107,14 @@ sConfig = {
 }
 sData = {
 	player = {
+        total = {
+            startedRecording = time(),
+            mobKills = 0,
+            dungeonKills = 0,
+            pvpKills = 0,
+            quests = 0,
+            objectives = 0
+        },
 		killAverage = 0,
 		questAverage = 0,
 		killList = {},
@@ -316,7 +324,7 @@ XToLevel.Config =
         mainPanel.childFrame["AboutFrame"].lineTop = 12
         mainPanel.childFrame["AboutFrame"].lines = { }
         
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_16|r |cFFAAFFAA(2010-09-18)", "00FF00")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_18|r |cFFAAFFAA(2010-09-18)", "00FF00")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Author", L["Author"], "Atli þór Jónsson", "E07B02")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
@@ -1445,10 +1453,18 @@ function XToLevel.Config:Verify()
 	if sConfig.timer.mode == nil then sConfig.timer.mode = 1 end
 	if sConfig.timer.allowLevelFallback == nil then sConfig.timer.allowLevelFallback = 1 end
     
-    -- Data
     if sData == nil then sData = {} end
     if sData.player == nil then sData.player = {} end
     if sData.pet == nil then sData.pet = {} end
+    
+    if sData.player.total == nil then sData.player.total = { } end
+    if sData.player.total.startedRecording == nil then sData.player.total.startedRecording = time() end
+    if sData.player.total.mobKills == nil then sData.player.total.mobKills = 0 end
+    if sData.player.total.dungeonKills == nil then sData.player.total.dungeonKills = 0 end
+    if sData.player.total.pvpKills == nil then sData.player.total.pvpKills = 0 end
+    if sData.player.total.quests == nil then sData.player.total.quests = 0 end
+    if sData.player.total.objectives == nil then sData.player.total.objectives = 0 end
+    
     if sData.player.killAverage == nil then sData.player.killAverage = 0 end
     if sData.player.questAverage == nil then sData.player.questAverage = 0 end
     if sData.player.killList == nil then sData.player.killList = {} end
