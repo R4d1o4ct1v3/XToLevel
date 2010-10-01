@@ -1,7 +1,7 @@
-﻿---
+---
 -- Controls all Playe related functionality.
 -- @file XToLevel.Player.lua
--- @release 4.0.1_16
+-- @release 4.0.1_18
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
@@ -179,7 +179,7 @@ XToLevel.Player = {
 		if type(total) == "number" and total > 0 then
 			self.timePlayedTotal = total
 		end
-		self.timePlayedUpdated = time()
+		self.timePlayedUpdated = GetTime()
 	end,
 	
 	--- Callback for the timer registration function.
@@ -188,14 +188,14 @@ XToLevel.Player = {
 	end,
 	UpdateTimer = function(self)
 		self = XToLevel.Player
-		self.lastXpPerHourUpdate = time()
+		self.lastXpPerHourUpdate = GetTime()
 		
 		local useMode = sConfig.timer.mode
 		
 		-- Use the session data
 		if useMode == 1 then
 			if type(sData.player.timer.start) == "number" and type(sData.player.timer.total) == "number" and sData.player.timer.total > 0 then
-				sData.player.timer.xpPerSec = sData.player.timer.total / (time() - sData.player.timer.start)
+				sData.player.timer.xpPerSec = sData.player.timer.total / (GetTime() - sData.player.timer.start)
 				local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
 			else
@@ -205,8 +205,8 @@ XToLevel.Player = {
 		
 		-- Use the level data.
 		if useMode == 2 then
-			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (time() - self.timePlayedUpdated)) > 0 then
-				sData.player.timer.xpPerSec = self.currentXP / (self.timePlayedLevel + (time() - self.timePlayedUpdated))
+			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)) > 0 then
+				sData.player.timer.xpPerSec = self.currentXP / (self.timePlayedLevel + (GetTime() - self.timePlayedUpdated))
 				local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
 			else
@@ -229,14 +229,14 @@ XToLevel.Player = {
 		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel
 		if sConfig.timer.mode == 1 and tonumber(sData.player.timer.total) > 0 then
 			mode = 1
-			timePlayed = time() - sData.player.timer.start
+			timePlayed = GetTime() - sData.player.timer.start
 			totalXP = sData.player.timer.total
 			xpPerSecond = totalXP / timePlayed 
 			xpPerHour = ceil(xpPerSecond * 3600)
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		elseif XToLevel.Player.timePlayedLevel then
 			mode = 2
-			timePlayed = self.timePlayedLevel + (time() - self.timePlayedUpdated)
+			timePlayed = self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)
 			totalXP = self.currentXP
 			xpPerSecond = totalXP / timePlayed 
 			xpPerHour = ceil(xpPerSecond * 3600)

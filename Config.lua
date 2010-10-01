@@ -1,8 +1,8 @@
-﻿---
+---
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 4.0.1_16
+-- @release 4.0.1_18
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
@@ -1471,13 +1471,14 @@ function XToLevel.Config:Verify()
     if sData.player.questList == nil then sData.player.questList = {} end
     if sData.player.bgList == nil then sData.player.bgList = {} end
     if sData.player.dungeonList == nil then sData.player.dungeonList = {} end
-	if sData.player.timer == nil then sData.player.timer = {} end
+	
     if sData.pet.killAverage == nil then sData.pet.killAverage = 0 end
     if sData.pet.killList == nil then sData.pet.killList = {} end
     if sData.customPattern == nil then sData.customPattern = 0 end
 	
 	-- Timer data. Move old data into the last session var if it is available.
-	sData.player.timer.start = time()
+    if sData.player.timer == nil then sData.player.timer = {} end
+	sData.player.timer.start = GetTime(); -- GetTime()
 	sData.player.timer.total = 0
 	if sData.player.timer.xpPerSecond == nil then sData.player.timer.xpPerSecond = 0 end
     

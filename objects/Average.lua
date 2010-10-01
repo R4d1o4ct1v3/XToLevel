@@ -1,7 +1,7 @@
-﻿---
+---
 -- Contains definitions for the Average Information windows
 -- @file XToLevel.Average.lua
--- @release 4.0.1_15b
+-- @release 4.0.1_18
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 XToLevel.Average =
@@ -60,27 +60,24 @@ function XToLevel.Average:UpdateTimer(secondsToLevel)
         if type(secondsToLevel) == "number" and secondsToLevel > 0 and tostring(secondsToLevel) ~= "1.#INF" then
             local formattedTime
             if secondsToLevel < 60 then
-                formattedTime = string.format("%ds", tonumber(date("%S", secondsToLevel)))
+                formattedTime = string.format("%ds", secondsToLevel)
             elseif secondsToLevel < 3600 then
-                local m, s
-                m = tonumber(date("%M", secondsToLevel))
-                s = tonumber(date("%S", secondsToLevel))
+                local m = floor(secondsToLevel / 60)
+                local s = mod(secondsToLevel, 60)
                 if s > 30 then
                     m = m + 1
                 end
                 formattedTime = string.format("%dm",m)
             elseif secondsToLevel < 86400 then
-                local h, m
-                h = tonumber(date("%H", secondsToLevel))
-                m = tonumber(date("%M", secondsToLevel))
+                local h = floor(secondsToLevel / 3600)
+                local m = floor((secondsToLevel - (h * 3600)) / 60)
                 if m > 30 then
                     h = h + 1
                 end
                 formattedTime = string.format("%dh",h)
             else
-                local h, d
-                h = tonumber(date("%H", secondsToLevel))
-                d = floor(secondsToLevel / 86400)
+                local d = floor(secondsToLevel / 86400)
+                local h = floor((secondsToLevel - (d * 86400)) / 3600)
                 if h > 12 then
                     d = d + 1
                 end
