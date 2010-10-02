@@ -1,7 +1,7 @@
-﻿---
+---
 -- A collection of globally available functions, used througout the addon.
 -- @file Libs.lua
--- @release 4.0.1_16
+-- @release 4.0.1_18
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Lib" -- For documentation purposes. Do not uncomment!
@@ -577,33 +577,27 @@ end
 function XToLevel.Lib:TimeFormat(timestamp)
 	if type(timestamp) == "number" and timestamp > 0 then
         local day = floor(timestamp / 86400)
-		local hour = date("%H", timestamp)
-		local minute = date("%M", timestamp)
-		local second = date("%S", timestamp)
+		local hour = floor((timestamp - (day * 86400)) / 3600)
+		local minute = floor((timestamp - (day * 86400) - (hour * 3600)) / 60)
+		local second = floor(mod(timestamp, 60))
 		
-		if not hour or not minute or not second then
+		if day < 0 then
 			return "NaN"
 		else
-			if strsub(hour, 1, 1) == "0" then
-				hour = strsub(hour, 2, 2)
-			end
-			if strsub(minute, 1, 1) == "0" then
-				minute = strsub(minute, 2, 2)
-			end
-			if strsub(second, 1, 1) == "0" then
-				second = strsub(second, 2, 2)
-			end
-			
-			local output = ""
-			if day == 0 and minute == "0" and hour == "0" then
-				return second .. "s"
-			elseif day == 0 and hour == "0" then
-				return minute .. "m " .. second .. "s"
-			elseif day == 0 then
-				return hour .. "h " .. minute .. "m " .. second .. "s"
-            else
-                return day .. "d " .. hour .. "h " .. minute .. "m " .. second .. "s"
-			end
+            local output = ""
+            if day > 0 then
+               output = day .. "d " 
+            end
+            if hour > 0 or output ~= "" then
+               output = output .. hour .. "h " 
+            end
+            if minute > 0 or output ~= "" then
+               output = output .. minute .. "m " 
+            end
+            if second > 0 or output ~= "" then
+               output = output .. second .. "s" 
+            end
+            return output
 		end
 	else
 		return "NaN"
