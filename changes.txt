@@ -1,3 +1,6 @@
+Version 4.0.1_18
+ - Fixed a bug that caused incorrect values for the TimeToLevel feature on WindowsXP and/or systems using the old AM/PM time format.
+
 Version 4.0.1_17
  - Fixed a bug that caused an error when switching between the Classic and "Blocky" window modes.
  - Added a day value in TimeToLevel displays. It previously only showed the time values.
