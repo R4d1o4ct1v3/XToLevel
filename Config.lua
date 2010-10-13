@@ -1,4 +1,4 @@
----
+﻿---
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
@@ -261,7 +261,7 @@ XToLevel.Config =
 	        button1 = L["Yes"],
 	        button2 = L["No"],
 	        OnAccept = function()
-	            sData.player.timer.start = time()
+	            sData.player.timer.start = GetTime()
 				sData.player.timer.total = 0
 				XToLevel.Average:UpdateTimer()
 				XToLevel.LDB:UpdateTimer()
