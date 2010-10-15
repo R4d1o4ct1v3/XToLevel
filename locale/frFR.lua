@@ -189,6 +189,9 @@
     ['Reset Pet Kill Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de familier?",
 	
 	-- LDB Text
+    ['LDB Enabled'] = "Activer",
+    ['LDB Enabled Description'] = "Activer ou désactiver les sources de données LDB. Notez que cela affecte la source TimeToLevel LDB ainsi. (Nécessite recharger.)",
+    ['LDB Reload Dialog'] = "Ce changement ne prendra effet que l'interface est rechargé. Voulez-vous le recharger maintenant?",
     ['LDB Appearence Header'] = "Aspect",
 	['LDB Pattern Header'] = "Text Muster",
     ['LDB Player Data Header'] = "Données de joueur",

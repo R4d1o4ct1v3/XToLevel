@@ -189,6 +189,9 @@
     ['Reset Pet Kill Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de mascota?",
 	
 	-- LDB Text
+    ['LDB Enabled'] = "Habilitar",
+    ['LDB Enabled Description'] = "Activar o desactivar las fuentes de datos LDB. Tenga en cuenta que esto afecta a la fuente TimeToLevel LDB también. (Se requiere recarga.)",
+    ['LDB Reload Dialog'] = "Este cambio no tendrá efecto hasta que la interfaz de usuario se vuelve a cargar. ¿Quieres volver a cargarlo ahora?",
     ['LDB Appearence Header'] = "Apariencia",
 	['LDB Pattern Header'] = "Patrón del texto",
     ['LDB Player Data Header'] = "Jugador Datos",

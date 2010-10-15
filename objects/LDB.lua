@@ -45,6 +45,9 @@ XToLevel.LDB =
     ---
     -- Constructor
     Initialize = function(self)
+        if not sConfig.ldb.enabled then
+            return;
+        end
         -- Initialize the data object
         local iconName = (UnitFactionGroup("player") == "Alliance") and "INV_Jewelry_TrinketPVP_01" or "INV_Jewelry_TrinketPVP_02"
         local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
@@ -80,6 +83,9 @@ XToLevel.LDB =
     end,
 	
 	InitializeTimer = function(self)
+        if not sConfig.ldb.enabled then
+            return;
+        end
 		-- Initialize the data object
         local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
         self.timerObject = ldb:NewDataObject("TimeToLevel", {
@@ -425,6 +431,9 @@ XToLevel.LDB =
     end,
 	
 	UpdateTimer = function(self)
+        if self.timerObject == nil then
+            return false;
+        end
 		if sConfig.ldb.showLabel ~= self.timerLabelShown then -- changed
 			self.timerObject.label = sConfig.ldb.showLabel and L["XToLevel"] or nil
 		end

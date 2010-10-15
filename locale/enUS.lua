@@ -189,6 +189,9 @@
     ['Reset Pet Kill Dialog'] = "Are you sure you want to delete the kill records for your pets?",
 	
 	-- LDB Text
+    ['LDB Enabled'] = "Enabled",
+    ['LDB Enabled Description'] = "Enable or disable the LDB data sources. Note that this affects the TimeToLevel LDB source as well. (Requires reload.)",
+    ['LDB Reload Dialog'] = "This change will not take effect until the UI is reloaded. Do you want to reload it now?",
     ['LDB Appearence Header'] = "Appearence",
 	['LDB Pattern Header'] = "Text Pattern",
 	['LDB Player Data Header'] = "Player Data",

@@ -189,6 +189,9 @@
     ['Reset Pet Kill Dialog'] = "Er du sikker på at du vil slette dit pets' drab-optagelser?",
 	
 	-- LDB Text
+    ['LDB Enabled'] = "Aktivere",
+    ['LDB Enabled Description'] = "Aktivere eller deaktivere LDB datakilder. Bemærk at dette påvirker TimeToLevel LDB kilden så godt. (Kræver reload.)",
+    ['LDB Reload Dialog'] = "Denne ændring vil først træde i kraft den UI genindlæses. Ønsker du at genindlæse det nu?",
     ['LDB Appearence Header'] = "Appearence",
 	['LDB Pattern Header'] = "Tekst Mønster",
     ['LDB Player Data Header'] = "Spiller Data",

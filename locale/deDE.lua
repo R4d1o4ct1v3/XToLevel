@@ -189,6 +189,9 @@
     ['Reset Pet Kill Dialog'] = "Sind Sie sicher, dass Sie löschen möchten der Begleiter tötet?",
 	
 	-- LDB Text
+    ['LDB Enabled'] = "Aktivieren",
+    ['LDB Enabled Description'] = "Aktivieren oder Deaktivieren der LDB-Datenquellen. Beachten Sie, dass dies die TimeToLevel LDB Quelle wirkt ebenso. (Benötigt neu zu laden.)",
+    ['LDB Reload Dialog'] = "Diese Änderung wird erst wirksam, wenn die Benutzeroberfläche neu geladen wird. Wollen Sie es jetzt laden?",
     ['LDB Appearence Header'] = "Aussehen",
 	['LDB Pattern Header'] = "Text Muster",
     ['LDB Player Data Header'] = "Player-Daten",

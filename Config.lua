@@ -2,7 +2,7 @@
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 4.0.1_18
+-- @release 4.0.1_19
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
@@ -65,6 +65,7 @@ sConfig = {
 		petKillListLength = 10,
 	},
 	ldb = {
+        enabled = true,
 		allowTextColor = true,
 		showIcon = true,
 		showLabel = false,
@@ -270,6 +271,17 @@ XToLevel.Config =
 	        whileDead = true,
 	        hideOnEscape = true,
 	    }
+        StaticPopupDialogs['XToLevelConfig_LdbReload'] = {
+	        text = L['LDB Reload Dialog'],
+	        button1 = L["Yes"],
+	        button2 = L["No"],
+	        OnAccept = function()
+	            ReloadUI()
+	        end,
+	        timeout = 0,
+	        whileDead = true,
+	        hideOnEscape = true,
+	    }
     end,
     
     ---
@@ -324,7 +336,7 @@ XToLevel.Config =
         mainPanel.childFrame["AboutFrame"].lineTop = 12
         mainPanel.childFrame["AboutFrame"].lines = { }
         
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_18|r |cFFAAFFAA(2010-09-18)", "00FF00")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_19|r |cFFAAFFAA(2010-10-15)", "00FF00")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Author", L["Author"], "Atli þór Jónsson", "E07B02")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
@@ -359,8 +371,8 @@ XToLevel.Config =
 	            UIDropDownMenu_SetText(generalPanel.childFrame["LocaleSelect"], languageName);
 	        end, 
 	        -- OnChange callback
-	        function(self)
-	            UIDropDownMenu_SetSelectedID(generalPanel.childFrame["LocaleSelect"], this:GetID(), 0);
+	        function(self, theid)
+	            UIDropDownMenu_SetSelectedID(generalPanel.childFrame["LocaleSelect"], theid, 0);
 	            
 	            local rawLanguage = UIDropDownMenu_GetText(generalPanel.childFrame["LocaleSelect"]);
 	            local newLocale = nil;
@@ -646,6 +658,18 @@ XToLevel.Config =
     		height = 670
     	end
         local ldbPanel = self:CreatePanel("XToLevel_LdbPanel", L["LDB Tab"], height, parent)
+        
+        self:CreateH2(ldbPanel, "LDBEnabledHeader", L["LDB Enabled"])
+        self:CreateCheckbox(ldbPanel, "LdbEnabledBox", L["LDB Enabled"] or "Enabled",
+            function(self) 
+                self:SetChecked(sConfig.ldb.enabled)
+            end,
+            function(self) 
+                sConfig.ldb.enabled = self:GetChecked() or false
+                StaticPopup_Show("XToLevelConfig_LdbReload");
+            end)
+        self:CreateDescription(ldbPanel, "LdbEnableDescription", L['LDB Enabled Description'], 33, "FFFFFF")
+        
         
         -- Text pattern section
         self:CreateH2(ldbPanel, "TextPatternHeader", L['LDB Pattern Header'])
@@ -1131,11 +1155,11 @@ XToLevel.Config =
             parent.childFrame[fieldName]:SetHeight(15)
         end
         
-        parent.childFrame[fieldName]:SetScript("OnShow", function() this:SetCursorPosition(1) end)
-        parent.childFrame[fieldName]:SetScript("OnEditFocusLost", function() onPatternUpdate(this, this:GetText())  end)
-        parent.childFrame[fieldName]:SetScript("OnEnterPressed", function() this:ClearFocus();  end)
-        parent.childFrame[fieldName]:SetScript("OnTabPressed", function() this:ClearFocus(); end)
-        parent.childFrame[fieldName]:SetScript("OnEscapePressed", function() this:ClearFocus(); end)
+        parent.childFrame[fieldName]:SetScript("OnShow", function() parent.childFrame[fieldName]:SetCursorPosition(1) end)
+        parent.childFrame[fieldName]:SetScript("OnEditFocusLost", function() onPatternUpdate(parent.childFrame[fieldName], parent.childFrame[fieldName]:GetText())  end)
+        parent.childFrame[fieldName]:SetScript("OnEnterPressed", function() parent.childFrame[fieldName]:ClearFocus();  end)
+        parent.childFrame[fieldName]:SetScript("OnTabPressed", function() parent.childFrame[fieldName]:ClearFocus(); end)
+        parent.childFrame[fieldName]:SetScript("OnEscapePressed", function() parent.childFrame[fieldName]:ClearFocus(); end)
         
         return parent.childFrame[fieldName]
     end,
@@ -1209,7 +1233,7 @@ XToLevel.Config =
                         info.func = function(self) 
                             UIDropDownMenu_SetSelectedID(parent.childFrame[fieldName], self:GetID(), 0);
                             if onChange ~= nil and type(onChange) == "function" then
-                                onChange(parent.childFrame[fieldName])
+                                onChange(parent.childFrame[fieldName], self:GetID())
                             end
                         end
                         UIDropDownMenu_AddButton(info);
@@ -1414,8 +1438,10 @@ function XToLevel.Config:Verify()
     -- LDB
     if sConfig.ldb == nil then sConfig.ldb = {  } end
     if sConfig.ldb.text == nil then sConfig.ldb.text = {  } end
+    
     if sConfig.ldb.tooltip == nil then sConfig.ldb.tooltip = {  } end
     if sConfig.ldb.allowTextColor == nil then sConfig.ldb.allowTextColor = true end
+    if sConfig.ldb.enabled == nil then sConfig.ldb.enabled = true end
     if sConfig.ldb.showIcon == nil then sConfig.ldb.showIcon = true end
     if sConfig.ldb.showLabel == nil then sConfig.ldb.showLabel = false end
     if sConfig.ldb.showText == nil then sConfig.ldb.showText = true end
