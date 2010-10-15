@@ -1,5 +1,7 @@
 Version 4.0.1_19
+ - Interface version updated to the 4.0.x patches.
  - Fixed a bug that caused the "Session" mode of the TimeToLevel feature to break after resetting the session.
+ - Added the ability to toggle the LDB data-sources on or off.
 
 Version 4.0.1_18
  - Fixed a bug that caused incorrect values for the TimeToLevel feature on WindowsXP and/or systems using the old AM/PM time format.
