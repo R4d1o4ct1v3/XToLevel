@@ -45,7 +45,7 @@ XToLevel.LDB =
     ---
     -- Constructor
     Initialize = function(self)
-        if not sConfig.ldb.enabled then
+        if not sConfig.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
             return;
         end
         -- Initialize the data object
@@ -56,7 +56,7 @@ XToLevel.LDB =
             icon = "Interface\\Icons\\" .. iconName,
             text = "XToLevel",
             label = sConfig.ldb.showLabel and L["XToLevel"] or nil,
-            version = "3.3.2_14r",
+            version = XToLevel.version,
             align = "right",
             ["X-Category"] = "Information"
         });
@@ -83,7 +83,7 @@ XToLevel.LDB =
     end,
 	
 	InitializeTimer = function(self)
-        if not sConfig.ldb.enabled then
+        if not sConfig.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
             return;
         end
 		-- Initialize the data object
@@ -93,7 +93,7 @@ XToLevel.LDB =
             icon = "Interface\\Icons\\inv_misc_pocketwatch_01",
             text = L["Updating..."],
             label = sConfig.ldb.showLabel and L["TimeToLevel"] or nil,
-            version = "3.3.2_14r",
+            version = XToLevel.version,
             align = "right",
 			["X-Category"] = "Information"
         });

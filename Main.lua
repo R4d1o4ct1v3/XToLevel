@@ -36,6 +36,8 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
+XToLevel.version = "4.0.1_20"
+
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
 
@@ -211,13 +213,6 @@ end
 -- and updates the average and LDB displays.
 -- @param newLevel The new level of the player. Passed from the event parameters.
 function XToLevel:OnPlayerLevelUp(newLevel)
-    -- No point showing the "Level Reached" message on Cataclysm. The new UI takes care of that nicely enough.
-    local _, _, _, interfaceNum = GetBuildInfo()
-    if tonumber(interfaceNum) < 40000 then
-        XToLevel.Messages.Floating:PrintLevel(newLevel)
-        XToLevel.Messages.Chat:PrintLevel(newLevel)
-    end
-	
 	XToLevel.Player.level = newLevel
 	XToLevel.Player.timePlayedLevel = 0
 	XToLevel.Player.timePlayedUpdated = time()
@@ -242,6 +237,10 @@ function XToLevel:OnChatXPGain(message)
     -- Note that this event is fired by kills, quests and BG objectives.
     local xp, mobName = XToLevel.Lib:ParseChatXPMessage(message)
     xp = tonumber(xp)
+	if not xp then
+		console:log("Failed to parse XP Gain message: '" .. tostring(message) .. "'")
+		return false
+	end
 	
 	-- Update the timer total
 	if sConfig.timer.enabled then
@@ -607,8 +606,9 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("  killTotal: ".. tostring(data.killTotal))
         end
     elseif arg1 == "debug" then
-		local version, internalVersion, date, uiVersion = GetBuildInfo()
-		console:log(tostring(version) .. " - " .. tostring(internalVersion) .. " - " .. tostring(date) .. " - " .. tostring(uiVersion))
+		local message = "Dragonflayer Heartsplitter dies, you gain 2850 experience. (+1425 exp Rested bonus, +480 group bonus)";
+		mob, xp = strmatch(message, XToLevel.Lib:GetChatXPRegexp(true, "party"));		
+		console:log("XP: " .. tostring(xp))
 	else
 		XToLevel.Config:Open("messages")
 	end

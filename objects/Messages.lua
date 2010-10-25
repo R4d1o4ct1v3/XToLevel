@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for Chat and Floating Error window message controls.
 -- @file objects/Messages.lua
--- @release 4.0.1_16
+-- @release 4.0.1_20
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Messages" -- For documentation purposes. Do not uncomment!
@@ -97,15 +97,6 @@ XToLevel.Messages =
         
         ---
         -- function description
-        PrintLevel = function(self, level)
-            if sConfig.messages.playerFloating then
-                local message = L["Level Reached"]
-                self:Print(message, sConfig.messages.colors.playerLevel, self.levelStyle)
-            end
-        end,
-        
-        ---
-        -- function description
         PrintPetLevel = function(self, petName)
             if sConfig.messages.petFloating then
                 local message = petName .. L["Pet Level Reached"]
@@ -184,15 +175,6 @@ XToLevel.Messages =
             if sConfig.messages.playerChat then
                 local message = remaining .. L["Dungeons Needed"]
                 XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerDungeon)
-            end
-        end,
-        
-        ---
-        -- function description
-        PrintLevel = function(self, level)
-            if sConfig.messages.playerChat then
-                local message = L["Level Reached"]
-                XToLevel.Messages:Print(message, self.levelStyle, sConfig.messages.colors.playerLevel)
             end
         end,
         
