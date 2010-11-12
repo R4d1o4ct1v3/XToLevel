@@ -36,7 +36,8 @@ XToLevel.Tooltip =
 	OnShow_HookCallback = function(self, ...)
 		if sConfig.general.showNpcTooltipData and UnitLevel("player") < 80 then -- TODO: Fix the need for the level restriction
 			local name, unit = GameTooltip:GetUnit()
-			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 then
+            local maxHP = UnitHealthMax("target") -- To exclude targetting dummies. (Also, I can't imagine any MOB with 1 HP gives much XP)
+			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and maxHP > -1 then
 				local level = UnitLevel(unit)
 				if XToLevel.Tooltip.OnShow_XpData[level] == nil then
 					XToLevel.Tooltip.OnShow_XpData[level] = XToLevel.Lib:round(XToLevel.Lib:MobXP(UnitLevel("player"), UnitLevel(unit)), 0)
@@ -53,8 +54,19 @@ XToLevel.Tooltip =
 					else
 						color = "888888"
 					end
-					GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. XToLevel.Player:GetKillsRequired(XToLevel.Tooltip.OnShow_XpData[level]) .. "|r", 0.75, 0.75, 0.75)
-					GameTooltip:Show()
+                    local killsRequired = XToLevel.Player:GetKillsRequired(XToLevel.Tooltip.OnShow_XpData[level]);
+                    if killsRequired > 0 then
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. XToLevel.Player:GetKillsRequired(XToLevel.Tooltip.OnShow_XpData[level]) .. "|r", 0.75, 0.75, 0.75)
+
+                        if IsAddOnLoaded("TipTac1") then
+                            local _, height = GameTooltipText:GetFont();
+                            local spacing = GameTooltipText:GetSpacing();
+                            GameTooltip:SetHeight(GameTooltip:GetHeight() + (height + spacing + 2))
+                        else
+                            GameTooltip:Show()
+                        end
+                    end
+                    console:log("OnShow: " .. killsRequired);
 				end
 			end
 		end
