@@ -1,7 +1,7 @@
 ---
 -- A collection of globally available functions, used througout the addon.
 -- @file Libs.lua
--- @release 4.0.1_18
+-- @release 4.0.3_20
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Lib" -- For documentation purposes. Do not uncomment!
@@ -17,6 +17,7 @@
    ShowDungeonData() - Determines whether the Dungeon data should be displayed in the tooltip.
    MobXP(charlvl, moblvl) - Calculates the amount of XP the mob is worth to the player.
    PetXP(playerLevel, petLevel, mobLevel) - Calculates the amount of XP the mob is worth to the player's pet.
+   GetChatXPRegexp(isQuest) - Retrieves the proper regexp to parse a chat XP message.
    ParseChatXPMessage(msg, locale) - Parses the chat XP message into XP amount and Mob name (if available).
    round(input, precision, roundDown) - Rounds the input number to the given precision.
    NumberFormat(input) - Formats the input number to a human-readable number. (Adds commas and periods)
@@ -210,6 +211,7 @@ end
 
 function XToLevel.Lib:ShowBattlegroundData()
 	return ((sConfig.ldb.tooltip.showBGInfo and XToLevel.Player.level >= 10) and (XToLevel.Player.level < XToLevel.Player.maxLevel or (# sData.player.bgList) > 0))
+
 end
 
 function XToLevel.Lib:ShowDungeonData()
@@ -249,8 +251,10 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel)
 	zoneID = self:ZoneID()
 	if charLevel >= 58 and charLevel < 69 and (zoneID or 0) < 3 then
 		zoneID = 3
-	elseif charLevel >= 69 and (zoneID or 0) < 4 then -- no need for an upper limit
+	elseif charLevel >= 69 and charLevel < 80 and (zoneID or 0) < 4 then
 		zoneID = 4
+	elseif charLevel >= 80 and charLevel < 85 and (zoneID or 0) < 5 then
+		zoneID = 5
 	end
 	
 	local addValue = 45 -- Default, for the pre-tbc zones
@@ -259,7 +263,7 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel)
     elseif (zoneID or 0) == 4 then 
         addValue = 580 -- Northrend
 	elseif (zoneID or 0) == 5 then 
-        addValue = 580 -- Cataclysm
+        addValue = 580 -- Cataclysm (Unknown at this point!)
 	end
 	
 	local XP = 0
@@ -351,6 +355,7 @@ function XToLevel.Lib:GetChatXPRegexp(isQuest)
 	apiRegexp = string.gsub(apiRegexp, "%(", "%%(")
 	apiRegexp = string.gsub(apiRegexp, "%)", "%%)")
 	apiRegexp = string.gsub(apiRegexp, "%+", "%%+")
+	apiRegexp = string.gsub(apiRegexp, "%-", "%%-")
 	apiRegexp = string.gsub(apiRegexp, "%%%d?%$?s", "(.+)")
 	apiRegexp = string.gsub(apiRegexp, "%%%d?%$?d", "(%%d+)")
 	return apiRegexp
@@ -365,8 +370,6 @@ function XToLevel.Lib:ParseChatXPMessage(message)
 	local isQuest = string.find(message, ",") == nil
 	local pattern = XToLevel.Lib:GetChatXPRegexp(isQuest)
 	local mob, xp = strmatch(message, pattern);
-	
-	console:log(pattern)
 	
 	-- If it is a quest, the XP will be return first and there will be no name. Swap them.
 	if tonumber(mob) then
