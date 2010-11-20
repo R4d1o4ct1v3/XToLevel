@@ -66,7 +66,6 @@ XToLevel.Tooltip =
                             GameTooltip:Show()
                         end
                     end
-                    console:log("OnShow: " .. killsRequired);
 				end
 			end
 		end
