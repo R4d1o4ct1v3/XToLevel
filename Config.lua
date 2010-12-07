@@ -336,7 +336,7 @@ XToLevel.Config =
         mainPanel.childFrame["AboutFrame"].lineTop = 12
         mainPanel.childFrame["AboutFrame"].lines = { }
         
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_20a2|r |cFFAAFFAA(2010-11-12)", "00FF00")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_20|r |cFFAAFFAA(2010-12-07)", "00FF00")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Author", L["Author"], "Atli þór Jónsson", "E07B02")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
