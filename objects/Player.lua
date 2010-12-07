@@ -703,11 +703,11 @@ XToLevel.Player = {
         -- Recruit A Friend beta test.
         -- Simply tripples the DISPLAY value. The actual data remains intact.
         if XToLevel.Lib:IsRafApplied() then 
-            --[[return {
-                high = self.killRange.high,
-                low = self.killRange.low,
-                average = self.killRange.average
-            }--]]
+            return {
+                high = self.killRange.high * 3,
+                low = self.killRange.low * 3,
+                average = self.killRange.average * 3
+            }
         else
             return self.killRange
         end
@@ -813,11 +813,11 @@ XToLevel.Player = {
         -- Recruit A Friend beta test.
         -- Simply tripples the DISPLAY value. The actual data remains intact.
         if XToLevel.Lib:IsRafApplied() then 
-            --[[return {
+            return {
                 high = self.questRange.high * 3,
                 low = self.questRange.low * 3,
                 average = self.questRange.average * 3
-            }--]]
+            }
         else
             return self.questRange
         end
