@@ -1,3 +1,11 @@
+Version 4.0.1_20
+ - The LDB data source is now automatically disabled for max level players. (It used to just display "Disabled".)
+ - Changes made to how the addon handles non-English clients. It should now be more reliable, even for non supported locales.
+ - The addon now excludes targetting dummies from the "Kills to level" tooltip info.
+ - Posssible fix for the errors shown when hovering over the "Kills" and "Quests" windows when the Recruit-A-Friend feature is enabled.
+ - NOTE that the info showing in the "Kills to level" line in the tooltip may not be accurate anymore. It seems the algorithm used to calculate
+   this information has changed since 4.0. The feature is disabled for MOBs higher than level 80, as the old algirithm is completely off for them.
+
 Version 4.0.1_19
  - Interface version updated to the 4.0.x patches.
  - Fixed a bug that caused the "Session" mode of the TimeToLevel feature to break after resetting the session.
