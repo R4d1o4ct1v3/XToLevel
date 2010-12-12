@@ -877,6 +877,12 @@ XToLevel.Config =
         self:CreateCheckbox(tooltipPanel, "TooltipNpc", "Show kills needed in NPC tooltips.",
             function(self) self:SetChecked(sConfig.general.showNpcTooltipData)  end,
             function(self) sConfig.general.showNpcTooltipData = self:GetChecked() or false end)
+            
+        local desc =  "Please note that the \"Kills To Level\" values may be inaccurate at the moment. The formulas used pre-Cataclysm do not seem to "
+		desc = desc .."be valid anymore. I will still leave this here until I can figure them out. - No values are shown for MOBs "
+		desc = desc .."higher than level 80, as the formulas seem completely invalid for them."
+        
+		self:CreateDescription(tooltipPanel, "TooltipMobsToLevelDesc", desc, 66, "afafaf")
 	end,
 	
 	CreateTimerPanel = function(self, parent)
