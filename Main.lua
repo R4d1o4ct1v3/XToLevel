@@ -2,7 +2,7 @@
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 4.0.1_18
+-- @release 4.0.1_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
@@ -36,7 +36,7 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.1_20"
+XToLevel.version = "4.0.1_21"
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -49,6 +49,12 @@ XToLevel.playerHasXpLossRequest = false
 XToLevel.playerHasResurrectRequest = false
 XToLevel.hasLfgProposalSucceeded = false
 XToLevel.onUpdateTotal = 0
+XToLevel.questMsgFired = nil
+XToLevel.questXpTotal = nil
+
+-- The number of seconds allowed between the "%s complete." message and the XP gain.
+-- Prevents non-XP quests from triggering false quest gains from other sources later.
+XToLevel.questMsgTimeout = 3.0;
 
 ---
 -- ON_EVENT handler. Set in the XToLevelDisplay XML file. Called for every event
@@ -58,6 +64,8 @@ function XToLevel:MainOnEvent(event, arg1, arg2)
         self:OnPlayerLogin()
     elseif event == "CHAT_MSG_COMBAT_XP_GAIN" then
         self:OnChatXPGain(arg1)
+    elseif event == "CHAT_MSG_SYSTEM" then
+        self:OnChatMsgSystem(arg1);
     elseif event == "PLAYER_LEVEL_UP" then
         self:OnPlayerLevelUp(arg1)
     elseif event == "PLAYER_XP_UPDATE" then
@@ -103,6 +111,7 @@ function XToLevel:RegisterEvents(level)
     -- Register Events
     if level < XToLevel.Player:GetMaxLevel() then
 	    self.frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
+        self.frame:RegisterEvent("CHAT_MSG_SYSTEM");
 	    
 	    self.frame:RegisterEvent("PLAYER_LEVEL_UP");
 	    self.frame:RegisterEvent("PLAYER_XP_UPDATE");
@@ -141,6 +150,7 @@ end
 -- Clears all registered events from the addon.
 function XToLevel:UnregisterEvents()
 	self.frame:UnregisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
+    self.frame:UnregisterEvent("CHAT_MSG_SYSTEM");
 
     self.frame:UnregisterEvent("PLAYER_LEVEL_UP");
     self.frame:UnregisterEvent("PLAYER_XP_UPDATE");
@@ -228,7 +238,28 @@ function XToLevel:OnPlayerLevelUp(newLevel)
 	end
 end
 
---- CHAT_XP_GAIN callback. Triggered whenever a message is displayed in the chat 
+--- CHAT_MSG_SYSTEM callback. Trigger whenever a "yellow" system message is displayed in the chat.
+-- Point of this callback is to figure out if a quest has been completed, and if it has indicate that
+-- via the XToLevel.questMsgFired variable. Additionally, as it appears this message is not always sent
+-- before the CHAT_XP_GAIN message, if the variable is already set and the XP info is available via the
+-- XToLevel.questXpTotal variable, this triggers the quest completion code.
+function XToLevel:OnChatMsgSystem(message)
+    if self.questMsgFired ~= nil and ((GetTime() - self.questMsgFired) < self.questMsgTimeout) and type(self.questXpTotal) == "number" and self.questXpTotal > 0 then
+        console:log('Delayed quest completion detected.')
+        self:QuestCompleted(self.questXpTotal);
+        self.questXpTotal = nil;
+        self.questMsgFired = nil;
+    else
+        local match = string.match(message, gsub(ERR_QUEST_COMPLETE_S, "%%s", "(.+)"));
+        if match ~= nil then
+            console:log('Quest completed: ' .. tostring(match))
+            self.questMsgFired = GetTime();
+            self.questXpTotal = nil;
+        end
+    end
+end
+
+--- CHAT_XP_GAIN callback. Triggered whenever a XP message is displayed in the chat 
 -- window, indicating that the player has gained XP (both kill, quest and BG objectives).
 -- Parses the message and updates the XToLevel.Player, XToLevel.Pet and XToLevel.Display objects according 
 -- to the type of message received.
@@ -284,15 +315,34 @@ function XToLevel:OnChatXPGain(message)
 				end
 			end
 		else
-			XToLevel.Player:AddQuest(xp)
-			if sConfig.messages.playerFloating or sConfig.messages.playerChat then
-				local questsRequired = XToLevel.Player:GetQuestsRequired(xp)
-				if questsRequired > 0 then
-					XToLevel.Messages.Floating:PrintQuest( ceil(questsRequired / ( (XToLevel.Lib:IsRafApplied() and 3) or 1 )) )
-					XToLevel.Messages.Chat:PrintQuest(questsRequired)
-				end
-			end
+            -- Make sure the system has already fired a quest completion system message.
+            -- I do this to prevent things like mining XP gains from counting as quests.
+            -- (The messages for all such gains are the same, so I rely on the other messsages to
+            --  identify quests from the rest.)
+            if(self.questMsgFired ~= nil and ((GetTime() - self.questMsgFired) < self.questMsgTimeout)) then
+                self:QuestCompleted(xp)
+                self.questMsgFired = nil;
+                self.questXpTotal = nil;
+            else
+                -- Prepare the data so that if the system message is fired late, it will complete the quest.
+                self.questMsgFired = GetTime()
+                self.questXpTotal = xp;
+            end
 		end
+    end
+end
+
+--- Extracted from the CHAT_XP_GAIN callback as this is also used by the CHAT_MSG_SYSTEM callback.
+-- This simply triggers the quest completion code, adding the given XP as a completed quest.
+function XToLevel:QuestCompleted(xp)
+    console:log(tostring(xp))
+    XToLevel.Player:AddQuest(xp)
+    if sConfig.messages.playerFloating or sConfig.messages.playerChat then
+        local questsRequired = XToLevel.Player:GetQuestsRequired(xp)
+        if questsRequired > 0 then
+            XToLevel.Messages.Floating:PrintQuest( ceil(questsRequired / ( (XToLevel.Lib:IsRafApplied() and 3) or 1 )) )
+            XToLevel.Messages.Chat:PrintQuest(questsRequired)
+        end
     end
 end
 
