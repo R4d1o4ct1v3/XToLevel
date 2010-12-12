@@ -5,6 +5,7 @@
     ['Level Reached'] = "Level op! Tillykke!",
     ['Pet Level Reached'] = " har nå sit næste level! Tillykke!",
 	['Quests Needed'] = " flere quests som den for at level op",
+    ['Anonymous Needed'] = " flere som den for at level op",
 	['Battlegrounds Needed'] = " flere kampe som den for at level op",
 	['Battleground Objectives Needed'] = " flere mål som den for at level op",
 	['Dungeons Needed'] = " flere løbe som den for at level op",
@@ -83,7 +84,8 @@
 	["XP per hour"] = "XP/hr",
 	["XP Needed"] = "XP Needed",
 	
-	["No Kills Recorded"] = "No kills recorded this session. Using level data instead. Go kill something!",
+	["No Kills Recorded. Using Level"] = "Ingen dræber indspillet. Brug det nuværende niveau data i stedet. Gå dræbe noget!",
+    ["No Kills Recorded. Using Old"] = "Ingen dræber indspillet denne session. Brug af statiske data fra sidste session i stedet. Gå dræbe noget!",
     
 	--[[
 	  || Configuration 

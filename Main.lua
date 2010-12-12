@@ -2,7 +2,7 @@
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 4.0.1_21
+-- @release 4.0.3_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
@@ -36,7 +36,8 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.1_21"
+XToLevel.version = "4.0.3_21"
+XToLevel.releaseDate = '2010-12-12'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -252,7 +253,6 @@ function XToLevel:OnChatMsgSystem(message)
     else
         local match = string.match(message, gsub(ERR_QUEST_COMPLETE_S, "%%s", "(.+)"));
         if match ~= nil then
-            console:log('Quest completed: ' .. tostring(match))
             self.questMsgFired = GetTime();
             self.questXpTotal = nil;
         end
@@ -335,7 +335,6 @@ end
 --- Extracted from the CHAT_XP_GAIN callback as this is also used by the CHAT_MSG_SYSTEM callback.
 -- This simply triggers the quest completion code, adding the given XP as a completed quest.
 function XToLevel:QuestCompleted(xp)
-    console:log(tostring(xp))
     XToLevel.Player:AddQuest(xp)
     if sConfig.messages.playerFloating or sConfig.messages.playerChat then
         local questsRequired = XToLevel.Player:GetQuestsRequired(xp)

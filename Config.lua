@@ -2,7 +2,7 @@
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 4.0.1_20
+-- @release 4.0.3_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
@@ -104,6 +104,8 @@ sConfig = {
 		enabled = true,
 		mode = 1, -- 1 = session, 2 = level, 3 = kill range (3 is not implemented yet!)
 		allowLevelFallback = true,
+        -- The time the session data will remain after the UI is unloaded, in minutes.
+        sessionDataTimeout = 5.0, 
 	}
 }
 sData = {
@@ -125,7 +127,7 @@ sData = {
 		timer = {
 			start = nil,
 			total = nil,
-			xpPerSecond = nil,
+			xpPerSec = nil,
 		}
 	},
 	pet = {
@@ -336,7 +338,7 @@ XToLevel.Config =
         mainPanel.childFrame["AboutFrame"].lineTop = 12
         mainPanel.childFrame["AboutFrame"].lines = { }
         
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], "4.0.1_20|r |cFFAAFFAA(2010-12-07)", "00FF00")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Version", L["Version"], tostring(XToLevel.version) .. "|r |cFFAAFFAA(" .. tostring(XToLevel.releaseDate) .. ")", "00FF00")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Author", L["Author"], "Atli þór Jónsson", "E07B02")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
@@ -653,9 +655,9 @@ XToLevel.Config =
     ---
     -- Creates the LDB config panel
     CreateLDB = function(self, parent)
-    	local height = 600
+    	local height = 670
     	if XToLevel.Player:GetClass() == "HUNTER" then
-    		height = 670
+    		height = 740
     	end
         local ldbPanel = self:CreatePanel("XToLevel_LdbPanel", L["LDB Tab"], height, parent)
         
@@ -878,7 +880,7 @@ XToLevel.Config =
 	end,
 	
 	CreateTimerPanel = function(self, parent)
-		local height = 350
+		local height = 450
         local timerPanel = self:CreatePanel("XToLevel_TimerPanel", L["Timer"] or "Timer", height, parent)
 		
         self:CreateCheckbox(timerPanel, "TimerEnable", L["Enable timer"] or "Enable timer",
@@ -918,21 +920,30 @@ XToLevel.Config =
             end
         )
 		
-		self:CreateH2(timerPanel, "TimerFallbackPadder", " ")
-		self:CreateCheckbox(timerPanel, "TimerModeFallback", L['TimerModeFallback'] or "Fall back on \"Level\" if session data is not available",
-            function(self) self:SetChecked(sConfig.ldb.tooltip.showDetails)  end,
-            function(self) sConfig.ldb.tooltip.showDetails = self:GetChecked() or false end)
+		---self:CreateH2(timerPanel, "TimerFallbackPadder", " ")
+		--self:CreateCheckbox(timerPanel, "TimerModeFallback", L['TimerModeFallback'] or "Fall back on \"Level\" if session data is not available",
+        --    function(self) self:SetChecked(sConfig.ldb.tooltip.showDetails)  end,
+        --    function(self) sConfig.ldb.tooltip.showDetails = self:GetChecked() or false end)
 		
-		self:CreateH2(timerPanel, "TimerFallbackPadder", " ")
+		self:CreateH2(timerPanel, "TimerSessionPadder", " ")
 		self:CreateH2(timerPanel, "TimerSessionResetHeader", L["Reset"] or "Reset")
-		--desc = "This button will clear out the session data, resettning the session estimate."
-		--self:CreateDescription(timerPanel, "TimerModeResetDesc", desc, 22, "FFFFFF")
-		
 		self:CreateButton(timerPanel, "ResetSessionButton", L["Reset Session"] or "Reset Session", nil, nil, function() end, 
 			function()
 				StaticPopup_Show("XToLevelConfig_ResetTimer");
 			end
 		)
+        
+        desc =        "Sets how long you can stay logged off before the session data is thrown away. Note that when a session is restored, "
+		desc = desc .."it will behave as if you never logged of; as if you were simply AFK. The accuracy of the data will therefore degrade "
+        desc = desc .."more and more the longer you stay away."
+        
+        
+        self:CreateH2(timerPanel, "TimerSessionTimeout", " ")
+        self:CreateH2(timerPanel, "TimerSessionResetHeader", "Session Timeout")
+        self:CreateDescription(timerPanel, "TimerTimeoutDescription", desc, 66, "FFFFFF")
+        self:CreateRange(timerPanel, "TimerSessionTimeoutRange", "Timeout in Minutes", 0, 60, sConfig.timer.sessionDataTimeout, function(self, newValue)
+            sConfig.timer.sessionDataTimeout = newValue;
+        end)
 		
 	end,
     
@@ -1478,6 +1489,8 @@ function XToLevel.Config:Verify()
 	if sConfig.timer.enabled == nil then sConfig.timer.enabled = true end
 	if sConfig.timer.mode == nil then sConfig.timer.mode = 1 end
 	if sConfig.timer.allowLevelFallback == nil then sConfig.timer.allowLevelFallback = 1 end
+    if sConfig.timer.sessionDataTimeout == nil then sConfig.timer.sessionDataTimeout = 5.0 end
+    
     
     if sData == nil then sData = {} end
     if sData.player == nil then sData.player = {} end
@@ -1502,11 +1515,19 @@ function XToLevel.Config:Verify()
     if sData.pet.killList == nil then sData.pet.killList = {} end
     if sData.customPattern == nil then sData.customPattern = 0 end
 	
-	-- Timer data. Move old data into the last session var if it is available.
+	-- Timer data.
     if sData.player.timer == nil then sData.player.timer = {} end
-	sData.player.timer.start = GetTime(); -- GetTime()
-	sData.player.timer.total = 0
-	if sData.player.timer.xpPerSecond == nil then sData.player.timer.xpPerSecond = 0 end
+    if sData.player.timer.start == nil then sData.player.timer.start = GetTime() end
+    if sData.player.timer.total == nil then sData.player.timer.total = 0 end
+    if sData.player.timer.xpPerSec == nil then sData.player.timer.xpPerSec = 0 end
+    -- if sData.player.timer.lastUpdated == nil then sData.player.timer.lastUpdated = 0 end
+    
+    if type(sData.player.timer.lastUpdated) ~= "number" or GetTime() - sData.player.timer.lastUpdated > (sConfig.timer.sessionDataTimeout * 60) then
+        sData.player.timer.start = GetTime();
+        sData.player.timer.total = 0;
+        sData.player.timer.lastUpdated = GetTime();
+    end
+	
     
     -- Dungeon data
     --for index, value in ipairs(sData.player.dungeonList) do

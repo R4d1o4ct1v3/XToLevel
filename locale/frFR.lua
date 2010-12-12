@@ -5,6 +5,7 @@
 	['Level Reached'] = "Le niveau est atteint. Félicitations!",
     ['Pet Level Reached'] = " a atteint son niveau suivant. Félicitations!",
 	['Quests Needed'] = " recherches de plus nécessaires pour monter de niveau",
+    ['Anonymous Needed'] = " de plus nécessaires pour monter de niveau",
 	['Battlegrounds Needed'] = " BG de plus nécessaires pour monter de niveau",
 	['Battleground Objectives Needed'] = " objectifs de plus nécessaires pour monter de niveau",
 	['Dungeons Needed'] = " donjons plus nécessaires pour monter de niveau",
@@ -83,7 +84,8 @@
 	["XP per hour"] = "XP/hr",
 	["XP Needed"] = "XP Needed",
 	
-	["No Kills Recorded"] = "No kills recorded this session. Using level data instead. Go kill something!",
+	["No Kills Recorded. Using Level"] = "N tue enregistré. Utilisation de données au niveau de la place. Allez tuer quelque chose!",
+    ["No Kills Recorded. Using Old"] = "N tue enregistré cette session. En utilisant les données statiques de la dernière session à la place. Allez tuer quelque chose!",
 	
 	--[[
 	  || Configuration 

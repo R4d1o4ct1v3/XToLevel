@@ -5,6 +5,7 @@
     ['Level Reached'] = "Level reached. Congratulations!",
     ['Pet Level Reached'] = " has reach the next level. Congratulations!",
 	['Quests Needed'] = " more quests like that needed to level",
+    ['Anonymous Needed'] = " more of those needed to level",
 	['Battlegrounds Needed'] = " more battles like that needed to level",
 	['Battleground Objectives Needed'] = " more objectives like that needed to level",
 	['Dungeons Needed'] = " more runs like that needed to level",
@@ -83,7 +84,8 @@
 	["XP per hour"] = "XP/hr",
 	["XP Needed"] = "XP Needed",
 	
-	["No Kills Recorded"] = "No kills recorded this session. Using level data instead. Go kill something!",
+	["No Kills Recorded. Using Level"] = "No kills recorded. Using level data instead. Go kill something!",
+    ["No Kills Recorded. Using Old"] = "No kills recorded this session. Using static data from last session instead. Go kill something!",
 	
 	--[[
 	  || Configuration 

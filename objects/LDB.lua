@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the LDB data source.
 -- @file XToLevel.Display.lua
--- @release 4.0.1_16
+-- @release 4.0.3_16
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!

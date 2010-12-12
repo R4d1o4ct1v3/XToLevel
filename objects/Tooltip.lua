@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the Tooltip display.
 -- @file XToLevel.Display.lua
--- @release 3.3.3_14r
+-- @release 4.0.3_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
@@ -435,8 +435,9 @@ XToLevel.Tooltip =
 	AddTimerDetailes = function(self, mininmal)
 		if sConfig.timer.enabled then
 			-- Gather data.
-			local mode, timeToLevel, timePlayed, xpPerHour, totalXP = XToLevel.Player:GetTimerData()
-			local showWarning = mode ~= nil and mode ~= sConfig.timer.mode
+			local mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning = XToLevel.Player:GetTimerData()
+			--local showUsingLevelWarning = mode ~= nil and mode ~= sConfig.timer.mode
+            --local showUsingOldDataWarning = mode == 1 and timePlayed == 0
 			
 			if mode == nil then
 				mode = L["Updating..."]
@@ -452,7 +453,7 @@ XToLevel.Tooltip =
 			if timeToLevel == "NaN" then
 				timeToLevel = "Waiting for data..."
 			end
-            if showWarning then
+            if warning == 2 then
                 GameTooltip:AddDoubleLine(" " .. L["Data"] .. ": ", mode, self.labelColor.r, self.labelColor.g, self.labelColor.b, 1.0, 0.0, 0.0);
             else
                 GameTooltip:AddDoubleLine(" " .. L["Data"] .. ": ", mode, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
@@ -461,14 +462,23 @@ XToLevel.Tooltip =
 			if not mininmal then
 				GameTooltip:AddLine(" ")
 			end
-			GameTooltip:AddDoubleLine(" " ..L["Time elapsed"].. ": ", XToLevel.Lib:TimeFormat(timePlayed), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
+            
+            local fTimePlayed = XToLevel.Lib:TimeFormat(timePlayed);
+            if fTimePlayed == "NaN" then
+                fTimePlayed = "N/A"
+            end
+            
+			GameTooltip:AddDoubleLine(" " ..L["Time elapsed"].. ": ", fTimePlayed, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
 			GameTooltip:AddDoubleLine(" " ..L["Total XP"] .. ": ", XToLevel.Lib:NumberFormat(totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
 			GameTooltip:AddDoubleLine(" " ..L["XP per hour"] .. ": ", XToLevel.Lib:NumberFormat(xpPerHour), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
 			GameTooltip:AddDoubleLine(" " ..L["XP Needed"] .. ": ", XToLevel.Lib:NumberFormat(XToLevel.Player.maxXP - XToLevel.Player.currentXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b);
 			
-			if showWarning and not mininmal then
+			if warning == 2 and not mininmal then
 				GameTooltip:AddLine(" ")
-				GameTooltip:AddLine(L["No Kills Recorded"], 1.0, 0.0, 0.0, true)
+				GameTooltip:AddLine(L["No Kills Recorded. Using Level"], 1.0, 0.0, 0.0, true)
+            elseif warning == 1 and not minimal then
+                GameTooltip:AddLine(" ")
+				GameTooltip:AddLine(L["No Kills Recorded. Using Old"], 1.0, 0.0, 0.0, true)
 			end
 		else
 			GameTooltip:AddDoubleLine(" Mode", "Disabled", self.labelColor.r, self.labelColor.g, self.labelColor.b, 1.0, 0.0, 0.0);

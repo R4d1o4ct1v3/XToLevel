@@ -4,7 +4,8 @@
     --]]
 	['Level Reached'] = "Nivel alcanzado. Felicidades!",
     ['Pet Level Reached'] = " ha alcanzado el nivel siguiente. Felicidades!",
-	['Quests Needed'] = " más misiones como la que es necesario nivel",
+	['Quests Needed'] = " más como la que es necesario nivel",
+    ['Anonymous Needed'] = " flere som den for at level op",
 	['Battlegrounds Needed'] = " más batallas como la que es necesario nivel",
 	['Battleground Objectives Needed'] = " más objetivos como la que es necesario nivel",
 	['Dungeons Needed'] = " más mazmorra como la que es necesario nivel",
@@ -83,7 +84,8 @@
 	["XP per hour"] = "XP/hr",
 	["XP Needed"] = "XP Needed",
 	
-	["No Kills Recorded"] = "No kills recorded this session. Using level data instead. Go kill something!",
+	["No Kills Recorded. Using Level"] = "No mata registrado. Utilizando datos a nivel de lugar. Ir a matar algo!",
+    ["No Kills Recorded. Using Old"] = "No mata registrado este período de sesiones. Utilizando los datos estáticos de la última sesión en su lugar. Ir a matar algo!",
 
 	--[[
 	  || Configuration 

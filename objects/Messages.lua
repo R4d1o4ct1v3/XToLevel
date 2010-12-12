@@ -68,6 +68,15 @@ XToLevel.Messages =
                 self:Print(message, sConfig.messages.colors.playerQuest, self.questStyle)
             end
         end,
+        
+        ---
+        -- Use to print anonymous XP gains (mining and such).
+        PrintAnonymous = function(self, required)
+            if sConfig.messages.playerFloating then
+                local message = required .. L["Anonymous Needed"]
+                self:Print(message, sConfig.messages.colors.playerQuest, self.questStyle)
+            end
+        end,
 		
 		---
 		-- function description
@@ -148,6 +157,15 @@ XToLevel.Messages =
         PrintQuest = function(self, questsRequired)
             if sConfig.messages.playerChat then
                 local message = questsRequired .. L["Quests Needed"]
+                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerQuest)
+            end
+        end,
+        
+        ---
+        -- Use to print anonymous XP gains (mining and such).
+        PrintAnonymous = function(self, questsRequired)
+            if sConfig.messages.playerChat then
+                local message = questsRequired .. L["Anonymous Needed"]
                 XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerQuest)
             end
         end,

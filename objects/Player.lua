@@ -1,7 +1,7 @@
 ---
 -- Controls all Playe related functionality.
 -- @file XToLevel.Player.lua
--- @release 4.0.1_18
+-- @release 4.0.3_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
@@ -188,26 +188,32 @@ XToLevel.Player = {
 	end,
 	UpdateTimer = function(self)
 		self = XToLevel.Player
-		self.lastXpPerHourUpdate = GetTime()
-		
+		self.lastXpPerHourUpdate = GetTime();
+		sData.player.timer.lastUpdated = self.lastXpPerHourUpdate;
+        
 		local useMode = sConfig.timer.mode
 		
 		-- Use the session data
 		if useMode == 1 then
 			if type(sData.player.timer.start) == "number" and type(sData.player.timer.total) == "number" and sData.player.timer.total > 0 then
-				sData.player.timer.xpPerSec = sData.player.timer.total / (GetTime() - sData.player.timer.start)
+				sData.player.timer.xpPerSec = sData.player.timer.total / (sData.player.timer.lastUpdated - sData.player.timer.start)
 				local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
-			else
+			elseif type(sData.player.timer.xpPerSec) == "number" and sData.player.timer.xpPerSec > 0 then
+                -- Fallback method #1, in case no XP has been gained this session, but data remains from the last session.
+                local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
+				XToLevel.Average:UpdateTimer(secondsToLevel)
+            else
+                -- Fallback method #2. Use level data.
 				useMode = 2
 			end
 		end
 		
 		-- Use the level data.
 		if useMode == 2 then
-			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)) > 0 then
-				sData.player.timer.xpPerSec = self.currentXP / (self.timePlayedLevel + (GetTime() - self.timePlayedUpdated))
-				local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
+			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (sData.player.timer.lastUpdated - self.timePlayedUpdated)) > 0 then
+				local xpPerSec = self.currentXP / (self.timePlayedLevel + (sData.player.timer.lastUpdated - self.timePlayedUpdated))
+				local secondsToLevel = (self.maxXP - self.currentXP) / xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
 			else
 				useMode = false
@@ -223,19 +229,33 @@ XToLevel.Player = {
 	end,
 	
 	--- Returns details about the estimated time remaining.
-	-- @return mode, timeToLevel, timePlayed, xpPerHour, totalXP
+	-- @return mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning
 	GetTimerData = function(self)
 		local mode = sConfig.timer.mode == 1 and (L['Session'] or "Session") or (L['Level'] or "Level")
-		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel
+		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel, warning;
 		if sConfig.timer.mode == 1 and tonumber(sData.player.timer.total) > 0 then
 			mode = 1
+            warning = 0
 			timePlayed = GetTime() - sData.player.timer.start
 			totalXP = sData.player.timer.total
 			xpPerSecond = totalXP / timePlayed 
 			xpPerHour = ceil(xpPerSecond * 3600)
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
+        elseif sConfig.timer.mode == 1 and tonumber(sData.player.timer.xpPerSec) > 0 then
+            mode = 1
+            warning = 1
+            timePlayed = GetTime() - sData.player.timer.start
+			totalXP = self.currentXP
+			xpPerSecond = sData.player.timer.xpPerSec   
+			xpPerHour = ceil(xpPerSecond * 3600)
+			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		elseif XToLevel.Player.timePlayedLevel then
 			mode = 2
+            if sConfig.timer.mode ~= 2 then
+                warning = 2
+            else
+                warning = 0;
+            end
 			timePlayed = self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)
 			totalXP = self.currentXP
 			xpPerSecond = totalXP / timePlayed 
@@ -243,6 +263,7 @@ XToLevel.Player = {
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		else
 			mode = nil
+            warning = 3
 			timePlayed = 0
 			totalXP = nil
 			xpPerSecond = nil
@@ -250,7 +271,7 @@ XToLevel.Player = {
 			timeToLevel = 0
 		end
 		
-		return mode, timeToLevel, timePlayed, xpPerHour, totalXP
+		return mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning
 	end,
     
     ---

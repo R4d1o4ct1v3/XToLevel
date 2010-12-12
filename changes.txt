@@ -1,4 +1,9 @@
-Version 4.0.1_20
+Version 4.0.3_21
+ - The addon now ignores generic XP gains from things like mining. They will no longer be counted as quests.
+ - The TimeToLevel Session data will no longer reset everytime the UI is reloaded. By default the data will persist for 5 minutes, after which it will be discarded. The timeout can be changed or disabled via the Timer tab of the Config window.
+ - When in Session mode, the TimeToLevel feature will now use the data from the latest previous session instead of falling back on the level data, except when there is no previous session available.
+
+Version 4.0.3_20
  - The LDB data source is now automatically disabled for max level players. (It used to just display "Disabled".)
  - Changes made to how the addon handles non-English clients. It should now be more reliable, even for non supported locales.
  - The addon now excludes targetting dummies from the "Kills to level" tooltip info.

@@ -5,6 +5,7 @@
 	['Level Reached'] = "Levelup! Glückwunsch!",
     ['Pet Level Reached'] = " hat levelup erreicht! Glückwunsch!",
 	['Quests Needed'] = " Quests nötig bis Levelup!",
+    ['Anonymous Needed'] = " nötig bis Levelup!",
 	['Battlegrounds Needed'] = " Schlachtfeld nötig bis Levelup!",
 	['Battleground Objectives Needed'] = " Ziel nötig bis Levelup!",
 	['Dungeons Needed'] = " Dungeon nötig bis Levelup!",
@@ -83,7 +84,8 @@
 	["XP per hour"] = "XP/hr",
 	["XP Needed"] = "XP Needed",
     
-	["No Kills Recorded"] = "No kills recorded this session. Using level data instead. Go kill something!",
+	["No Kills Recorded. Using Level"] = "Keine tötet. Mit Level Daten statt. Gehe zu töten etwas!",
+    ["No Kills Recorded. Using Old"] = "Keine tötet dieser Session. Die Verwendung von statischen Daten der letzten Sitzung statt. Gehe zu töten etwas!",
 	
 	--[[
 	  || Configuration 
