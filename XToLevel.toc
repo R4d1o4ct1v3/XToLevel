@@ -1,7 +1,7 @@
 ## Interface: 40000
 ## Title: XToLevel
 ## Author: Atli Þór
-## Version: 4.0.3_21
+## Version: 4.0.3_22
 ## Notes: Shows mobs, quests, dungeons and battles needed until you and/or your pet reach your next level.
 ## eMail: atli.j@advefir.com
 ## URL: http://wow.curseforge.com/addons/xto-level/

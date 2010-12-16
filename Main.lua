@@ -2,7 +2,7 @@
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 4.0.3_21
+-- @release 4.0.3_22
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
@@ -36,8 +36,8 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.3_21"
-XToLevel.releaseDate = '2010-12-12'
+XToLevel.version = "4.0.3_22"
+XToLevel.releaseDate = '2010-12-16'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -55,7 +55,7 @@ XToLevel.questXpTotal = nil
 
 -- The number of seconds allowed between the "%s complete." message and the XP gain.
 -- Prevents non-XP quests from triggering false quest gains from other sources later.
-XToLevel.questMsgTimeout = 3.0;
+XToLevel.questMsgTimeout = 2.0;
 
 ---
 -- ON_EVENT handler. Set in the XToLevelDisplay XML file. Called for every event
@@ -327,6 +327,18 @@ function XToLevel:OnChatXPGain(message)
                 -- Prepare the data so that if the system message is fired late, it will complete the quest.
                 self.questMsgFired = GetTime()
                 self.questXpTotal = xp;
+                
+                -- After the timeout period has passed, check to see if the XP was counted as a quest.
+                -- If not, count it as a misc XP gain.
+                self.timer:ScheduleTimer(function()
+                    if type(XToLevel.questXpTotal) == "number" then
+                        local remaining = XToLevel.Player:GetQuestsRequired(XToLevel.questXpTotal)
+                        XToLevel.Messages.Floating:PrintAnonymous(remaining)
+                        XToLevel.Messages.Chat:PrintAnonymous(remaining)
+                        XToLevel.questMsgFired = nil
+                        XToLevel.questXpTotal = nil
+                    end
+                end, self.questMsgTimeout)
             end
 		end
     end
