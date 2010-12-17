@@ -147,6 +147,7 @@
     ['Classic Specific Options'] = "\"Classic\" opciones específicas",
     ['Blocky Specific Options'] = "\"Blocky\" opciones específicas",
     ['Window Behavior Header'] = "Comportamiento",
+    ['Window Size'] = "Tamaño",
 	
 	['Show XToLevel Header'] = "Mostrar la XToLevel label",
 	['Show Window Frame'] = "Mostrar de marco",

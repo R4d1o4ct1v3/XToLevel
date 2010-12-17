@@ -1,5 +1,6 @@
 Version 4.0.3_22
  - Gathering professions and other events that gain XP will now trigger a generic message. These XP gains will not be counted or shown in the tooltip (not yet at least) but the message will show you how many of those you need to level.
+ - Added the ability to scale the Average Window.
 
 Version 4.0.3_21
  - The addon now ignores generic XP gains from things like mining. They will no longer be counted as quests.

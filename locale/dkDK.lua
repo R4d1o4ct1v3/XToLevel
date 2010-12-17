@@ -147,6 +147,7 @@
     ['Classic Specific Options'] = "\"Classic\" specifikke indstillinger",
     ['Blocky Specific Options'] = "\"Blocky\" specifikke indstillinger",
     ['Window Behavior Header'] = "Opførsel",
+    ['Window Size'] = "Størrelse",
 	
 	['Show XToLevel Header'] = "Vis XToLevel Header",
 	['Show Window Frame'] = "Vis Vindue Ramme",

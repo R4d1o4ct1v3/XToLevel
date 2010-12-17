@@ -107,6 +107,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     Update = function(self)
         if sConfig.averageDisplay.mode == 2 then
             XToLevel_AverageFrame_Classic:Show()
+            XToLevel_AverageFrame_Classic:SetScale(sConfig.averageDisplay.scale)
             
             -- Show or hide the backrop
             if sConfig.averageDisplay.backdrop then

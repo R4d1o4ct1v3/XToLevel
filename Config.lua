@@ -37,6 +37,7 @@ sConfig = {
     averageDisplay = {
 		visible = true,
 		mode = 1, -- 1 = Blocky, 2 = Classic
+        scale = 1.0,
 		showPetFrame = true,
 		detachPetFrame = false,
 		backdrop = true,
@@ -557,6 +558,12 @@ XToLevel.Config =
 				XToLevel.LDB:Update()
 	        end
 	    )
+        
+        self:CreateRange(windowPanel, "WindowScaleRange", (L['Window Size'] or "Size") .. " (%)", 50, 200, ceil(sConfig.averageDisplay.scale * 100),
+            function(self, newValue)
+                sConfig.averageDisplay.scale  = newValue / 100
+                XToLevel.Average:Update()
+            end)
 	   
         -- Classic boxes.
         self:CreateH2(windowPanel, "ClassicHeader", L['Classic Specific Options'], 0)
@@ -1427,6 +1434,7 @@ function XToLevel.Config:Verify()
     if sConfig.averageDisplay.showPetFrame == nil then sConfig.averageDisplay.showPetFrame = true end
     if sConfig.averageDisplay.detachPetFrame == nil then sConfig.averageDisplay.detachPetFrame = false end
     if sConfig.averageDisplay.mode == nil then sConfig.averageDisplay.mode = 1 end
+    if sConfig.averageDisplay.scale == nil then sConfig.averageDisplay.scale = 1.0 end
     if sConfig.averageDisplay.backdrop == nil then sConfig.averageDisplay.backdrop = true end
     if sConfig.averageDisplay.verbose == nil then sConfig.averageDisplay.verbose = true end
     if sConfig.averageDisplay.tooltip == nil then sConfig.averageDisplay.tooltip = true end

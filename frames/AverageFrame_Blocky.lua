@@ -176,6 +176,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             local maxLevel = XToLevel.Player:GetMaxLevel()
 	        if type(level) == "number" and type(maxLevel) == "number" and level < maxLevel then
 	            XToLevel_AverageFrame_Blocky_PlayerFrame:Show()
+                XToLevel_AverageFrame_Blocky_PlayerFrame:SetScale(sConfig.averageDisplay.scale)
 		        self:StackPlayer()
 	        else
                 XToLevel_AverageFrame_Blocky_PlayerFrame:Hide()
@@ -184,6 +185,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	        -- Update the pet frame
 	        if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.showPetFrame then
                 XToLevel_AverageFrame_Blocky_PetFrame:Show()
+                XToLevel_AverageFrame_Blocky_PetFrame:SetScale(sConfig.averageDisplay.scale)
                 self:StackPet()
             else
                 XToLevel_AverageFrame_Blocky_PetFrame:Hide()
