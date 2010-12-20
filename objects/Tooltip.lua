@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the Tooltip display.
 -- @file XToLevel.Display.lua
--- @release 4.0.3_21
+-- @release 4.0.3_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
@@ -128,12 +128,15 @@ XToLevel.Tooltip =
         if not self.initialized then
             self:Initialize()
         end
-        if frame ~= nil then
+        
+        GameTooltip:Hide()
+        
+        if false and frame ~= nil then
             GameTooltip:SetOwner(frame, "ANCHOR_NONE")
-        else
-            GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
         end
+        GameTooltip_SetDefaultAnchor(GameTooltip, UIParent)
         if anchorPont ~= nil or relativeFrame ~= nil or relativePoint ~= nil then
+            GameTooltip:ClearAllPoints()
             GameTooltip:SetPoint(anchorPont, relativeFrame, relativePoint)
         end
         GameTooltip:ClearLines()
