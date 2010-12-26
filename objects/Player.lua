@@ -386,6 +386,8 @@ XToLevel.Player = {
             console:log("Attempt to add invalid gathering data: " .. tostring(action) .. ", " .. tostring(target) .. ", " .. tostring(xp))
             return nil
         else
+            self.currentXP = self.currentXP + xp
+        
             if sData.player.gathering[action] == nil then
                 sData.player.gathering[action] = {};
             end

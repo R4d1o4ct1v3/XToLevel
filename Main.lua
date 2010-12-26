@@ -60,16 +60,7 @@ XToLevel.gatheringTime = nil;
 ---
 -- ON_EVENT handler. Set in the XToLevelDisplay XML file. Called for every event
 -- and only used to attach the callback functions to their respective event.
-function XToLevel:MainOnEvent(event, ...)
-    local args = ""
-    local argnum = select("#", ...)
-    local i = 1
-    while i <= argnum do
-        args = args .. tostring(i) .. ": " .. tostring(select(i, ...)) .. "; "
-        i = i + 1
-    end
-    console:log(tostring(event) .. " = " .. args)
-    
+function XToLevel:MainOnEvent(event, ...)  
     if event == "PLAYER_LOGIN" then
         self:OnPlayerLogin()
     elseif event == "CHAT_MSG_COMBAT_XP_GAIN" then
@@ -358,19 +349,23 @@ function XToLevel:OnChatXPGain(message)
                     end
                 end
             else
-                local remaining = XToLevel.Player:GetQuestsRequired(xp)
                 if XToLevel.gatheringTarget ~= nil and XToLevel.gatheringTime ~= nil and GetTime() - XToLevel.gatheringTime < 5 then
-                    XToLevel.Messages.Floating:PrintKill(XToLevel.gatheringTarget, remaining)
-                    XToLevel.Messages.Chat:PrintKill(XToLevel.gatheringTarget, remaining)
-                    
                     XToLevel.Player:AddGathering(XToLevel.gatheringAction, XToLevel.gatheringTarget, xp);
-                    
+                    local remaining = XToLevel.Player:GetQuestsRequired(xp)
+                    if type(remaining) == "number" and remaining > 0 then
+                        XToLevel.Messages.Floating:PrintKill(XToLevel.gatheringTarget, remaining)
+                        XToLevel.Messages.Chat:PrintKill(XToLevel.gatheringTarget, remaining)
+                    end
                     XToLevel.gatheringTarget = nil;
                     XToLevel.gatheringAction = nil;
                     XToLevel.gatheringTime = nil;
                 else
-                    XToLevel.Messages.Floating:PrintAnonymous(remaining)
-                    XToLevel.Messages.Chat:PrintAnonymous(remaining)
+                    -- This estimate is made before the XP is updated, so -1 to compensate.
+                    local remaining = XToLevel.Player:GetQuestsRequired(xp) - 1
+                    if type(remaining) == "number" and remaining > 0 then
+                        XToLevel.Messages.Floating:PrintAnonymous(remaining)
+                        XToLevel.Messages.Chat:PrintAnonymous(remaining)
+                    end
                 end
             end
 		end
