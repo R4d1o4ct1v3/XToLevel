@@ -463,6 +463,47 @@ XToLevel.Player = {
             return nil
         end
     end,
+    
+    ---
+    -- Get the gathering actions recorded. That is; "Mining" and/or "Herb Gathering"
+    GetGatheringActions = function(self)
+        local actions = { };
+        for action, __ in pairs(sData.player.gathering) do
+            table.insert(actions, action);
+        end
+        if # actions > 0 then
+            return actions
+        else
+            return nil
+        end
+    end,
+    
+    ---
+    -- Get the items recorded for a given action. (Things like, "Iron Deposit"
+    -- or "Silverleaf")
+    GetGatheringItems = function(self, action)
+        local items = { }
+        for a, __ in pairs(sData.player.gathering) do
+            if action == a then
+                for _, c_item in ipairs(sData.player.gathering[a]) do
+                    local alreadyListed = false;
+                    for _, r_item in ipairs(items) do
+                        if c_item.target == r_item then
+                            alreadyListed = true
+                        end
+                    end
+                    if not alreadyListed then
+                        table.insert(items, c_item.target)
+                    end
+                end
+            end
+        end
+        if # items > 0 then
+            return items;
+        else
+            return nil;
+        end
+    end,
 	
 	---
 	-- Start recording a battleground. If a battleground is already in progress
