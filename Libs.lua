@@ -322,21 +322,22 @@ end
 
 function XToLevel.Lib:GetChatXPRegexp(isQuest)
 	local inInstance, itype = IsInInstance()
+    local inGroup =  GetNumPartyMembers() > 0
 	local apiRegexp = nil
 	local isRested = GetXPExhaustion()
 	if not isQuest then
 		if inInstance and isRested then
-			if itype == "party" then
+			if itype == "party" and inGroup then
 				apiRegexp = COMBATLOG_XPGAIN_EXHAUSTION1_GROUP
-			elseif itype == "raid" then
+			elseif itype == "raid" and inGroup then
 				apiRegexp = COMBATLOG_XPGAIN_EXHAUSTION1_RAID
 			else
 				apiRegexp = COMBATLOG_XPGAIN_EXHAUSTION1
 			end
 		elseif inInstance and not isRested then
-			if itype == "party" then
+			if itype == "party" and inGroup then
 				apiRegexp = COMBATLOG_XPGAIN_FIRSTPERSON_GROUP
-			elseif itype == "raid" then
+			elseif itype == "raid" and inGroup then
 				apiRegexp = COMBATLOG_XPGAIN_FIRSTPERSON_RAID
 			else
 				apiRegexp = COMBATLOG_XPGAIN_FIRSTPERSON
@@ -498,6 +499,8 @@ end
 ---
 XToLevel.Lib.progressColor = { pro=0, hex=0, rgb={ r=0, g=0, b=0 } }
 function XToLevel.Lib:GetProgressColor(pro)
+    if pro <= 0 then pro = 1 end -- 0 doesn't play well with the formulas. CBA to fix that so I just bypass it like so.
+    if pro > 100 then pro = 100 end
 	if self.progressColor.pro ~= pro then
 		local lh = pro <= 50 and true or false
 		self.progressColor.pro = pro
