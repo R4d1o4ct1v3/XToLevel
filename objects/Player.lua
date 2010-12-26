@@ -67,6 +67,7 @@ XToLevel.Player = {
     guildXPMax = nil,
     guildXPDaily = nil,
     guildXPDailyMax = nil,
+    guildHasQueried = false,
 	
 	timePlayedTotal = nil,
 	timePlayedLevel = nil,
@@ -188,6 +189,9 @@ XToLevel.Player = {
                 self.guildXPMax = currentXP + remainingXP;
                 self.guildXPDaily = dailyXP;
                 self.guildXPDailyMax = maxDailyXP;
+            elseif not self.guildHasQueried then
+                QueryGuildXP()
+                self.guildHasQueried = true;
             end
         else
             self.guildLevel = nil
@@ -392,8 +396,15 @@ XToLevel.Player = {
                 sData.player.gathering[action] = {};
             end
             
+            local zoneID = XToLevel.Lib:ZoneID();
+            
             local incremented = false
             for i, v in ipairs(sData.player.gathering[action]) do
+                --[[console:log(" ----- ")
+                console:log(" - " .. tostring(v["target"]) .. " == " .. tostring(target))
+                console:log(" - " .. tostring(v["xp"]) .. " == " .. tostring(xp))
+                console:log(" - " .. tostring(v["level"]) .. " == " .. tostring(XToLevel.Player.level))
+                console:log(" - " .. tostring(v["zoneID"]) .. " == " .. tostring(zoneID))--]]
                 if v["target"] == target and v["xp"] == xp and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
                     incremented = true
                     sData.player.gathering[action][i]["count"] = sData.player.gathering[action][i]["count"] + 1
@@ -405,10 +416,51 @@ XToLevel.Player = {
                     ["target"] = target,
                     ["xp"] = xp,
                     ["level"] = XToLevel.Player.level,
-                    ["zoneID"] = XToLevel.Lib:ZoneID(),
+                    ["zoneID"] = zoneID,
                     ["count"] = 1
                 });
             end
+        end
+    end,
+    
+    ---
+    -- Get the total number of the given target to reach then next level.
+    -- If the target is invalid, or none of them have been recorded yet, this
+    -- returns nil. - Note that this only searches for items recorded the last
+    -- 10 levels. Anyting earlier is ignored.
+    -- @param targetName The name of the target. (For example: "Obsidium Mine")
+    GetGatheringRequired_ByTarget = function(self, targetName)
+        local countAverage = function(levelDifference, targetName)
+            if type(levelDifference) ~= "number" or levelDifference <= 0 then
+                levelDifference = 1
+            end
+            local tXP = 0;
+            local tCount = 0;
+            for action, dataTable in pairs(sData.player.gathering) do
+                for i, data in ipairs(dataTable) do
+                    if data["target"] == targetName and data["level"] > XToLevel.Player.level - levelDifference then
+                        tXP = tXP + (data["xp"] * data["count"]);
+                        tCount = tCount + data["count"]
+                    end
+                end
+            end
+            if tXP > 0 and tCount > 0 then
+                return (tXP / tCount)
+            else
+                return nil
+            end
+        end
+        
+        local average = nil
+        local i = 1
+        while i <= 10 and average == nil do
+            average = countAverage(i, targetName)
+            i = i + 1
+        end
+        if average ~= nil then
+            return ceil((self.maxXP - self.currentXP) / average), average;
+        else
+            return nil
         end
     end,
 	
