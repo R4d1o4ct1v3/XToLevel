@@ -434,10 +434,6 @@ function XToLevel:OnUnitPetExperience()
 					XToLevel.Messages.Chat:PrintPetKill(XToLevel.Pet:GetName(), mobName, killsRemaining)
 				end
 			end
-	        if update.gainedLevel then
-	            XToLevel.Messages.Floating:PrintPetLevel(XToLevel.Pet:GetName())
-	            XToLevel.Messages.Chat:PrintPetLevel(XToLevel.Pet:GetName())
-	        end
 			XToLevel.Average:Update()
 	        XToLevel.LDB:BuildPattern()
 			XToLevel.LDB:Update()
@@ -449,7 +445,6 @@ end
 -- (as far as I know). Included here to circumvent a problem with the UNIT_PET
 -- event firing to early when a new pet is trained.
 function XToLevel:OnPetUiUpdate()
-	-- 
 	XToLevel.Pet:Initialize()
 	XToLevel.Average:Update()
     XToLevel.LDB:BuildPattern();
