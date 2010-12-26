@@ -52,6 +52,11 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimer',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimer,
 	            visible = sConfig.averageDisplay.playerTimer
+	        },
+	        {   
+	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgress',
+	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgress,
+	            visible = sConfig.averageDisplay.guildProgress
 	        }
 	    }
 	    self.petBoxes = {
@@ -206,6 +211,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
         self.playerBoxes[5]["visible"] = sConfig.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
         self.playerBoxes[6]["visible"] = sConfig.averageDisplay.playerProgress
 		self.playerBoxes[7]["visible"] = sConfig.averageDisplay.playerTimer and sConfig.averageDisplay.playerTimer
+        self.playerBoxes[8]["visible"] = sConfig.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
     
         local orientation = sConfig.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
@@ -314,6 +320,36 @@ XToLevel.AverageFrameAPI["Blocky"] =
             local progressBar = XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgressBar
             local progressBarColor = XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgressBarColor
             local progressText = XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgressValueText
+            
+            local totalWidth = progressFrame:GetWidth() - 5
+            local barWidth = totalWidth * (percent / 100)
+            local bars = ceil((100 - percent) / 5)
+            
+            if barWidth == 0 then
+                barWidth = 1
+            end
+            
+            local hex, rgb = XToLevel.Lib:GetProgressColor(percent)
+            rgb = { r= (rgb.r / 256), g= (rgb.g) / 256, b= (rgb.b / 256) }
+            
+            progressBar:SetWidth(barWidth)
+            if sConfig.averageDisplay.progressAsBars then
+                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
+            else
+                progressText:SetText(tostring(floor(percent)) .. "%")
+            end
+            progressText:SetTextColor(rgb.r, rgb.g, rgb.b, 1.0)
+        end
+    end,
+    
+    --- Sets the value for the progress bar.
+    -- Changes both the progress bar and the text.
+    SetGuildProgress = function(self, percent)
+        if percent ~= nil and (percent >= 0 and percent <= 100) then
+            local progressFrame = XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgress
+            local progressBar = XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgressBar
+            local progressBarColor = XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgressBarColor
+            local progressText = XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgressValueText
             
             local totalWidth = progressFrame:GetWidth() - 5
             local barWidth = totalWidth * (percent / 100)

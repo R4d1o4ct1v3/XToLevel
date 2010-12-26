@@ -177,6 +177,10 @@ XToLevel.Tooltip =
 			GameTooltip:AddLine("Time to level")
             self:AddTimerDetailes(false)
             GameTooltip:AddLine(" ")
+        elseif mode == "guild" then
+            GameTooltip:AddLine(L['Guild'] .. ": ")
+            self:AddGuildInfo()
+            GameTooltip:AddLine(" ")
         else
             -- The old "overall" tootip
             GameTooltip:AddLine(L["XToLevel"])
@@ -197,6 +201,12 @@ XToLevel.Tooltip =
                 if sConfig.ldb.tooltip.showExperience then
                     GameTooltip:AddLine(L["Experience"] .. ": ")
                     self:AddExperience()
+                    GameTooltip:AddLine(" ")
+                end
+                
+                if sConfig.ldb.tooltip.showGuildInfo then
+                    GameTooltip:AddLine(L['Guild'] .. ": ")
+                    self:AddGuildInfo()
                     GameTooltip:AddLine(" ")
                 end
             end
@@ -362,6 +372,26 @@ XToLevel.Tooltip =
     end,
     
     ---
+    -- Guild info
+    AddGuildInfo = function(self)
+        if XToLevel.Player.guildLevel ~= nil and XToLevel.Player.guildXP ~= nil then
+            GameTooltip:AddDoubleLine(" Level:" , XToLevel.Player.guildLevel .. ' / 25', self.labelColor.r, self.labelColor.g, self.labelColor.b,    self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            
+            local xpGained = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXP))
+            local xpTotal = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXPMax))
+            local xpProgress = tostring(XToLevel.Player:GetGuildProgressAsPercentage(1))
+            GameTooltip:AddDoubleLine(" " .. L["XP Progress"] .. ": " , xpGained .. ' / ' .. xpTotal .. ' [' .. xpProgress .. '%]' , self.labelColor.r, self.labelColor.g, self.labelColor.b,    self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            
+            local dialyGained = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXPDaily))
+            local dialyTotal = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXPDailyMax))
+            local dialyProgress = tostring(XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
+            GameTooltip:AddDoubleLine(" " .. L['Daily Progress'] .. ": " , dialyGained .. ' / ' .. dialyTotal .. ' [' .. dialyProgress .. '%]' , self.labelColor.r, self.labelColor.g, self.labelColor.b,    self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        else
+            GameTooltip:AddLine(" No guild leveling info found.", self.labelColor.r, self.labelColor.g, self.labelColor.b)
+        end
+    end,
+    
+    ---
     -- function description
     AddBattlegroundInfo = function(self)
         GameTooltip:AddDoubleLine(" " .. L["Battles"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetAverageBGsRemaining() or 0) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Player:GetAverageBGXP(), 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
@@ -445,7 +475,7 @@ XToLevel.Tooltip =
 			if mode == nil then
 				mode = L["Updating..."]
 				timeToLevel = 0
-				timePlayed = 0
+				if timePlayed == nil then timePlayed = "N/A" end
 				xpPerHour = "N/A"
 				totalXP = "N/A"
 			else

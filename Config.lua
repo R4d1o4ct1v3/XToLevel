@@ -64,6 +64,8 @@ sConfig = {
 		playerBGOListLength = 15,
 		playerDungeonListLength = 15,
 		petKillListLength = 10,
+        guildProgress = true,
+        guildProgressType = 1, -- 1 = Level, 2 = Daily, (3 = Overall... maybe later)
 	},
 	ldb = {
         enabled = true,
@@ -87,6 +89,8 @@ sConfig = {
 			petxpnum = true,
 			xpCountdown = false,
 			timer = true,
+            guildxp = true,
+            guilddaily = true,
 			colorValues = true,
 			verbose = true,
 			rested = true,
@@ -519,9 +523,9 @@ XToLevel.Config =
     ---
     -- Creates the Window config panel
     CreateWindowPanel = function(self, parent)
-    	local height = 615
+    	local height = 785
     	if XToLevel.Player:GetClass() == "HUNTER" then
-    		height = 730
+    		height = 900
         end
         local windowPanel = self:CreatePanel("XToLevel_WindowPanel", L["Window Tab"], height, parent)
         
@@ -633,6 +637,43 @@ XToLevel.Config =
 		self:CreateCheckbox(windowPanel, "PlayerTimer", L["Player Timer"] or "Timer", 
             function(self) self:SetChecked(sConfig.averageDisplay.playerTimer) end, 
             function(self) sConfig.averageDisplay.playerTimer = self:GetChecked() or false end)
+        self:CreateCheckbox(windowPanel, "PlayerGuild", L["Guild"] or "Guild", 
+            function(self) self:SetChecked(sConfig.averageDisplay.guildProgress) end, 
+            function(self) sConfig.averageDisplay.guildProgress = self:GetChecked() or false end)
+            
+        -- Guild boxes
+        self:CreateH2(windowPanel, "GuildDataHeader", L['Guild'], 250)
+        self:CreateDescription(windowPanel, "MainDescription", L['Guild Window Chioce Description'], 22, "FFFFFF")
+        self:CreateSelectBox(windowPanel, "GuildTypeSelect", {"Level", "Daily"}, "Level",
+	        -- OnShow
+	        function(self)
+	           local chosenType = sConfig.averageDisplay.guildProgressType or nil
+	           local chosenWindow = false
+	           if chosenType == 1 then
+	               chosenWindow = "Level"
+	           elseif chosenType == 2 then
+	               chosenWindow = "Daily"
+	           end
+	           if not chosenWindow then
+                    chosenWindow = self.default
+                end
+                UIDropDownMenu_SetSelectedName(self, chosenWindow, true);
+                UIDropDownMenu_SetText(self, chosenWindow);
+	        end,
+	        -- OnChange
+	        function(selectBox)
+				local choice = UIDropDownMenu_GetText(selectBox)
+                local typeIndex = 1
+                if choice == 'Daily' then
+                    typeIndex = 2
+                end
+                
+				sConfig.averageDisplay.guildProgressType = typeIndex
+				XToLevel.Average:Update()
+				XToLevel.LDB:BuildPattern()
+				XToLevel.LDB:Update()
+	        end
+	    )
         
         -- Add low-level warning tooltips
         if XToLevel.Player.level < 10 then
@@ -1459,6 +1500,8 @@ function XToLevel.Config:Verify()
     if sConfig.averageDisplay.playerBGOListLength == nil then sConfig.averageDisplay.playerBGOListLength = 15 end
     if sConfig.averageDisplay.playerDungeonListLength == nil then sConfig.averageDisplay.playerDungeonListLength = 15 end
     if sConfig.averageDisplay.petKillListLength == nil then sConfig.averageDisplay.petKillListLength = 10 end
+    if sConfig.averageDisplay.guildProgress == nil then sConfig.averageDisplay.guildProgress = true end
+    if sConfig.averageDisplay.guildProgressType == nil then sConfig.averageDisplay.guildProgressType = 1 end
 
     -- LDB
     if sConfig.ldb == nil then sConfig.ldb = {  } end
@@ -1482,6 +1525,8 @@ function XToLevel.Config:Verify()
     if sConfig.ldb.text.petxp == nil then sConfig.ldb.text.petxp = true end
 	if sConfig.ldb.text.petxpnum == nil then sConfig.ldb.text.petxpnum = true end
 	if sConfig.ldb.text.timer == nil then sConfig.ldb.text.timer = true end
+    if sConfig.ldb.text.guildxp == nil then sConfig.ldb.text.guildxp = true end
+    if sConfig.ldb.text.guilddaily == nil then sConfig.ldb.text.guilddaily = true end
     if sConfig.ldb.text.verbose == nil then sConfig.ldb.text.verbose = true end
     if sConfig.ldb.text.colorValues == nil then sConfig.ldb.text.colorValues = true end
 	
@@ -1498,6 +1543,7 @@ function XToLevel.Config:Verify()
     if sConfig.ldb.tooltip.showDungeonInfo == nil then sConfig.ldb.tooltip.showDungeonInfo = true end
     if sConfig.ldb.tooltip.showPetInfo == nil then sConfig.ldb.tooltip.showPetInfo = true end
 	if sConfig.ldb.tooltip.showTimerInfo == nil then sConfig.ldb.tooltip.showTimerInfo = true end
+    if sConfig.ldb.tooltip.showGuildInfo == nil then sConfig.ldb.tooltip.showGuildInfo = true end
 	
 	if sConfig.timer == nil then sConfig.timer = { } end
 	if sConfig.timer.enabled == nil then sConfig.timer.enabled = true end

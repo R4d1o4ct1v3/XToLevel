@@ -28,30 +28,39 @@ end
 ---
 -- Updates the active AverageFrame window.
 function XToLevel.Average:Update()
-    if self.activeAPI ~= self.knownAPIs[sConfig.averageDisplay.mode] then
-        for index, name in ipairs(self.knownAPIs) do
-	        XToLevel.AverageFrameAPI[name]:Update()
-	    end
-	    if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
-            self:AlignBoxes(self.activeAPI, self.knownAPIs[sConfig.averageDisplay.mode])
-            self.activeAPI = self.knownAPIs[sConfig.averageDisplay.mode]
+    if XToLevel.Player.level < XToLevel.Player.GetMaxLevel() then
+        if self.activeAPI ~= self.knownAPIs[sConfig.averageDisplay.mode] then
+            for index, name in ipairs(self.knownAPIs) do
+                XToLevel.AverageFrameAPI[name]:Update()
+            end
+            if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
+                self:AlignBoxes(self.activeAPI, self.knownAPIs[sConfig.averageDisplay.mode])
+                self.activeAPI = self.knownAPIs[sConfig.averageDisplay.mode]
+            end
         end
-    end
-    if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
-	    if XToLevel.Player.isActive then
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetKills       (XToLevel.Player:GetAverageKillsRemaining() or nil)
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetQuests      (XToLevel.Player:GetAverageQuestsRemaining() or nil)
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetDungeons    (XToLevel.Player:GetAverageDungeonsRemaining() or nil)
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetBattles     (XToLevel.Player:GetAverageBGsRemaining() or nil)
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetObjectives  (XToLevel.Player:GetAverageBGObjectivesRemaining() or nil)
-		    XToLevel.AverageFrameAPI[self.activeAPI]:SetProgress    (XToLevel.Lib:round((XToLevel.Player.currentXP or 0) / (XToLevel.Player.maxXP or 1) * 100, 1))
-			--XToLevel.AverageFrameAPI[self.activeAPI]:SetTimer		Done separately for performance reasons.
-	    end
-	    if XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive then
-	        XToLevel.AverageFrameAPI[self.activeAPI]:SetPetKills    (XToLevel.Pet:GetAverageKillsRemaining() or nil);
-	        XToLevel.AverageFrameAPI[self.activeAPI]:SetPetProgress (floor(XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100));
-	    end
-	    XToLevel.AverageFrameAPI[self.activeAPI]:Update()
+        if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
+            if XToLevel.Player.isActive then
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetKills       (XToLevel.Player:GetAverageKillsRemaining() or nil)
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetQuests      (XToLevel.Player:GetAverageQuestsRemaining() or nil)
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetDungeons    (XToLevel.Player:GetAverageDungeonsRemaining() or nil)
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetBattles     (XToLevel.Player:GetAverageBGsRemaining() or nil)
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetObjectives  (XToLevel.Player:GetAverageBGObjectivesRemaining() or nil)
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetProgress    (XToLevel.Lib:round((XToLevel.Player.currentXP or 0) / (XToLevel.Player.maxXP or 1) * 100, 1))
+                
+                if sConfig.averageDisplay.guildProgressType == 1 then
+                    XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildProgressAsPercentage(1))
+                else
+                    XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
+                end
+            end
+            if XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive then
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetPetKills    (XToLevel.Pet:GetAverageKillsRemaining() or nil);
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetPetProgress (floor(XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100));
+            end
+            XToLevel.AverageFrameAPI[self.activeAPI]:Update()
+        end
+    elseif XToLevel.AverageFrameAPI[self.activeAPI] ~= nil then
+        XToLevel.AverageFrameAPI[self.activeAPI]:Hide()
     end
 end
 

@@ -29,7 +29,8 @@ XToLevel.LDB =
 		[10] = { tag = "rested", label = 'init', value = '~', color = nil, },
 		[11] = { tag = "xpnum", label = 'init', value = '~', color = nil, },
 		[12] = { tag = "petxpnum", label = 'init', value = '~', color = nil, },
-		--[13] = { tag = "timer", label = 'init', value = '~', color = nil, },
+        [13] = { tag = "guildxp", label = 'init', value = '~', color = nil, },
+        [14] = { tag = "guilddaily", label = 'init', value = '~', color = nil },
     },
 
     -- Members
@@ -259,6 +260,18 @@ XToLevel.LDB =
                     value = (showPet and '$$petxpnum$$') or nil,
                     color = (useColors and '$$petcolor$$') or nil,
                 },
+                [13] = { 
+                    tag = "guildxp",
+                    label = (sConfig.ldb.text.verbose and "Guild XP" ) or "GXP",
+                    value = (showPlayer and '$$guildxp$$') or nil,
+                    color = (useColors and '$$guildcolor$$') or nil,
+                },
+                [14] = { 
+                    tag = "guilddaily",
+                    label = (sConfig.ldb.text.verbose and "Guild Daily" ) or "GDXP",
+                    value = (showPlayer and '$$guilddaily$$') or nil,
+                    color = (useColors and '$$guilddailycolor$$') or nil,
+                },
 				--[[[13] = { 
                     tag = "timer",
                     label = (sConfig.ldb.text.verbose and L["Timer"] ) or L["Timer Short"],
@@ -384,6 +397,23 @@ XToLevel.LDB =
 				else
 					pattern = string.gsub(pattern, '%$%$restedp%$%$', (XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage(1)) .. "%%" or "~"));
 				end
+                
+                if type(XToLevel.Player.guildXP) == 'number' then
+                    local guildProgress = XToLevel.Lib:round(XToLevel.Player.guildXP / XToLevel.Player.guildXPMax * 100, 1)
+                    local guildProgressColor = XToLevel.Lib:GetProgressColor_Soft(ceil(guildProgress))
+                    
+                    pattern = string.gsub(pattern, '%$%$guildcolor%$%$', guildProgressColor);
+                    pattern = string.gsub(pattern, '%$%$guildxp%$%$', tostring(guildProgress) .. "%%");
+                    
+                    local guildDailyProgress = XToLevel.Player:GetGuildDailyProgressAsPercentage(1)
+                    local guildDailyColor = XToLevel.Lib:GetProgressColor_Soft(ceil(guildDailyProgress))
+                    
+                    pattern = string.gsub(pattern, '%$%$guilddailycolor%$%$', guildDailyColor);
+                    pattern = string.gsub(pattern, '%$%$guilddaily%$%$', tostring(guildDailyProgress) .. "%%");
+                else
+                    pattern = string.gsub(pattern, '%$%$guildxp%$%$', "N/A");
+                    pattern = string.gsub(pattern, '%$%$guilddaily%$%$', "N/A");
+                end
             else
                 pattern = string.gsub(pattern, '%$%$playercolor%$%$', '');
                 pattern = string.gsub(pattern, '%$%$kills%$%$', '');
@@ -395,7 +425,8 @@ XToLevel.LDB =
                 pattern = string.gsub(pattern, '%$%$bgo%$%$', '');
 				pattern = string.gsub(pattern, '%$%$rested%$%$', '');
 				pattern = string.gsub(pattern, '%$%$restedp%$%$', '');
-				--pattern = string.gsub(pattern, '%$%$timer%$%$', "");
+				pattern = string.gsub(pattern, '%$%$guildxp%$%$', "");
+                pattern = string.gsub(pattern, '%$%$guilddaily%$%$', "");
             end
                 
             if XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive then

@@ -52,6 +52,7 @@
 	['Experience'] = "Erfahrung",
     ['Pet Experience'] = "Begleiter Erfahrung",
 	['XP Progress'] = "Fortschritt",
+    ['Daily Progress'] = 'täglich Fortschritte',
     ['XP Bars Remaining'] = "bars nötig",
 	['XP Rested'] = "ruhte",
 	['Quest XP Required'] = "Quest XP nötig",
@@ -74,6 +75,8 @@
 	['Max'] = "Max",
 	['Min'] = "Min",
 	['Kills to level'] = "Kills to level",
+    ['Guild'] = 'Guild',
+	['Guild Window Chioce Description'] = 'Set which to display, the progress of the current level or the progress of the daily quota.',
 	
 	["Updating..."] = "Updating...",
 	["Session"] = "Session",

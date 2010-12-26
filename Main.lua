@@ -97,6 +97,8 @@ function XToLevel:MainOnEvent(event, arg1, arg2)
 		self:OnEquipmentChanged(arg1, arg2)
 	elseif event == "TIME_PLAYED_MSG" then
 		self:OnTimePlayedMsg(arg1, arg2)
+    elseif event == "GUILD_XP_UPDATE" or event == "PLAYER_GUILD_UPDATE" then
+        self:OnGuildXpUpdate()
     end
 end
 XToLevel.frame:SetScript("OnEvent", function(self, event, arg1, arg2) XToLevel:MainOnEvent(event, arg1, arg2) end);
@@ -134,6 +136,9 @@ function XToLevel:RegisterEvents(level)
 		self.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 		
 		self.frame:RegisterEvent("TIME_PLAYED_MSG")
+        
+        self.frame:RegisterEvent("GUILD_XP_UPDATE")
+        self.frame:RegisterEvent("PLAYER_GUILD_UPDATE")
     end
    	if XToLevel.Player:GetClass() == "HUNTER" then
 	    self.frame:RegisterEvent("UNIT_PET");
@@ -177,6 +182,9 @@ function XToLevel:UnregisterEvents()
     self.frame:UnregisterEvent("PET_UI_UPDATE");
 	
 	self.frame:UnregisterEvent("TIME_PLAYED_MSG")
+    
+    self.frame:UnregisterEvent("GUILD_XP_UPDATE")
+    self.frame:UnregisterEvent("PLAYER_GUILD_UPDATE")
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -224,6 +232,8 @@ end
 -- and updates the average and LDB displays.
 -- @param newLevel The new level of the player. Passed from the event parameters.
 function XToLevel:OnPlayerLevelUp(newLevel)
+    console:log("New level reaced: " .. tostring(newLevel) .. " / " .. tostring(XToLevel.Player:GetMaxLevel()))
+    
 	XToLevel.Player.level = newLevel
 	XToLevel.Player.timePlayedLevel = 0
 	XToLevel.Player.timePlayedUpdated = time()
@@ -246,7 +256,6 @@ end
 -- XToLevel.questXpTotal variable, this triggers the quest completion code.
 function XToLevel:OnChatMsgSystem(message)
     if self.questMsgFired ~= nil and ((GetTime() - self.questMsgFired) < self.questMsgTimeout) and type(self.questXpTotal) == "number" and self.questXpTotal > 0 then
-        console:log('Delayed quest completion detected.')
         self:QuestCompleted(self.questXpTotal);
         self.questXpTotal = nil;
         self.questMsgFired = nil;
@@ -256,6 +265,17 @@ function XToLevel:OnChatMsgSystem(message)
             self.questMsgFired = GetTime();
             self.questXpTotal = nil;
         end
+    end
+end
+
+---
+-- Handles GUILD_XP_UPDATE
+function XToLevel:OnGuildXpUpdate()
+    console:log('Guild Update');
+    XToLevel.Player:SyncGuildData();
+    if XToLevel.Player.guildXP ~= nil then
+        XToLevel.Average:Update()
+        XToLevel.LDB:Update()
     end
 end
 

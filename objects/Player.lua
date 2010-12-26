@@ -61,6 +61,12 @@ XToLevel.Player = {
 	bgListLength = 300,
 	dungeonListLength = 100,
 	hasEnteredBG = true,
+    
+    guildLevel = nil,
+    guildXP = nil,
+    guildXPMax = nil,
+    guildXPDaily = nil,
+    guildXPDailyMax = nil,
 	
 	timePlayedTotal = nil,
 	timePlayedLevel = nil,
@@ -80,6 +86,7 @@ XToLevel.Player = {
 	-- Constructor
 	Initialize = function(self)
 		self:SyncData()
+        self:SyncGuildData()
 		
 		self.maxLevel = self:GetMaxLevel();
         
@@ -167,7 +174,29 @@ XToLevel.Player = {
         self.restedXP = rested / 2
     end,
 	
-	
+    ---
+    -- Updates the guild XP info.
+    ---
+	SyncGuildData = function(self)
+        if IsInGuild() then
+            self.guildLevel = GetGuildLevel();
+            
+            local currentXP, remainingXP, dailyXP, maxDailyXP = UnitGetGuildXP("player");
+            -- maxDailyXP is the only field that *should* always be positive.
+            if maxDailyXP > 0 then 
+                self.guildXP = currentXP;
+                self.guildXPMax = currentXP + remainingXP;
+                self.guildXPDaily = dailyXP;
+                self.guildXPDailyMax = maxDailyXP;
+            end
+        else
+            self.guildLevel = nil
+            self.guildXP =  nil;
+            self.guildXPMax =  nil;
+            self.guildXPDaily = nil;
+            self.guildXPDailyMax = nil;
+        end
+    end,
 	
 	--- Updates the time played values.
 	-- @param total The total time played on this char, in seconds.
@@ -250,17 +279,27 @@ XToLevel.Player = {
 			xpPerHour = ceil(xpPerSecond * 3600)
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		elseif XToLevel.Player.timePlayedLevel then
-			mode = 2
-            if sConfig.timer.mode ~= 2 then
-                warning = 2
+            if XToLevel.Player.currentXP > 0 then
+                mode = 2
+                if sConfig.timer.mode ~= 2 then
+                    warning = 2
+                else
+                    warning = 0;
+                end
+                timePlayed = self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)
+                totalXP = self.currentXP
+                xpPerSecond = totalXP / timePlayed 
+                xpPerHour = ceil(xpPerSecond * 3600)
+                timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
             else
-                warning = 0;
+                mode = nil
+                warning = 3
+                timePlayed = self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)
+                totalXP = 0
+                xpPerSecond = nil
+                xpPerHour = nil
+                timeToLevel = 0
             end
-			timePlayed = self.timePlayedLevel + (GetTime() - self.timePlayedUpdated)
-			totalXP = self.currentXP
-			xpPerSecond = totalXP / timePlayed 
-			xpPerHour = ceil(xpPerSecond * 3600)
-			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		else
 			mode = nil
             warning = 3
@@ -640,6 +679,46 @@ XToLevel.Player = {
             fractions = 0
         end
 		return XToLevel.Lib:round((self.restedXP * 2) / self.maxXP * 100, fractions, true);
+	end,
+    
+    ----------------------------------------------------------------------------
+    -- Guild methods
+    ----------------------------------------------------------------------------
+    ---
+    -- Gets the percentage the player's guild has gained towards it's next level.
+    -- @param fractions The number of fractions to include. Defaults to 1.
+    -- @return A number between 0 and 100.
+    guildPercentage = nil,
+    guildLastKnownXP = nil,
+    GetGuildProgressAsPercentage = function(self, fractions)
+        if type(fractions) ~= "number" or fractions <= 0 then
+			fractions = 1
+		end
+		if self.guildPercentage == nil or self.guildLastKnownXP == nil or self.guildLastKnownXP ~= self.guildXP then
+			self.guildLastKnownXP = self.guildXP
+			self.guildPercentage = (self.guildXP or 0) / (self.guildXPMax or 1) * 100
+		end
+        return XToLevel.Lib:round(self.guildPercentage, fractions)
+    end,
+    
+    GetGuildXpRemaining = function(self) 
+		return self.guildXPMax - self.guildXP
+	end,
+    
+    guildDailyPercentage = nil,
+    guildDailyLastKnownXP = nil,
+    GetGuildDailyProgressAsPercentage = function(self, fractions)
+        if type(fractions) ~= "number" or fractions <= 0 then
+			fractions = 1
+		end
+		if self.guildDailyPercentage == nil or self.guildDailyLastKnownXP == nil or self.guildDailyLastKnownXP ~= self.guildXP then
+			self.guildDailyLastKnownXP = self.guildXPDaily
+			self.guildDailyPercentage = (self.guildXPDaily or 0) / (self.guildXPDailyMax or 1) * 100
+		end
+        return XToLevel.Lib:round(self.guildDailyPercentage, fractions)
+    end,
+    GetGuildDailyXpRemaining = function(self) 
+		return self.guildXPDailyMax - self.guildXPDaily
 	end,
     
     ---
