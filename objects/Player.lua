@@ -374,6 +374,41 @@ XToLevel.Player = {
 		end
         sData.player.total.quests = (sData.player.total.quests or 0) + 1
 	end,
+    
+    ---
+    -- Adds XP gain from a gathering profession. Keeps a detailed list of gathered
+    -- items for future reference.
+    -- @param action The action taken. (Like: "Mining" or "Herb Gathering")
+    -- @param target The target of the action. ("Silverleaf", "Copper Vein")
+    -- @param xp The XP gained.
+    AddGathering = function(self, action, target, xp)
+        if(action == nil or target == nil or xp == nil) then
+            console:log("Attempt to add invalid gathering data: " .. tostring(action) .. ", " .. tostring(target) .. ", " .. tostring(xp))
+            return nil
+        else
+            if sData.player.gathering[action] == nil then
+                sData.player.gathering[action] = {};
+            end
+            
+            local incremented = false
+            for i, v in ipairs(sData.player.gathering[action]) do
+                if v["target"] == target and v["xp"] == xp and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
+                    incremented = true
+                    sData.player.gathering[action][i]["count"] = sData.player.gathering[action][i]["count"] + 1
+                end
+            end
+            
+            if not incremented then
+                table.insert(sData.player.gathering[action], {
+                    ["target"] = target,
+                    ["xp"] = xp,
+                    ["level"] = XToLevel.Player.level,
+                    ["zoneID"] = XToLevel.Lib:ZoneID(),
+                    ["count"] = 1
+                });
+            end
+        end
+    end,
 	
 	---
 	-- Start recording a battleground. If a battleground is already in progress

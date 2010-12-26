@@ -357,7 +357,7 @@ XToLevel.LDB =
         
         if sConfig.ldb.showText then
             local pattern = self.currentPattern;
-            if (XToLevel.Player.level < XToLevel.Player.maxLevel) then
+            if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
                 local playerProgress = XToLevel.Player:GetProgressAsPercentage(0)
                 local playerProgressColor = XToLevel.Lib:GetProgressColor_Soft(playerProgress)
                 
@@ -465,18 +465,22 @@ XToLevel.LDB =
         if self.timerObject == nil then
             return false;
         end
-		if sConfig.ldb.showLabel ~= self.timerLabelShown then -- changed
-			self.timerObject.label = sConfig.ldb.showLabel and L["XToLevel"] or nil
-		end
-		if sConfig.timer.enabled then
-			local mode, timeToLevel = XToLevel.Player:GetTimerData()
-			timeToLevel = XToLevel.Lib:TimeFormat(timeToLevel)
-			if timeToLevel == "NaN" then
-				timeToLevel = "Waiting for data..."
-			end
-			self.timerObject.text = timeToLevel;
-		else
-			self.timerObject.text = "|cFFFF0000Disabled|r"
-		end
+        if sConfig.ldb.showLabel ~= self.timerLabelShown then -- changed
+            self.timerObject.label = sConfig.ldb.showLabel and L["XToLevel"] or nil
+        end
+        if sConfig.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
+            local mode, timeToLevel = XToLevel.Player:GetTimerData()
+            timeToLevel = XToLevel.Lib:TimeFormat(timeToLevel)
+            if timeToLevel == "NaN" then
+                timeToLevel = "Waiting for data..."
+            end
+            self.timerObject.text = timeToLevel;
+        else
+            if sConfig.ldb.customColors then
+                self.timerObject.text = "|cFFFF0000Inactive|r"
+            else
+                self.timerObject.text = "Inactive"
+            end
+        end
 	end,
 }

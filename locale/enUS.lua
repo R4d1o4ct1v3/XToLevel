@@ -77,6 +77,7 @@
 	['Kills to level'] = "Kills to level",
     ['Guild'] = 'Guild',
     ['Guild Window Chioce Description'] = 'Set which to display, the progress of the current level or the progress of the daily quota.',
+    ['Max Level LDB Message'] = "Highest level reached. The LDB data sources will be automatically disabled next time the UI is reloaded.",
 	
 	["Updating..."] = "Updating...",
 	["Session"] = "Session",

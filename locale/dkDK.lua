@@ -76,8 +76,9 @@
 	['Min'] = "Min",
 	['Kills to level'] = "Kills to level",
     ['Guild'] = 'Guild',
-	['Guild Window Chioce Description'] = 'Set which to display, the progress of the current level or the progress of the daily quota.',
-	
+	['Guild Window Chioce Description'] = 'Indstil til at vise, at udviklingen i det aktuelle niveau eller forløbet af den daglige kvote.',
+	['Max Level LDB Message'] = "Højeste niveau nået. De LDB datakilder, vil automatisk blive deaktiveret næste gang UI genindlæses.",
+    
 	["Updating..."] = "Updating...",
 	["Session"] = "Session",
 	["Level"] = "Level",

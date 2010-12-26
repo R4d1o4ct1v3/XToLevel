@@ -76,8 +76,9 @@
 	['Min'] = "Min",
 	['Kills to level'] = "Kills to level",
     ['Guild'] = 'Guild',
-    ['Guild Window Chioce Description'] = 'Set which to display, the progress of the current level or the progress of the daily quota.',
-	
+    ['Guild Window Chioce Description'] = 'Ensemble pour l\'affichage, les progrès de leur niveau actuel ou l\'état d\'avancement du contingent quotidien.',
+	['Max Level LDB Message'] = "Le plus haut niveau atteint. Les sources de données LDB sera automatiquement désactivé lors de la prochaine interface est rechargé.",
+    
 	["Updating..."] = "Updating...",
 	["Session"] = "Session",
 	["Level"] = "Level",

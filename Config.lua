@@ -133,7 +133,8 @@ sData = {
 			start = nil,
 			total = nil,
 			xpPerSec = nil,
-		}
+		},
+        gathering = {}
 	},
 	pet = {
 		killAverage = 0,
@@ -1570,6 +1571,7 @@ function XToLevel.Config:Verify()
     if sData.player.questList == nil then sData.player.questList = {} end
     if sData.player.bgList == nil then sData.player.bgList = {} end
     if sData.player.dungeonList == nil then sData.player.dungeonList = {} end
+    if sData.player.gathering == nil then sData.player.gathering = {} end
 	
     if sData.pet.killAverage == nil then sData.pet.killAverage = 0 end
     if sData.pet.killList == nil then sData.pet.killList = {} end

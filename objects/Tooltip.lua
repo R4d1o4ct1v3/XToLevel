@@ -185,7 +185,7 @@ XToLevel.Tooltip =
             -- The old "overall" tootip
             GameTooltip:AddLine(L["XToLevel"])
             
-            if XToLevel.Player.level < XToLevel.Player.maxLevel then
+            if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
                 if sConfig.ldb.tooltip.showDetails then
                     self:AddKills()
                     self:AddQuests()
@@ -197,42 +197,37 @@ XToLevel.Tooltip =
                     self:AddBattlegroundInfo()
                 end
                 GameTooltip:AddLine(" ")
-                
                 if sConfig.ldb.tooltip.showExperience then
                     GameTooltip:AddLine(L["Experience"] .. ": ")
                     self:AddExperience()
                     GameTooltip:AddLine(" ")
                 end
-                
                 if sConfig.ldb.tooltip.showGuildInfo then
                     GameTooltip:AddLine(L['Guild'] .. ": ")
                     self:AddGuildInfo()
                     GameTooltip:AddLine(" ")
                 end
-            end
-            
-            if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.ldb.tooltip.showPetInfo then
+                if XToLevel.Lib:ShowDungeonData() then
+                    self:AddDungeons()
+                    GameTooltip:AddLine(" ")
+                end
+                if XToLevel.Lib:ShowBattlegroundData() then
+                    self:AddBattles()
+                    GameTooltip:AddLine(" ")
+                end
+                if sConfig.timer.enabled and sConfig.ldb.tooltip.showTimerInfo then
+                    GameTooltip:AddLine(L["Timer"] .. ":")
+                    self:AddTimerDetailes(true)
+                    GameTooltip:AddLine(" ")
+                end
+            elseif (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.ldb.tooltip.showPetInfo then
                 GameTooltip:AddLine(L["Pet"] .. ":")
                 self:AddPet()
                 self:AddPetExperience()
                 GameTooltip:AddLine(" ")
+            else
+                GameTooltip:AddLine(L['Max Level LDB Message'], 255, 255, 255)
             end
-            
-            if XToLevel.Lib:ShowDungeonData() then
-                self:AddDungeons()
-                GameTooltip:AddLine(" ")
-            end
-                
-            if XToLevel.Lib:ShowBattlegroundData() then
-                self:AddBattles()
-                GameTooltip:AddLine(" ")
-            end
-			
-			if sConfig.timer.enabled and sConfig.ldb.tooltip.showTimerInfo then
-				GameTooltip:AddLine(L["Timer"] .. ":")
-				self:AddTimerDetailes(true)
-				GameTooltip:AddLine(" ")
-			end
         end -- END "Overall" tooltip creation
         
         if footerText ~= nil then
@@ -466,7 +461,7 @@ XToLevel.Tooltip =
 	
 	--- Detailed timer info.
 	AddTimerDetailes = function(self, mininmal)
-		if sConfig.timer.enabled then
+		if sConfig.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
 			-- Gather data.
 			local mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning = XToLevel.Player:GetTimerData()
 			--local showUsingLevelWarning = mode ~= nil and mode ~= sConfig.timer.mode
