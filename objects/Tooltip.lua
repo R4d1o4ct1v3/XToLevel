@@ -537,15 +537,18 @@ XToLevel.Tooltip =
     
     AddGathering = function(self)
         local linesAdded = 0
-        for i, action in ipairs(XToLevel.Player:GetGatheringActions()) do
-            local items = XToLevel.Player:GetGatheringItems(action);
-            if # items > 0 then
-                GameTooltip:AddLine(" " .. action .. ": ", self.dataColor.r, self.dataColor.b, self.dataColor.b)
-                for i, item in ipairs(items) do
-                    local required, averageXP = XToLevel.Player:GetGatheringRequired_ByTarget(item);
-                    if type(required) == "number" and required > 0 then
-                        GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. averageXP .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-                        linesAdded = linesAdded + 1
+        local actions = XToLevel.Player:GetGatheringActions();
+        if actions ~= nil and # actions > 0 then
+            for i, action in ipairs(actions) do
+                local items = XToLevel.Player:GetGatheringItems(action);
+                if # items > 0 then
+                    GameTooltip:AddLine(" " .. action .. ": ", self.dataColor.r, self.dataColor.b, self.dataColor.b)
+                    for i, item in ipairs(items) do
+                        local required, averageXP = XToLevel.Player:GetGatheringRequired_ByTarget(item);
+                        if type(required) == "number" and required > 0 then
+                            GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. averageXP .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+                            linesAdded = linesAdded + 1
+                        end
                     end
                 end
             end
