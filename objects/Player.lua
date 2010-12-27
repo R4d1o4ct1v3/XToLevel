@@ -44,7 +44,7 @@ XToLevel.Player = {
 	-- Members
 	isActive = false,
 	level = nil,
-	maxLevel = 80, -- Assume WotLK-enabled. Will be corrected once properly initialized.
+	maxLevel = nil, -- Assume WotLK-enabled. Will be corrected once properly initialized.
 	class = nil,
 	currentXP = nil,
     restedXP = 0,
@@ -89,7 +89,7 @@ XToLevel.Player = {
 		self:SyncData()
         self:SyncGuildData()
 		
-		self.maxLevel = self:GetMaxLevel();
+		self:GetMaxLevel();
         
 		if self.level == self.maxLevel then
 			self.isActive = false
@@ -112,7 +112,10 @@ XToLevel.Player = {
     -- This assumes a 10 level increase per expansion, starting at level 60.
     ---
     GetMaxLevel = function(self)
-        return XToLevel.MAX_PLAYER_LEVELS[GetAccountExpansionLevel()]
+        if self.maxLevel == nil then
+            self.maxLevel = XToLevel.MAX_PLAYER_LEVELS[GetAccountExpansionLevel()]
+        end
+        return self.maxLevel
     end,
     
     ---
