@@ -34,39 +34,56 @@ XToLevel.Tooltip =
 	-- Callback for the GameTooltip:OnShow hook
 	-- Adds the number of kills needed to unfriendly NPC tooltips.
 	OnShow_HookCallback = function(self, ...)
-		if sConfig.general.showNpcTooltipData and UnitLevel("player") < 80 then -- TODO: Fix the need for the level restriction
+		if sConfig.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
 			local name, unit = GameTooltip:GetUnit()
             local maxHP = UnitHealthMax("target") -- To exclude targetting dummies. (Also, I can't imagine any MOB with 1 HP gives much XP)
 			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and maxHP > -1 then
 				local level = UnitLevel(unit)
-				if XToLevel.Tooltip.OnShow_XpData[level] == nil then
-					XToLevel.Tooltip.OnShow_XpData[level] = XToLevel.Lib:round(XToLevel.Lib:MobXP(UnitLevel("player"), UnitLevel(unit)), 0)
-				end
-				if XToLevel.Tooltip.OnShow_XpData[level] > 0 then
-					local color
-					local diff = XToLevel.Player.level - level
-					local percent = 50 + (diff * 10)
-					if percent <= 100 then
-						if percent < 0 then
-							percent = 0
-						end
-						color = XToLevel.Lib:GetProgressColor(percent)
-					else
-						color = "888888"
-					end
-                    local killsRequired = XToLevel.Player:GetKillsRequired(XToLevel.Tooltip.OnShow_XpData[level]);
-                    if killsRequired > 0 then
-                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. XToLevel.Player:GetKillsRequired(XToLevel.Tooltip.OnShow_XpData[level]) .. "|r", 0.75, 0.75, 0.75)
-
-                        if IsAddOnLoaded("TipTac1") then
-                            local _, height = GameTooltipText:GetFont();
-                            local spacing = GameTooltipText:GetSpacing();
-                            GameTooltip:SetHeight(GameTooltip:GetHeight() + (height + spacing + 2))
-                        else
-                            GameTooltip:Show()
-                        end
+                
+                local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, name);
+                local requiredText = ""
+                local cl = nil
+                
+                if thexp == 0 then
+                    -- Search for an approximation from lower levels.
+                    cl = XToLevel.Player.level - 1
+                    while thexp == 0 and cl > XToLevel.Player.level - 5 do
+                        thexp = XToLevel.Lib:MobXP(cl, level)
+                        cl = cl - 1
                     end
+                end
+                
+				if thexp > 0 then
+                    local killsRequired = XToLevel.Player:GetKillsRequired(thexp);
+                    if killsRequired > 0 then
+                        local output = XToLevel.Player:GetKillsRequired(thexp)
+                        if cl ~= nil then
+                            output = "~" .. output;
+                        end
+                        
+                        local color = "888888"
+                        local diff = XToLevel.Player.level - level
+                        
+                        local percent = 50 + (diff * 10)
+                        if percent <= 100 then
+                            if percent < 0 then
+                                percent = 0
+                            end
+                            color = XToLevel.Lib:GetProgressColor(percent)
+                        end
+                        
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
+                        GameTooltip:Show()
+                    else
+                        requiredText = nil
+                    end
+                else
+                    requiredText = nil
 				end
+                
+                if requiredText then
+                    
+                end
             else
                 local addLine = false
                 for i = 1, GameTooltip:NumLines() do
