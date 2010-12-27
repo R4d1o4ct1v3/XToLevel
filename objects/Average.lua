@@ -28,7 +28,7 @@ end
 ---
 -- Updates the active AverageFrame window.
 function XToLevel.Average:Update()
-    if XToLevel.Player.level < XToLevel.Player.GetMaxLevel() then
+    if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
         if self.activeAPI ~= self.knownAPIs[sConfig.averageDisplay.mode] then
             for index, name in ipairs(self.knownAPIs) do
                 XToLevel.AverageFrameAPI[name]:Update()
