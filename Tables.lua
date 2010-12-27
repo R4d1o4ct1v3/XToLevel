@@ -49,3 +49,10 @@ XToLevel.DISPLAY_LOCALES =
     ["Español"] = "esES",
     ["Dansk"] = "dkDK",
 }
+
+XToLevel.CATACLYSM_ZONES = {
+    [1] = "Mount Hyjal",
+    [2] = "Uldum",
+    [3] = "Vashj'ir",
+    [4] =  "Twilight Highlands"
+}

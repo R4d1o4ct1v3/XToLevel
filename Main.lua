@@ -36,8 +36,8 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.3_22"
-XToLevel.releaseDate = '2010-12-17'
+XToLevel.version = "4.0.3_23"
+XToLevel.releaseDate = '2010-12-27'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -58,15 +58,20 @@ XToLevel.gatheringTarget = nil;
 XToLevel.gatheringTime = nil;
 
 ---
+-- Temporary variables
+local targetList = { }
+local regenEnabled = true;
+
+local targetUpdatePending = false; -- Used if the chat message is fired before the combat log, to update the target's XP value in the targetList
+
+---
 -- ON_EVENT handler. Set in the XToLevelDisplay XML file. Called for every event
 -- and only used to attach the callback functions to their respective event.
-function XToLevel:MainOnEvent(event, ...)  
+function XToLevel:MainOnEvent(event, ...)
     if event == "PLAYER_LOGIN" then
         self:OnPlayerLogin()
     elseif event == "CHAT_MSG_COMBAT_XP_GAIN" then
         self:OnChatXPGain(select(1, ...))
-    elseif event == "CHAT_MSG_SYSTEM" then
-        self:OnChatMsgSystem(select(1, ...));
     elseif event == "CHAT_MSG_OPENING" then
         self:OnChatMsgOpening(select(1, ...));
     elseif event == "PLAYER_LEVEL_UP" then
@@ -105,6 +110,14 @@ function XToLevel:MainOnEvent(event, ...)
         self:OnQuestComplete()
     elseif event == "QUEST_FINISHED" then
         self:OnQuestFinished()
+    elseif event == "PLAYER_TARGET_CHANGED" then
+        self:OnPlayerTargetChanged()
+    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" then
+        self:OnCombatLogEventUnfiltered(...)
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        self:OnPlayerRegenEnabled()
+    elseif event == "PLAYER_REGEN_DISABLED" then
+        self:OnPlayerRegenDisabled()
     end
 end
 XToLevel.frame:SetScript("OnEvent", function(self, ...) XToLevel:MainOnEvent(...) end);
@@ -119,7 +132,7 @@ function XToLevel:RegisterEvents(level)
 
     -- Register Events
     if level < XToLevel.Player:GetMaxLevel() then
-        --self.frame:RegisterAllEvents();
+        -- self.frame:RegisterAllEvents();
 	    self.frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
         self.frame:RegisterEvent("CHAT_MSG_OPENING");
 	    
@@ -149,6 +162,11 @@ function XToLevel:RegisterEvents(level)
         
         self.frame:RegisterEvent("QUEST_FINISHED")
         self.frame:RegisterEvent("QUEST_COMPLETE")
+        
+        self.frame:RegisterEvent("PLAYER_TARGET_CHANGED")
+        self.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        self.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+        self.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
     end
    	if XToLevel.Player:GetClass() == "HUNTER" then
 	    self.frame:RegisterEvent("UNIT_PET");
@@ -195,6 +213,11 @@ function XToLevel:UnregisterEvents()
     
     self.frame:UnregisterEvent("GUILD_XP_UPDATE")
     self.frame:UnregisterEvent("PLAYER_GUILD_UPDATE")
+    
+    self.frame:UnregisterEvent("PLAYER_TARGET_CHANGED")
+    self.frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    self.frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
+    self.frame:UnregisterEvent("PLAYER_REGEN_DISABLED")
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -226,6 +249,107 @@ function XToLevel:OnPlayerLogin()
     XToLevel.LDB:Initialize()
     XToLevel.Average:Initialize()
 	XToLevel.Tooltip:Initialize()
+end
+
+---
+-- Used to keep track of the player's targets while in combat. Once they die,
+-- the chat and combat log events can then be used to match the targets and the
+-- data stored and used to calculate the kills needed to level. - This is needed
+-- because none of those messages pass along the level of a mob, but the GUIDs
+-- are the same so I can record the levels here and match them in those events.
+function XToLevel:OnPlayerTargetChanged()
+    if not regenEnabled then
+        local target_guid = UnitGUID("target")
+        if target_guid ~= nil then
+            local target_name = UnitName("target")
+            local target_level = UnitLevel("target")
+            local exists = false
+            
+            -- Look for an existing entry and updated it if it does.
+            for i, data in ipairs(targetList) do
+                if data.guid == target_guid then
+                    exists = true
+                    targetList[i].name = target_name
+                    targetList[i].level = target_level
+                end
+            end
+            
+            -- Add the target if it doesn't exist.
+            if not exists then
+                table.insert(targetList, {
+                    guid = target_guid,
+                    name = UnitName("target"),
+                    level = UnitLevel("target"),
+                    dead = false,
+                    xp = nil
+                });
+            end
+        end
+    end
+end
+
+---
+-- Look for the combat log event that tells of a NPC death. 
+function XToLevel:OnCombatLogEventUnfiltered(...)
+    local cl_event = select(2, ...)
+    local npc_guid = select(6, ...)
+    if cl_event ~= nil and npc_guid ~= nil and cl_event == "UNIT_DIED" then
+        for i, data in ipairs(targetList) do
+            if data.guid == npc_guid then
+                data.dead = true
+                if type(targetUpdatePending) == "number" and targetUpdatePending > 0 then
+                    data.xp = targetUpdatePending;
+                    targetUpdatePending = nil;
+                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp)
+                end
+            end
+        end
+    end
+end
+
+function XToLevel:OnPlayerRegenDisabled()
+    regenEnabled = false;
+    self:OnPlayerTargetChanged() -- So if a target is already targetted, it will not be overlooked.
+end
+
+--- Reset the target list. No point keeping a list of targets out of combat.
+function XToLevel:OnPlayerRegenEnabled()
+    regenEnabled = true;
+    targetList = { }
+end
+
+---
+-- Adds the mob to the permenant list of known NPCs and their XP value.
+-- Used to calculate the Kills To Level values for the tooltip.
+function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp)
+    if type(sData.player.npcXP) ~= "table" then
+        sData.player.npcXP = { }
+    end
+    
+    local mobAlreadyExists = false
+    if # sData.player.npcXP > 0 then
+        for i, data in ipairs(sData.player.npcXP) do
+            if data.mobName == mobName and data.mobLevel == mobLevel and data.playerLevel == playerLevel then
+                mobAlreadyExists = true
+                if data.xp < xp then
+                    -- If the recorded XP is lover than the one given now, it is
+                    -- possible that the last kill only rewarded a partial XP
+                    -- gain. (Like, if helped by another player)
+                    -- In this case, update it to the new value.
+                    sData.player.npcXP[i].xp = xp;
+                end
+            end
+        end
+    end
+    
+    if not mobAlreadyExists then
+        table.insert(sData.player.npcXP, {
+            ["mobName"] = mobName,
+            ["mobLevel"] = mobLevel,
+            ["playerLevel"] = playerLevel,
+            ["xp"] = xp
+        });
+    end
 end
 
 --- Fires when the player's equipment changes
@@ -308,6 +432,19 @@ function XToLevel:OnChatXPGain(message)
 			XToLevel.Player:AddBattlegroundKill(xp, mobName)
 		else
 			local unrestedXP = XToLevel.Player:AddKill(xp, mobName)
+            
+            -- Update the temporary target list.
+            local found = false;
+            for i, data in ipairs(targetList) do
+                if data.name == mobName and data.dead and data.xp == nil then
+                    targetList[i].xp = unrestedXP
+                    found = true
+                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp)
+                end
+            end
+            if not found then
+                targetUpdatePending = unrestedXP;
+            end
 			
 			-- sConfig.messages.bgObjectives ???
 			if sConfig.messages.playerFloating or sConfig.messages.playerChat then
@@ -691,13 +828,35 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("  killCount: ".. tostring(data.killCount))
             console:log("  killTotal: ".. tostring(data.killTotal))
         end
-    elseif arg1 == "debug" then
+    elseif arg1 == "glist" then
 		for action, actionTable in pairs(sData.player.gathering) do
             console:log("-- " .. tostring(action) .. " -- ")
             for i, row in pairs(actionTable) do
                 console:log(" " .. tostring(row["target"]) .. ", l:" .. tostring(row["level"]) .. ", xp:" .. tostring(row["xp"]) .. ", z:" .. tostring(row["zoneID"]) .. ", x" .. tostring(row["count"]));
             end
         end
+    elseif arg1 == "debug" then
+        function ParseGUID(guid)
+           local first3 = tonumber("0x"..strsub(guid, 3,5))
+           local unitType = bit.band(first3,0x00f)
+
+           if (unitType == 0x000) then
+              print("Player, ID #", strsub(guid,6))
+           elseif (unitType == 0x003) then
+              local creatureID = tonumber("0x"..strsub(guid,9,12))
+              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
+              print("NPC, ID #",creatureID,"spawn #",spawnCounter)
+           elseif (unitType == 0x004) then
+              local petID = tonumber("0x"..strsub(guid,6,12))
+              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
+              print("Pet, ID #",petID,"spawn #",spawnCounter)
+           elseif (unitType == 0x005) then
+              local creatureID = tonumber("0x"..strsub(guid,9,12))
+              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
+              print("Vehicle, ID #",creatureID,"spawn #",spawnCounter)
+           end
+        end
+        ParseGUID("0xF53003A2007A7222")
 	else
 		XToLevel.Config:Open("messages")
 	end

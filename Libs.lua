@@ -145,6 +145,13 @@ end
 ---
 function XToLevel.Lib:ZoneID()
 	local currentZone = GetRealZoneText();
+    
+    for __, cataZone in ipairs(XToLevel.CATACLYSM_ZONES) do
+        if cataZone == currentZone then
+            return 5
+        end
+    end
+    
 	local continentNames, key, val = { GetMapContinents() } ;
 	for key, val in pairs(continentNames) do
 		local continentZones = { GetMapZones(key) };
@@ -221,67 +228,61 @@ end
 ---
 -- Calculates the XP gained from killing a mob
 ---
-function XToLevel.Lib:MobXP(charLevel, mobLevel)
-	if charLevel == nil or charLevel <= 0 then
-		charLevel = UnitLevel("player");
-	end
-	if mobLevel == nil then 
-		mobLevel = charLevel;
-	end
-
-	-- Find the highest level that yields no experience.
-	local grayLevel = 0
-	if charLevel < 6 then
-		grayLevel = 0
-	elseif charLevel < 40 then
-		grayLevel = charLevel - floor(charLevel / 10) - 5
-	elseif charLevel < 60 then
-		grayLevel = charLevel - floor(charLevel / 5) - 1
-	else
-		grayLevel = charLevel - 9
-	end
-	
-	if mobLevel <= grayLevel then
-		return 0
-	end
-	
-	-- Get the zone specific value needed for the calculations
-	-- I assume levels 58-67 and 68-80 will be leveling in Outlands and Northrend, respectively.
-	-- (I do this mainly to avoid missleading information when high-level players are in the old zones.)
-	zoneID = self:ZoneID()
-	if charLevel >= 58 and charLevel < 69 and (zoneID or 0) < 3 then
-		zoneID = 3
-	elseif charLevel >= 69 and charLevel < 80 and (zoneID or 0) < 4 then
-		zoneID = 4
-	elseif charLevel >= 80 and charLevel < 85 and (zoneID or 0) < 5 then
-		zoneID = 5
-	end
-	
-	local addValue = 45 -- Default, for the pre-tbc zones
-	if (zoneID or 0) == 3 then
-		addValue = 235 -- Outlands
-    elseif (zoneID or 0) == 4 then 
-        addValue = 580 -- Northrend
-	elseif (zoneID or 0) == 5 then 
-        addValue = 580 -- Cataclysm (Unknown at this point!)
-	end
-	
-	local XP = 0
-	if(charLevel == mobLevel) then
-		XP = (charLevel * 5) + addValue
-	elseif (charLevel < mobLevel) then
-		-- Find max mob level. All mobs higher than (charLevel + 4) are worth the same amount.
-		local maxMobLevel = mobLevel
-		if mobLevel > charLevel + 4 then 
-			maxMobLevel = charLevel + 4 
-		end
-		XP = ((charLevel * 5 + addValue)) * (1 + (0.05 * (maxMobLevel - charLevel)))
-	elseif (charLevel > mobLevel) then
-		local ZD = XToLevel.Lib:ZeroDifference(charLevel)
-		XP = ((charLevel * 5 + addValue)) * (1 - ((charLevel - mobLevel) / ZD))
-	end
-	
-	return XP * (1 + XToLevel.Lib:GetHeirloomXpBonus())
+local getAverageXP = function(charLevel, mobLevel)
+    local total = 0
+    local count = 0
+    for i, data in ipairs(sData.player.npcXP) do
+        if data.mobLevel == mobLevel and data.playerLevel == charLevel then
+            total = total + tonumber(data.xp)
+            count = count + 1
+        end
+    end
+    if total > 0 and count > 0 then
+        return (total / count);
+    else
+        return nil;
+    end
+end
+local getAbsoluteXP = function(charLevel, mobLevel, mobName)
+    for i, data in ipairs(sData.player.npcXP) do
+        if data.mobName == mobName and data.mobLevel == mobLevel and data.playerLevel == charLevel then
+            return tonumber(data.xp)
+        end
+    end
+    return nil;
+end
+function XToLevel.Lib:MobXP(charLevel, mobLevel, mobName)
+    if type(charLevel) ~= "number" then charLevel = UnitLevel("player") end
+    if type(mobLevel) ~= "number" then mobLevel = charLevel end
+    
+    local thexp = nil
+    if mobName ~= nil then
+        thexp = getAbsoluteXP(charLevel, mobLevel, mobName)
+    end
+    if thexp == nil then
+        thexp = getAverageXP(charLevel, mobLevel)
+    end
+    
+    -- The old formula still seems to work for mobs of equal level, so...
+    if thexp == nil and charLevel == mobLevel then
+        local zoneID = XToLevel.Lib:ZoneID();
+        local addValue = 45 -- Default, for the pre-tbc zones
+        if (zoneID or 0) == 3 then
+            addValue = 235 -- Outlands
+        elseif (zoneID or 0) == 4 then 
+            addValue = 580 -- Northrend
+        elseif (zoneID or 0) == 5 then 
+            addValue = 1770 -- Cataclysm (Unknown at this point!)
+        end
+        
+        thexp = (charLevel * 5) + addValue
+    end
+    
+    if thexp == nil then
+        thexp = 0;
+    end
+    
+    return thexp;
 end
 
 ---

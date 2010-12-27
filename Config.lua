@@ -2,7 +2,7 @@
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 4.0.3_21
+-- @release 4.0.3_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
@@ -134,7 +134,8 @@ sData = {
 			total = nil,
 			xpPerSec = nil,
 		},
-        gathering = {}
+        gathering = {},
+        npcXP = { },
 	},
 	pet = {
 		killAverage = 0,
@@ -1572,6 +1573,7 @@ function XToLevel.Config:Verify()
     if sData.player.bgList == nil then sData.player.bgList = {} end
     if sData.player.dungeonList == nil then sData.player.dungeonList = {} end
     if sData.player.gathering == nil then sData.player.gathering = {} end
+    if sData.player.npcXP == nil then sData.player.npcXP = {} end
 	
     if sData.pet.killAverage == nil then sData.pet.killAverage = 0 end
     if sData.pet.killList == nil then sData.pet.killList = {} end
