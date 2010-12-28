@@ -152,6 +152,15 @@ function XToLevel.Lib:ZoneID()
         end
     end
     
+    -- Look for the new Cataclysm low-level zones. By default they return 5, but
+    -- we wan't them to return 1 like the rest of the lowbie zones, so the XP
+    -- calculations don't mistake them for 80-85 zones.
+    for __, cataZone in ipairs(XToLevel.CATACLYSM_LOWLEVEL_ZONES) do
+        if cataZone == currentZone then
+            return 1
+        end
+    end
+    
 	local continentNames, key, val = { GetMapContinents() } ;
 	for key, val in pairs(continentNames) do
 		local continentZones = { GetMapZones(key) };

@@ -56,3 +56,11 @@ XToLevel.CATACLYSM_ZONES = {
     [3] = "Vashj'ir",
     [4] =  "Twilight Highlands"
 }
+
+-- A list of zones introduced in cata that are would use the zone ID 5, yet who's
+-- XP modifier should be that of normal pre-Cata low-level zones.
+XToLevel.CATACLYSM_LOWLEVEL_ZONES = {
+    [1] = "Kezan",
+    [2] = "The Lost Isles",
+    [3] = "Ruins of Gilneas"
+}
