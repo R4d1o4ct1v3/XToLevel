@@ -93,11 +93,14 @@ XToLevel.Tooltip =
                     end
                 end
                 if addLine then
-                    -- First line should always be the target's name.
-                    local targetName = _G["GameTooltipTextLeft1"]:GetText()
-                    local required, averageXP = XToLevel.Player:GetGatheringRequired_ByTarget(targetName)
+                    -- First line should always be the item's name.
+                    local itemName = _G["GameTooltipTextLeft1"]:GetText()
+                    local required, __, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(itemName)
                     if type(required) == "number" and required > 0 then
-                        GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. tostring(required), 0.75, 0.75, 0.75)
+                        if isOldData then
+                            required = "~" .. tostring(required)
+                        end
+                        GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. required, 0.75, 0.75, 0.75)
                         GameTooltip:Show()
                     end
                 end
@@ -561,8 +564,11 @@ XToLevel.Tooltip =
                 if # items > 0 then
                     GameTooltip:AddLine(" " .. action .. ": ", self.dataColor.r, self.dataColor.b, self.dataColor.b)
                     for i, item in ipairs(items) do
-                        local required, averageXP = XToLevel.Player:GetGatheringRequired_ByTarget(item);
+                        local required, averageXP, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(item);
                         if type(required) == "number" and required > 0 then
+                            if isOldData then
+                                required = "~" .. required
+                            end
                             GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. averageXP .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
                             linesAdded = linesAdded + 1
                         end

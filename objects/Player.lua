@@ -403,14 +403,18 @@ XToLevel.Player = {
             
             local incremented = false
             for i, v in ipairs(sData.player.gathering[action]) do
-                --[[console:log(" ----- ")
-                console:log(" - " .. tostring(v["target"]) .. " == " .. tostring(target))
-                console:log(" - " .. tostring(v["xp"]) .. " == " .. tostring(xp))
-                console:log(" - " .. tostring(v["level"]) .. " == " .. tostring(XToLevel.Player.level))
-                console:log(" - " .. tostring(v["zoneID"]) .. " == " .. tostring(zoneID))--]]
-                if v["target"] == target and v["xp"] == xp and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
+                if v["target"] == target and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
                     incremented = true
                     sData.player.gathering[action][i]["count"] = sData.player.gathering[action][i]["count"] + 1
+                     -- The XP value stays constant throughout a level, so if there
+                     -- is a difference between the XP values, there was most likely
+                     -- a problem. (A known cause for this is when gathering causes
+                     -- a level-up; that action will be stored at the new level,
+                     -- but the old XP will be recorded.)
+                     -- Storing the higher value... just because xD
+                     if sData.player.gathering[action][i]["xp"] < xp then
+                        sData.player.gathering[action][i]["xp"] = xp
+                     end
                 end
             end
             
@@ -428,20 +432,29 @@ XToLevel.Player = {
     
     ---
     -- Get the total number of the given target to reach then next level.
-    -- If the target is invalid, or none of them have been recorded yet, this
-    -- returns nil. - Note that this only searches for items recorded the last
-    -- 10 levels. Anyting earlier is ignored.
-    -- @param targetName The name of the target. (For example: "Obsidium Mine")
-    GetGatheringRequired_ByTarget = function(self, targetName)
-        local countAverage = function(levelDifference, targetName)
-            if type(levelDifference) ~= "number" or levelDifference <= 0 then
-                levelDifference = 1
+    -- If the item is invalid, or none of them have been recorded yet, this
+    -- returns nil.  - If no items have been recorded this level, the function
+    -- goes as far as 5 levels back to search for the closest value. In this case
+    -- a third parameter with the value of TRUE is also returned.
+    -- @param itemName The name of the target. (For example: "Obsidium Mine")
+    -- @param levelRange The number of levels allowed to go back to find data.
+    --        Note that only the data for the closest level will be returned, not
+    --        an average for the whole range.
+    -- @returns Three values are returned: the # of kills required, the XP per
+    --          item, and a boolean indicating if the function had to use old
+    --          data (TRUE if using old, FALSE if not)
+    GetGatheringRequired_ByItem = function(self, itemName, levelRange)
+        -- Returns the average XP gained from the given item within the given
+        -- level range. Returns nil if nothing is found.
+        local countAverage = function(levelRange, itemName)
+            if type(levelRange) ~= "number" or levelRange <= 0 then
+                levelRange = 1
             end
             local tXP = 0;
             local tCount = 0;
             for action, dataTable in pairs(sData.player.gathering) do
                 for i, data in ipairs(dataTable) do
-                    if data["target"] == targetName and data["level"] > XToLevel.Player.level - levelDifference then
+                    if data["target"] == itemName and data["level"] > XToLevel.Player.level - levelRange then
                         tXP = tXP + (data["xp"] * data["count"]);
                         tCount = tCount + data["count"]
                     end
@@ -454,16 +467,27 @@ XToLevel.Player = {
             end
         end
         
+        if type(levelRange) ~= "number" then
+            levelRange = 5
+        end
+        if levelRange > XToLevel.Player.level then
+            levelRange = XToLevel.Player.level
+        end
+        
         local average = nil
         local i = 1
-        while i <= 10 and average == nil do
-            average = countAverage(i, targetName)
+        -- The 85 is just a fail-safe in case... stuff I can't thing up right 
+        -- now happens and this turns into an infinite loop. (I hate those things!)
+        while i <= levelRange and i < 85 and average == nil do 
+            average = countAverage(i, itemName)
             i = i + 1
         end
         if average ~= nil then
-            return ceil((self.maxXP - self.currentXP) / average), average;
+            local isOldData = false
+            if i > 2 then isOldData = true end
+            return ceil((self.maxXP - self.currentXP) / average), average, isOldData;
         else
-            return nil
+            return nil, nil, nil
         end
     end,
     
