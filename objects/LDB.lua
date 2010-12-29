@@ -411,7 +411,9 @@ XToLevel.LDB =
                     pattern = string.gsub(pattern, '%$%$guilddailycolor%$%$', guildDailyColor);
                     pattern = string.gsub(pattern, '%$%$guilddaily%$%$', tostring(guildDailyProgress) .. "%%");
                 else
+                    pattern = string.gsub(pattern, '%$%$guildcolor%$%$', "AAAAAA");
                     pattern = string.gsub(pattern, '%$%$guildxp%$%$', "N/A");
+                    pattern = string.gsub(pattern, '%$%$guilddailycolor%$%$', "AAAAAA");
                     pattern = string.gsub(pattern, '%$%$guilddaily%$%$', "N/A");
                 end
             else

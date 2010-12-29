@@ -643,7 +643,7 @@ XToLevel.Config =
             function(self) self:SetChecked(sConfig.averageDisplay.guildProgress) end, 
             function(self) sConfig.averageDisplay.guildProgress = self:GetChecked() or false end)
             
-        -- Guild boxes
+        --[[ Guild boxes -- REMOVED UNTIL IT CAN BE DONE PROPERLY! --
         self:CreateH2(windowPanel, "GuildDataHeader", L['Guild'], 250)
         self:CreateDescription(windowPanel, "MainDescription", L['Guild Window Chioce Description'], 22, "FFFFFF")
         self:CreateSelectBox(windowPanel, "GuildTypeSelect", {"Level", "Daily"}, "Level",
@@ -676,6 +676,7 @@ XToLevel.Config =
 				XToLevel.LDB:Update()
 	        end
 	    )
+        --]]
         
         -- Add low-level warning tooltips
         if XToLevel.Player.level < 10 then

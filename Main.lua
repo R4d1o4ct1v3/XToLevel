@@ -104,8 +104,8 @@ function XToLevel:MainOnEvent(event, ...)
 		self:OnEquipmentChanged(select(1, ...), select(2, ...))
 	elseif event == "TIME_PLAYED_MSG" then
 		self:OnTimePlayedMsg(select(1, ...), select(2, ...))
-    elseif event == "GUILD_XP_UPDATE" or event == "PLAYER_GUILD_UPDATE" then
-        self:OnGuildXpUpdate()
+    --elseif event == "GUILD_XP_UPDATE" or event == "PLAYER_GUILD_UPDATE" then
+    --    self:OnGuildXpUpdate()
     elseif event == "QUEST_COMPLETE" then
         self:OnQuestComplete()
     elseif event == "QUEST_FINISHED" then
@@ -157,8 +157,8 @@ function XToLevel:RegisterEvents(level)
 		
 		self.frame:RegisterEvent("TIME_PLAYED_MSG")
         
-        self.frame:RegisterEvent("GUILD_XP_UPDATE")
-        self.frame:RegisterEvent("PLAYER_GUILD_UPDATE")
+        --self.frame:RegisterEvent("GUILD_XP_UPDATE")
+        --self.frame:RegisterEvent("PLAYER_GUILD_UPDATE")
         
         self.frame:RegisterEvent("QUEST_FINISHED")
         self.frame:RegisterEvent("QUEST_COMPLETE")
@@ -211,8 +211,8 @@ function XToLevel:UnregisterEvents()
 	
 	self.frame:UnregisterEvent("TIME_PLAYED_MSG")
     
-    self.frame:UnregisterEvent("GUILD_XP_UPDATE")
-    self.frame:UnregisterEvent("PLAYER_GUILD_UPDATE")
+    --self.frame:UnregisterEvent("GUILD_XP_UPDATE")
+    --self.frame:UnregisterEvent("PLAYER_GUILD_UPDATE")
     
     self.frame:UnregisterEvent("PLAYER_TARGET_CHANGED")
     self.frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")

@@ -87,7 +87,7 @@ XToLevel.Player = {
 	-- Constructor
 	Initialize = function(self)
 		self:SyncData()
-        self:SyncGuildData()
+        --self:SyncGuildData()
 		
 		self:GetMaxLevel();
         
