@@ -78,6 +78,8 @@ XToLevel.Pet = {
         else
             output.gainedLevel = false      
         end
+        
+        self.killAverage = nil
 		
 		return output
 	end,
