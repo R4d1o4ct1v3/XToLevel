@@ -36,11 +36,11 @@ XToLevel.Tooltip =
 	OnShow_HookCallback = function(self, ...)
 		if sConfig.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
 			local name, unit = GameTooltip:GetUnit()
-            local maxHP = UnitHealthMax("target") -- To exclude targetting dummies. (Also, I can't imagine any MOB with 1 HP gives much XP)
-			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and maxHP > -1 then
+			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitHealthMax(unit) > -1 then
 				local level = UnitLevel(unit)
+                local classification = UnitClassification(unit)
                 
-                local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, name);
+                local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, classification);
                 local requiredText = ""
                 local cl = nil
                 

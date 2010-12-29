@@ -50,6 +50,14 @@ XToLevel.DISPLAY_LOCALES =
     ["Dansk"] = "dkDK",
 }
 
+XToLevel.UNIT_CLASSIFICATIONS = {
+    [1] = "normal",
+    [2] = "rare",
+    [3] = "elite",
+    [4] = "rareelite",
+    [5] = "worldboss"
+}
+
 XToLevel.CATACLYSM_ZONES = {
     [1] = "Mount Hyjal",
     [2] = "Uldum",

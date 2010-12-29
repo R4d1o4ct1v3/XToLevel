@@ -263,6 +263,7 @@ function XToLevel:OnPlayerTargetChanged()
         if target_guid ~= nil then
             local target_name = UnitName("target")
             local target_level = UnitLevel("target")
+            local target_classification = UnitClassification("target")
             local exists = false
             
             -- Look for an existing entry and updated it if it does.
@@ -271,6 +272,7 @@ function XToLevel:OnPlayerTargetChanged()
                     exists = true
                     targetList[i].name = target_name
                     targetList[i].level = target_level
+                    targetList[i].classification = target_classification
                 end
             end
             
@@ -278,8 +280,9 @@ function XToLevel:OnPlayerTargetChanged()
             if not exists then
                 table.insert(targetList, {
                     guid = target_guid,
-                    name = UnitName("target"),
-                    level = UnitLevel("target"),
+                    name = target_name,
+                    level = target_level,
+                    classification = target_classification,
                     dead = false,
                     xp = nil
                 });
@@ -300,7 +303,7 @@ function XToLevel:OnCombatLogEventUnfiltered(...)
                 if type(targetUpdatePending) == "number" and targetUpdatePending > 0 then
                     data.xp = targetUpdatePending;
                     targetUpdatePending = nil;
-                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp)
+                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp, data.classification)
                 end
             end
         end
@@ -321,34 +324,43 @@ end
 ---
 -- Adds the mob to the permenant list of known NPCs and their XP value.
 -- Used to calculate the Kills To Level values for the tooltip.
-function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp)
+function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassification)
+    -- Validate the mob classification. Default to normal if none is given
+    if type(mobClassification) ~= "string" then
+        mobClassification = "normal"
+    end
+    local mobClassIndex = XToLevel.Lib:ConvertClassification(mobClassification)
+    if mobClassIndex == nil then
+        console:log("AddMobXpRecord: Invalid mobClassification passed. Defaulting to 'normal'. ('" .. tostring(mobClassification) .."')")
+        mobClassIndex = 1
+    end
+    
+    -- Make sure the tables exist
     if type(sData.player.npcXP) ~= "table" then
         sData.player.npcXP = { }
     end
+    if sData.player.npcXP[playerLevel] == nil then
+        sData.player.npcXP[playerLevel] = { }
+    end
+    if sData.player.npcXP[playerLevel][mobLevel] == nil then
+        sData.player.npcXP[playerLevel][mobLevel] = { }
+    end
+    if sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] == nil then
+        sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] = { }
+    end
     
-    local mobAlreadyExists = false
-    if # sData.player.npcXP > 0 then
-        for i, data in ipairs(sData.player.npcXP) do
-            if data.mobName == mobName and data.mobLevel == mobLevel and data.playerLevel == playerLevel then
-                mobAlreadyExists = true
-                if data.xp < xp then
-                    -- If the recorded XP is lover than the one given now, it is
-                    -- possible that the last kill only rewarded a partial XP
-                    -- gain. (Like, if helped by another player)
-                    -- In this case, update it to the new value.
-                    sData.player.npcXP[i].xp = xp;
-                end
+    -- Add the data
+    local alreadyRecorded = false
+    if # sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
+        for i, v in ipairs(sData.player.npcXP[playerLevel][mobLevel][mobClassIndex]) do
+            if v == xp then
+                alreadyRecorded = true
             end
         end
     end
     
-    if not mobAlreadyExists then
-        table.insert(sData.player.npcXP, {
-            ["mobName"] = mobName,
-            ["mobLevel"] = mobLevel,
-            ["playerLevel"] = playerLevel,
-            ["xp"] = xp
-        });
+    if not alreadyRecorded then
+        table.insert(sData.player.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
     end
 end
 
@@ -439,7 +451,7 @@ function XToLevel:OnChatXPGain(message)
                 if data.name == mobName and data.dead and data.xp == nil then
                     targetList[i].xp = unrestedXP
                     found = true
-                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp)
+                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp, data.classification)
                 end
             end
             if not found then
@@ -836,27 +848,22 @@ function XToLevel:OnSlashCommand(arg1)
             end
         end
     elseif arg1 == "debug" then
-        function ParseGUID(guid)
-           local first3 = tonumber("0x"..strsub(guid, 3,5))
-           local unitType = bit.band(first3,0x00f)
-
-           if (unitType == 0x000) then
-              print("Player, ID #", strsub(guid,6))
-           elseif (unitType == 0x003) then
-              local creatureID = tonumber("0x"..strsub(guid,9,12))
-              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
-              print("NPC, ID #",creatureID,"spawn #",spawnCounter)
-           elseif (unitType == 0x004) then
-              local petID = tonumber("0x"..strsub(guid,6,12))
-              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
-              print("Pet, ID #",petID,"spawn #",spawnCounter)
-           elseif (unitType == 0x005) then
-              local creatureID = tonumber("0x"..strsub(guid,9,12))
-              local spawnCounter = tonumber("0x"..strsub(guid,13)) 
-              print("Vehicle, ID #",creatureID,"spawn #",spawnCounter)
-           end
+        if type(sData.player.npcXP) == "table" then
+            for playerLevel, playerData in pairs(sData.player.npcXP) do
+                console:log(playerLevel .. ": ");
+                for mobLevel, mobData in pairs(playerData) do
+                    console:log("  " .. mobLevel .. ": ")
+                    for classification, xpData in pairs(mobData) do
+                        console:log("    " .. classification .. ": ")
+                        for __, xp in ipairs(xpData) do
+                            console:log("      " .. xp);
+                        end
+                    end
+                end
+            end
+        else
+            console:log("No mob data")
         end
-        ParseGUID("0xF53003A2007A7222")
 	else
 		XToLevel.Config:Open("messages")
 	end

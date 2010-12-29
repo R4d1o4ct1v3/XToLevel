@@ -174,6 +174,25 @@ function XToLevel.Lib:ZoneID()
 end
 
 ---
+-- Converts a classification between it's name and it's number. If you pass the
+-- function a name, it will return and number, and the same in reverse.
+-- If the input can not be converted, the function returns nil.
+function XToLevel.Lib:ConvertClassification(classification)
+    if type(classification) == "number" and classification > 0 and classification <= # XToLevel.UNIT_CLASSIFICATIONS then
+        return XToLevel.UNIT_CLASSIFICATIONS[classification]
+    elseif type(classification) == "string" then
+        local out = nil
+        for i, v in ipairs(XToLevel.UNIT_CLASSIFICATIONS) do
+            if v == classification then
+                out = i
+            end
+        end
+        return out
+    end
+    return nil
+end
+
+---
 -- Determines whether the player is eligable for the 3x Recriuit A Friend bonus.
 ---
 function XToLevel.Lib:IsPlayerRafEligable()
@@ -237,61 +256,44 @@ end
 ---
 -- Calculates the XP gained from killing a mob
 ---
-local getAverageXP = function(charLevel, mobLevel)
-    local total = 0
-    local count = 0
-    for i, data in ipairs(sData.player.npcXP) do
-        if data.mobLevel == mobLevel and data.playerLevel == charLevel then
-            total = total + tonumber(data.xp)
-            count = count + 1
-        end
+function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
+    -- Validate the mob classification. Default to normal if none is given
+    if type(mobClassification) ~= "string" then
+        mobClassification = "normal"
     end
-    if total > 0 and count > 0 then
-        return (total / count);
-    else
-        return nil;
+    local mobClassIndex = XToLevel.Lib:ConvertClassification(mobClassification)
+    if mobClassIndex == nil then
+        console:log("Lib->MobXP: Invalid mobClassification passed. Defaulting to 'normal'. ('" .. tostring(mobClassification) .."')")
+        mobClassIndex = 1
     end
-end
-local getAbsoluteXP = function(charLevel, mobLevel, mobName)
-    for i, data in ipairs(sData.player.npcXP) do
-        if data.mobName == mobName and data.mobLevel == mobLevel and data.playerLevel == charLevel then
-            return tonumber(data.xp)
-        end
-    end
-    return nil;
-end
-function XToLevel.Lib:MobXP(charLevel, mobLevel, mobName)
+    
     if type(charLevel) ~= "number" then charLevel = UnitLevel("player") end
     if type(mobLevel) ~= "number" then mobLevel = charLevel end
     
-    local thexp = nil
-    if mobName ~= nil then
-        thexp = getAbsoluteXP(charLevel, mobLevel, mobName)
-    end
-    if thexp == nil then
-        thexp = getAverageXP(charLevel, mobLevel)
-    end
-    
-    -- The old formula still seems to work for mobs of equal level, so...
-    if thexp == nil and charLevel == mobLevel then
+    if type(sData.player.npcXP[charLevel]) == "table" and type(sData.player.npcXP[charLevel][mobLevel]) == "table" and type(sData.player.npcXP[charLevel][mobLevel][mobClassIndex]) == "table" and # sData.player.npcXP[charLevel][mobLevel][mobClassIndex] > 0 then
+        local high = 0
+        for i, v in ipairs(sData.player.npcXP[charLevel][mobLevel][mobClassIndex]) do
+            if v > high then high = v end
+        end
+        return high;
+    elseif charLevel == mobLevel and mobClassIndex == 1 then
+        -- The old formula still seems to work for mobs of equal level, so...
         local zoneID = XToLevel.Lib:ZoneID();
         local addValue = 45 -- Default, for the pre-tbc zones
         if (zoneID or 0) == 3 then
             addValue = 235 -- Outlands
         elseif (zoneID or 0) == 4 then 
             addValue = 580 -- Northrend
-        elseif (zoneID or 0) == 5 then 
-            addValue = 1770 -- Cataclysm (Unknown at this point!)
+        elseif (zoneID or 0) == 5 then
+            -- Note that the ZoneID() function returns 1 for the goblin newbie
+            -- zone, even thought it technically belongs to zone 5.
+            addValue = 1770 -- Cataclysm (Should be 1878, but this seems to be more on target.)
         end
         
-        thexp = (charLevel * 5) + addValue
+        return ((charLevel * 5) + addValue);
+    else
+        return 0; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
     end
-    
-    if thexp == nil then
-        thexp = 0;
-    end
-    
-    return thexp;
 end
 
 ---
