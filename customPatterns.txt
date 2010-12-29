@@ -26,6 +26,8 @@ Availble tags:
 * <petxp> - The percentage or the number of bars of your pet's XP gained or remaining for the current level.
 * <petxpnum> - Your pet's XP gained or remaining for the current level.
 * <timer> - The estimated time remaining until you reach your next level, based on your current XP per hour.
+* <guildxp> - The percentage completed of the current level for your guild.
+* <guilddaily> - The percentage completed of the current daily maximum for you guild.
 
 (Note, that the <xp> and <petxp> values inlucde the % char at the end.)
 
