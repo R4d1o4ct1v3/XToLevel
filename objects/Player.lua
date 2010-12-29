@@ -406,15 +406,13 @@ XToLevel.Player = {
                 if v["target"] == target and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
                     incremented = true
                     sData.player.gathering[action][i]["count"] = sData.player.gathering[action][i]["count"] + 1
-                     -- The XP value stays constant throughout a level, so if there
-                     -- is a difference between the XP values, there was most likely
-                     -- a problem. (A known cause for this is when gathering causes
-                     -- a level-up; that action will be stored at the new level,
-                     -- but the old XP will be recorded.)
-                     -- Storing the higher value... just because xD
-                     if sData.player.gathering[action][i]["xp"] < xp then
-                        sData.player.gathering[action][i]["xp"] = xp
-                     end
+                    
+                    -- The XP of an item can change, apparently. I'm guessing it's
+                    -- a combination of player level vs the item's level range
+                    -- and the players skill at the given profession.
+                    -- In any case, if there is a change it should alter the record
+                    -- rather than be calculated as an average.
+                    sData.player.gathering[action][i]["xp"] = xp
                 end
             end
             
