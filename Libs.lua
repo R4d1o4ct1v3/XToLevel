@@ -329,7 +329,12 @@ function XToLevel.Lib:PetXP(playerLevel, petLevel, mobLevel)
 	if mobLevel == nil then
 		mobLevel = playerLevel;
 	end
-	return self:MobXP(playerLevel, playerLevel + (mobLevel - petLevel));
+    local mobXP = self:MobXP(playerLevel, playerLevel + (mobLevel - petLevel));
+	if mobXP > 0 then 
+        return mobXP
+    else 
+        return self:MobXP()
+    end
 end
 
 function XToLevel.Lib:GetChatXPRegexp(isQuest)
