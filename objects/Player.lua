@@ -529,6 +529,70 @@ XToLevel.Player = {
             return nil;
         end
     end,
+    
+    ---
+    -- Get the average XP value for all gathering items within a specific range.
+    -- @param levelRange The number of levels to go back to fetch data.
+    --                   Defaults to 2 (that is: this and the last level)
+    -- @return Returns the avarge xp as a number on success or nil on failure.
+    GetAverageGatheringXP = function(self, levelRange)
+        if type(sData.player.gathering) == "table" then
+            if type(levelRange) ~= "number" or levelRange <= 0 then
+                levelRange = 2
+            end
+            local tXP = 0;
+            local tCount = 0;
+            for action, dataTable in pairs(sData.player.gathering) do
+                for i, data in ipairs(dataTable) do
+                    if data["level"] > XToLevel.Player.level - levelRange then
+                        tXP = tXP + (data["xp"] * data["count"]);
+                        tCount = tCount + data["count"]
+                    end
+                end
+            end
+            if tXP > 0 and tCount > 0 then
+                return (tXP / tCount)
+            else
+                return nil
+            end
+        else
+            return nil
+        end
+    end,
+    
+    ---
+    -- Returns the average number of gathered items required to level, or nil if
+    -- there is no gathering data avaialble.
+    -- @param levelRange The number of levels backwards to go to fetch data.
+    --                   Defaults to 2 (that is: this and the last level)
+    GetAverageGatheringRequired = function(self, levelRange)
+        local averageXP = self:GetAverageGatheringXP(levelRange)
+        if type(averageXP) == "number" and averageXP > 0 then
+            local required = ceil((self.maxXP - self.currentXP) / averageXP);
+            if type(required) == "number" and required > 0 then
+                return required
+            else
+                return nil
+            end
+        else
+            return nil
+        end
+    end,
+    
+    ---
+    -- Determines whether there is any gathering info to show.
+    -- Similar in many ways to the GetGatheringActions function but cheaper.
+    HasGatheringInfo = function(self)
+        if type(sData.player.gathering) == "table" then
+            local actionCount = 0
+            for key, __ in pairs(sData.player.gathering) do
+                actionCount = actionCount + 1
+            end
+            return actionCount > 0
+        else
+            return false
+        end
+    end,
 	
 	---
 	-- Start recording a battleground. If a battleground is already in progress

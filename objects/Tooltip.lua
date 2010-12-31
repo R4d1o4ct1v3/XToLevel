@@ -198,6 +198,10 @@ XToLevel.Tooltip =
             GameTooltip:AddLine(" ")
             self:AddDungeons()
             GameTooltip:AddLine(" ")
+        elseif mode == "gathering" then
+            GameTooltip:AddLine(L['Gathering'] or "Gathering")
+            self:AddGathering()
+            GameTooltip:AddLine(" ")
         elseif mode == "experience" then
             GameTooltip:AddLine(L['Experience'])
             self:AddExperience()
@@ -244,8 +248,8 @@ XToLevel.Tooltip =
                     self:AddGuildInfo()
                     GameTooltip:AddLine(" ")
                 end
-                if sConfig.ldb.tooltip.showGuildInfo then
-                    GameTooltip:AddLine("Gathering: ")
+                if sConfig.ldb.tooltip.showGatheringInfo then
+                    GameTooltip:AddLine((L["Gathering"] or "Gathering") .. ": ")
                     self:AddGathering()
                     GameTooltip:AddLine(" ")
                 end
@@ -486,6 +490,7 @@ XToLevel.Tooltip =
     ---
     -- function description
     AddPet = function(self)
+        GameTooltip:AddDoubleLine(" " .. (L["Name"] or "Name") .. ":" , tostring(XToLevel.Pet:GetName()), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
         GameTooltip:AddDoubleLine(" " .. L["Kills"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Pet:GetAverageKillsRemaining()).." @ "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Pet:GetAverageKillXP(), 0)).." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
     end,
     

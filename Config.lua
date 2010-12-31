@@ -52,6 +52,7 @@ sConfig = {
 		playerDungeons = true,
 		playerBGs = true,
 		playerBGOs = false,
+        playerGathering = true,
 		playerProgress = true,
 		playerTimer = true,
 		progress = true, -- Duplicate?
@@ -103,6 +104,8 @@ sConfig = {
 			showDungeonInfo = true,
 			showPetInfo = true,
 			showTimerInfo = true,
+            showGatheringInfo = true,
+            showGuildInfo = true,
 		}
 	},
 	timer = {
@@ -1491,6 +1494,7 @@ function XToLevel.Config:Verify()
     if sConfig.averageDisplay.playerDungeons == nil then sConfig.averageDisplay.playerDungeons = true end
     if sConfig.averageDisplay.playerBGs == nil then sConfig.averageDisplay.playerBGs = true end
     if sConfig.averageDisplay.playerBGOs == nil then sConfig.averageDisplay.playerBGOs = false end
+    if sConfig.averageDisplay.playerGathering == nil then sConfig.averageDisplay.playerGathering = true end
     if sConfig.averageDisplay.playerProgress == nil then sConfig.averageDisplay.playerProgress = true end
 	if sConfig.averageDisplay.playerTimer == nil then sConfig.averageDisplay.playerTimer = true end
     if sConfig.averageDisplay.petKills == nil then sConfig.averageDisplay.petKills = true end
@@ -1547,6 +1551,7 @@ function XToLevel.Config:Verify()
     if sConfig.ldb.tooltip.showPetInfo == nil then sConfig.ldb.tooltip.showPetInfo = true end
 	if sConfig.ldb.tooltip.showTimerInfo == nil then sConfig.ldb.tooltip.showTimerInfo = true end
     if sConfig.ldb.tooltip.showGuildInfo == nil then sConfig.ldb.tooltip.showGuildInfo = true end
+    if sConfig.ldb.tooltip.showGatheringInfo == nil then sConfig.ldb.tooltip.showGatheringInfo = true end
 	
 	if sConfig.timer == nil then sConfig.timer = { } end
 	if sConfig.timer.enabled == nil then sConfig.timer.enabled = true end
@@ -1587,7 +1592,7 @@ function XToLevel.Config:Verify()
     if sData.player.timer.xpPerSec == nil then sData.player.timer.xpPerSec = 0 end
     -- if sData.player.timer.lastUpdated == nil then sData.player.timer.lastUpdated = 0 end
     
-    if type(sData.player.timer.lastUpdated) ~= "number" or GetTime() - sData.player.timer.lastUpdated > (sConfig.timer.sessionDataTimeout * 60) then
+    if type(sData.player.timer.lastUpdated) ~= "number" or GetTime() - sData.player.timer.lastUpdated > (sConfig.timer.sessionDataTimeout * 60) or GetTime() - sData.player.timer.start <= 0 then
         sData.player.timer.start = GetTime();
         sData.player.timer.total = 0;
         sData.player.timer.lastUpdated = GetTime();

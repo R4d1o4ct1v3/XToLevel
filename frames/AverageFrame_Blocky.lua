@@ -43,6 +43,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectives,
 	            visible = sConfig.averageDisplay.playerBGOs
 	        },
+	        {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering',
+	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering,
+	            visible = sConfig.averageDisplay.playerGathering
+	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress,
@@ -209,9 +213,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
         self.playerBoxes[3]["visible"] = sConfig.averageDisplay.playerDungeons and XToLevel.Player.level >= 15
         self.playerBoxes[4]["visible"] = sConfig.averageDisplay.playerBGs and XToLevel.Player.level >= 10
         self.playerBoxes[5]["visible"] = sConfig.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
-        self.playerBoxes[6]["visible"] = sConfig.averageDisplay.playerProgress
-		self.playerBoxes[7]["visible"] = sConfig.averageDisplay.playerTimer and sConfig.averageDisplay.playerTimer
-        self.playerBoxes[8]["visible"] = sConfig.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
+        self.playerBoxes[6]["visible"] = sConfig.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
+        self.playerBoxes[7]["visible"] = sConfig.averageDisplay.playerProgress
+		self.playerBoxes[8]["visible"] = sConfig.averageDisplay.playerTimer and sConfig.averageDisplay.playerTimer
+        self.playerBoxes[9]["visible"] = sConfig.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
     
         local orientation = sConfig.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
@@ -310,6 +315,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
     --- Sets the objectives value for the frame
     SetObjectives = function(self, value)
         XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectivesValueText:SetText(tonumber(value))
+    end,
+    --- Sets the gathering average
+    SetGathering = function(self, value)
+        XToLevel_AverageFrame_Blocky_PlayerFrameCounterGatheringValueText:SetText(tonumber(value))
     end,
 
     --- Sets the value for the progress bar.

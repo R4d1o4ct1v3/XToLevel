@@ -424,6 +424,27 @@
                 </Frame>
                 
                 <!-- 
+                    Gathering Counter
+                 -->
+                <Frame name="$parentGathering"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="152" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\mining_icon.tga"></Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('gathering');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+                
+                <!-- 
                     Progress Counter
                 -->
                 <Frame name="$parentProgress"  inherits="XToLevel_AverageFrame_Blocky_Progress">
