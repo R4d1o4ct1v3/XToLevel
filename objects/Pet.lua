@@ -2,12 +2,13 @@
 -- Defines the Pet functionality.
 -- functionality.
 -- @file XToLevel.Pet.lua
--- @release 4.0.1_15b
+-- @release 4.0.1_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 XToLevel.Pet = {
 	isActive = false,
 	hasBeenActive = false,
+    isDismissed = false,
 	name = nil,
 	level = nil,
 	xp = nil,
@@ -40,13 +41,14 @@ XToLevel.Pet = {
 	---
 	-- function description
 	Update = function(self)
-		if not self:IsHunterPet() then
-			return false;
-		end
+		--if not self:IsHunterPet() then
+		--	return false;
+		--end
         
-        local oldXP, oldLevel
+        local oldXP, oldLevel, oldName
         local output = {}
         
+        oldName = self.name
 		oldXP = self.xp
         oldLevel = self.level
 	
@@ -54,6 +56,32 @@ XToLevel.Pet = {
 		self.level = UnitLevel('pet')
 		self.maxLevel = XToLevel.Player.level or UnitLevel('player')
 		self.xp, self.maxXP = GetPetExperience()
+        
+        -- If the unit name is "nil" then the pet has been dismissed or otherwise
+        -- made unavailable. (Like, when mounting) In this case just do nothing.
+        -- This will allow the player to see the data for their previous pet.
+        -- However, flag the isActive as false, but the hasBeenActive flag to true.
+        -- Then when a valid name is received, if it differs from the old one a
+        -- new pet has bee summoned.
+        if type(self.name) ~= "string" then
+            self.isDismissed = true
+            self.name = oldName
+        
+        -- If the unit name is "Unknown" the pet info may be incorrect. In this 
+        -- case, the server may simply be slow to respond. - Best to just reuse
+        -- the existing name if it is available, or if not just use Unknown as
+        -- the name. The main script should update the name as soon as it becomes
+        -- available.
+        elseif self.name == "Unknown" then
+            if type(oldName) == "string" and oldName ~= "Unknown" then
+                self.name = oldName
+            end
+            self.isDismissed = false
+            
+        -- A valid name has been received. Simply use it!
+        else
+            self.isDismissed = false
+        end
 		
 		if self.level < self.maxLevel then
 			self.isActive = true;
@@ -62,22 +90,18 @@ XToLevel.Pet = {
 			self.isActive = false;
 			self.hasBeenActive = false;
 		end
-		
-		if oldXP then
+        
+		if oldXP and oldName == self.name and oldName ~= "Unknown" then
 			output.xp = self.xp - oldXP
 			-- Make sure this falls within realistic gains from a kill.
 			-- Otherwise this may be an initialization update.
-			if output.xp < (XToLevel.Lib:PetXP(XToLevel.Player.level, self.level, XToLevel.Player.level) * 3) then
+			if output.xp > 0 and output.xp < (XToLevel.Lib:PetXP(XToLevel.Player.level, self.level, XToLevel.Player.level) * 3) then
+                console:log("Adding pet kill: " .. tostring(output.xp))
 				self:AddKill(output.xp)
 			end
         else
             output.xp = 0
 		end
-        if oldLevel and oldLevel == (self.level - 1) then
-            output.gainedLevel = true
-        else
-            output.gainedLevel = false      
-        end
         
         self.killAverage = nil
 		
@@ -121,7 +145,16 @@ XToLevel.Pet = {
 	---
 	-- function description
 	GetAverageKillXP = function(self)
-		if self.killAverage == nil then
+        if self.name == "Unknown" then
+            self:Update() -- Try to refresh the data from the server.
+            if self.name == "Unknown" then
+                -- Return a generic result.
+                self.killAverage = nil
+                return XToLevel.Lib:PetXP(XToLevel.Player.level, self.level, XToLevel.Player.level)
+            end
+        end
+        
+        if self.killAverage == nil then
 			if sData.pet.killList[self.name] and (# sData.pet.killList[self.name] > 0) then
 				local total = 0
 				local maxUsed = # sData.pet.killList[self.name]
@@ -145,7 +178,7 @@ XToLevel.Pet = {
 				self.killAverage = XToLevel.Lib:PetXP(XToLevel.Player.level, self.level, XToLevel.Player.level)
 			end
 		end
-		return self.killAverage
+        return self.killAverage
 	end,
 	
 	---
