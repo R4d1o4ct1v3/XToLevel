@@ -2,7 +2,7 @@
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 4.0.3_22
+-- @release 4.0.3_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
@@ -37,7 +37,7 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
 XToLevel.version = "4.0.3_23"
-XToLevel.releaseDate = '2010-12-27'
+XToLevel.releaseDate = '2010-12-31'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -84,6 +84,10 @@ function XToLevel:MainOnEvent(event, ...)
         self:OnUnitPetExperience();
     elseif event == "PET_UI_UPDATE" then
         self:OnPetUiUpdate()
+    elseif event == "PET_DISMISS_START" then
+        self:OnPetDismissStart(...)
+    elseif event == "UNIT_NAME_UPDATE" then
+        self:OnUnitNameUpdate(select(1, ...))
     elseif event == "PLAYER_ENTERING_BATTLEGROUND" then
         self:OnPlayerEnteringBattleground()
     elseif event == "PLAYER_ENTERING_WORLD" then
@@ -132,7 +136,7 @@ function XToLevel:RegisterEvents(level)
 
     -- Register Events
     if level < XToLevel.Player:GetMaxLevel() then
-        -- self.frame:RegisterAllEvents();
+        --self.frame:RegisterAllEvents();
 	    self.frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
         self.frame:RegisterEvent("CHAT_MSG_OPENING");
 	    
@@ -169,9 +173,11 @@ function XToLevel:RegisterEvents(level)
         self.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
     end
    	if XToLevel.Player:GetClass() == "HUNTER" then
+        self.frame:RegisterEvent("UNIT_NAME_UPDATE");
 	    self.frame:RegisterEvent("UNIT_PET");
 	    self.frame:RegisterEvent("UNIT_PET_EXPERIENCE");
 	    self.frame:RegisterEvent("PET_UI_UPDATE");
+        self.frame:RegisterEvent("PET_DISMISS_START");
     end
     
     -- Register slash commands
@@ -208,6 +214,7 @@ function XToLevel:UnregisterEvents()
     self.frame:UnregisterEvent("UNIT_PET");
     self.frame:UnregisterEvent("UNIT_PET_EXPERIENCE");
     self.frame:UnregisterEvent("PET_UI_UPDATE");
+    self.frame:UnregisterEvent("PET_DISMISS_START");
 	
 	self.frame:UnregisterEvent("TIME_PLAYED_MSG")
     
@@ -250,6 +257,10 @@ function XToLevel:OnPlayerLogin()
     XToLevel.Average:Initialize()
 	XToLevel.Tooltip:Initialize()
 end
+
+--------------------------------------------------------------------------------
+-- PLAYER XP stuff
+--------------------------------------------------------------------------------
 
 ---
 -- Used to keep track of the player's targets while in combat. Once they die,
@@ -318,7 +329,7 @@ end
 --- Reset the target list. No point keeping a list of targets out of combat.
 function XToLevel:OnPlayerRegenEnabled()
     regenEnabled = true;
-    targetList = { }
+    table.wipe(targetList)
 end
 
 ---
@@ -405,24 +416,12 @@ function XToLevel:OnChatMsgOpening(message)
     XToLevel.gatheringTime = GetTime();
 end
 
----
--- Handles GUILD_XP_UPDATE
-function XToLevel:OnGuildXpUpdate()
-    console:log('Guild Update');
-    XToLevel.Player:SyncGuildData();
-    if XToLevel.Player.guildXP ~= nil then
-        XToLevel.Average:Update()
-        XToLevel.LDB:Update()
-    end
-end
-
 --- CHAT_XP_GAIN callback. Triggered whenever a XP message is displayed in the chat 
 -- window, indicating that the player has gained XP (both kill, quest and BG objectives).
 -- Parses the message and updates the XToLevel.Player, XToLevel.Pet and XToLevel.Display objects according 
 -- to the type of message received.
 -- @param message The message string passed by the event, as displayed in the chat window.
 function XToLevel:OnChatXPGain(message)
-    -- Note that this event is fired by kills, quests and BG objectives.
     local xp, mobName = XToLevel.Lib:ParseChatXPMessage(message)
     xp = tonumber(xp)
 	if not xp then
@@ -549,13 +548,35 @@ function XToLevel:OnPlayerXPUpdate()
     sData.player.questAverage = XToLevel.Player:GetAverageQuestXP()
 end
 
+--------------------------------------------------------------------------------
+-- GUILD XP stuff - NOT YET IMPLEMENTED
+--------------------------------------------------------------------------------
+
+---
+-- Handles GUILD_XP_UPDATE
+function XToLevel:OnGuildXpUpdate()
+    console:log('Guild Update');
+    XToLevel.Player:SyncGuildData();
+    if XToLevel.Player.guildXP ~= nil then
+        XToLevel.Average:Update()
+        XToLevel.LDB:Update()
+    end
+end
+
+--------------------------------------------------------------------------------
+-- PET stuff
+--------------------------------------------------------------------------------
+
 --- UNIT_PET callback. Triggered when the player pet changes.
--- If the type indicates this is a player pet (read: hunter pet), initalizes the
--- XToLevel.Pet object and updates the displays.
+-- This callback has serious flaws, biggest of which is that it sometimes fires
+-- to early; before the pet data is available.  The PET_UI_UPDATE and the
+-- UNIT_NAME_UPDATE events are used to solve those issues when learning new pets
+-- and when switching pets before the pet name is available, respectively.
 -- @param type The type of pet this is, as passed by the event.
 function XToLevel:OnUnitPet(type)
     -- Note, it appears this event is now fired before the PLAYER_LOGIN event
     -- so the player won't be initialized the first time it is fired. (regression bugs wtf!)
+    console:log("OnUnitPet >> UnitName(PET): " .. tostring(UnitName("pet")));
 	if type == "player" and XToLevel.Player.level ~= nil then
 		XToLevel.Pet:Initialize()
 		XToLevel.Average:Update()
@@ -599,6 +620,24 @@ function XToLevel:OnPetUiUpdate()
     XToLevel.LDB:BuildPattern();
 	XToLevel.LDB:Update()
 end
+
+---
+-- Fired when the client receives info on a unit's name.
+-- Used here to update the Pet's name. Included here to circumvent a problem with
+-- the UNIT_PET event sometimes firing before the pet name is available.
+function XToLevel:OnUnitNameUpdate(unit)
+    if unit == "pet" then
+        XToLevel.Pet:Update()
+        XToLevel.Average:Update()
+        XToLevel.LDB:BuildPattern();
+        XToLevel.LDB:Update()
+        console:log("Pet name updated: " .. tostring(XToLevel.Pet:GetName()))
+    end
+end
+
+--------------------------------------------------------------------------------
+-- BATTLEGROUND and INSTANCE stuff
+--------------------------------------------------------------------------------
 
 --- PLAYER_ENTERING_BATTLEGROUND callback.
 function XToLevel:OnPlayerEnteringBattleground()
@@ -755,6 +794,10 @@ function XToLevel:OnAreaChanged()
 	end
 end
 
+--------------------------------------------------------------------------------
+-- TIMER stuff
+--------------------------------------------------------------------------------
+
 --- Passes the time played info into the Player object.
 function XToLevel:OnTimePlayedMsg(total, level)
     -- Possible that the argument order gets mixed up?
@@ -775,6 +818,10 @@ function XToLevel:TimePlayedTriggerCallback()
 		RequestTimePlayed()
 	end
 end
+
+--------------------------------------------------------------------------------
+-- SLASH command stuff
+--------------------------------------------------------------------------------
 
 --- Callback for the /xtl and /xtolevel slash commands.
 -- Without parametes, it simply opens the configuration dialog.
