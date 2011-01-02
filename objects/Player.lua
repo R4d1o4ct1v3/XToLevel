@@ -565,12 +565,14 @@ XToLevel.Player = {
     -- there is no gathering data avaialble.
     -- @param levelRange The number of levels backwards to go to fetch data.
     --                   Defaults to 2 (that is: this and the last level)
+    -- @return Returns the required nodes and the averageXP per node on success,
+    --         or nil on failure.
     GetAverageGatheringRequired = function(self, levelRange)
         local averageXP = self:GetAverageGatheringXP(levelRange)
         if type(averageXP) == "number" and averageXP > 0 then
             local required = ceil((self.maxXP - self.currentXP) / averageXP);
             if type(required) == "number" and required > 0 then
-                return required
+                return required, averageXP
             else
                 return nil
             end

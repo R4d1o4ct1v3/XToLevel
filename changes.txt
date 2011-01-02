@@ -1,3 +1,13 @@
+Version 4.0.3_23
+ - NEW: The addon now keeps track of how many mining and herbalism nodes need to be gathered to level. The average number is now displayed in a box in the "Blocky" average window and a more detailed list is shown in the tooltip. You will also see a "Needed to level" value on the node tooltips themsleves, much like with the mobs.
+ - NEW: You can now use "guildxp" and "guilddaily" in the LDB custom string to show theyr respective percentage values. (More guild leveling features will be coming soon(tm).)
+ - CHANGED: The "Kills to level" line in the tooltip for mobs will no longer be shown unless a previous mob of the same level and classification (normal, elite, etc...) has been killed. This is due to the fact that the old formulas for calculating the mob xp value has changed, and I have been unable to deduce the new formulas. So this value is now solely based on your own kills.
+ - FIX: The entire configuration window will now, again, be visible to hunters. They were previously unreachable due to a miscalculation in the height of the controls. (Hunters have more options than the others.)
+ - FIX: The addon will again be properly hidden when reaching the maximum level. The LDB data-source will, however, remain until the UI is reloaded.
+ - FIX: A bug causing the Time To Level feature to show negative XP/hr values whe loging in after rebooting the computer has been fixed.
+ - FIX: Hunter pet names will now be updated more reliably than before. A slight delay between the events trigger when a pet is summoned and the time when the pet's name became available sometimes caused a pet to be "Unknown" or adopt the name of a previously active pet.
+ - FIX: Various minor things affecting the addon for new chars, especially in the goblin newbie zones, have been fixed.
+
 Version 4.0.3_22
  - Gathering professions and other events that gain XP will now trigger a generic message. These XP gains will not be counted or shown in the tooltip (not yet at least) but the message will show you how many of those you need to level.
  - Added the ability to scale the Average Window.

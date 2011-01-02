@@ -89,18 +89,22 @@ XToLevel.Tooltip =
                 for i = 1, GameTooltip:NumLines() do
                     local text = _G["GameTooltipTextLeft" .. i]:GetText();
                     if text == UNIT_SKINNABLE_ROCK or text == UNIT_SKINNABLE_HERB then
-                        addLine = true
+                        addLine = i
                     end
                 end
-                if addLine then
+                if addLine ~= false then
                     -- First line should always be the item's name.
                     local itemName = _G["GameTooltipTextLeft1"]:GetText()
+                    
+                    -- Copy the color of the "Requires Mining/Herbalism" and use
+                    -- it as the color of the value.
+                    local r, g, b = _G["GameTooltipTextLeft" .. addLine]:GetTextColor()
                     local required, __, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(itemName)
                     if type(required) == "number" and required > 0 then
                         if isOldData then
                             required = "~" .. tostring(required)
                         end
-                        GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. required, 0.75, 0.75, 0.75)
+                        GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. required, (r or 1.0), (g or 1.0), (b or 1.0))
                         GameTooltip:Show()
                     end
                 end
@@ -202,6 +206,10 @@ XToLevel.Tooltip =
             GameTooltip:AddLine(L['Gathering'] or "Gathering")
             self:AddGathering()
             GameTooltip:AddLine(" ")
+            if XToLevel.Player:HasGatheringInfo() then
+                self:AddGatheringDetails()
+                GameTooltip:AddLine(" ")
+            end
         elseif mode == "experience" then
             GameTooltip:AddLine(L['Experience'])
             self:AddExperience()
@@ -252,6 +260,10 @@ XToLevel.Tooltip =
                     GameTooltip:AddLine((L["Gathering"] or "Gathering") .. ": ")
                     self:AddGathering()
                     GameTooltip:AddLine(" ")
+                    if XToLevel.Player:HasGatheringInfo() then
+                        self:AddGatheringDetails()
+                        GameTooltip:AddLine(" ")
+                    end
                 end
                 if XToLevel.Lib:ShowDungeonData() then
                     self:AddDungeons()
@@ -562,27 +574,39 @@ XToLevel.Tooltip =
     
     AddGathering = function(self)
         local linesAdded = 0
+        local nodesRequired, xpPerNode = XToLevel.Player:GetAverageGatheringRequired()
+        if nodesRequired ~= nil then
+            xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
+            GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        else
+            GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
+        end
+    end,
+    
+    AddGatheringDetails = function(self)
+        local linesAdded = 0
         local actions = XToLevel.Player:GetGatheringActions();
         if actions ~= nil and # actions > 0 then
             for i, action in ipairs(actions) do
                 local items = XToLevel.Player:GetGatheringItems(action);
                 if # items > 0 then
-                    GameTooltip:AddLine(" " .. action .. ": ", self.dataColor.r, self.dataColor.b, self.dataColor.b)
+                    GameTooltip:AddLine(action .. ": ")
                     for i, item in ipairs(items) do
                         local required, averageXP, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(item);
                         if type(required) == "number" and required > 0 then
                             if isOldData then
                                 required = "~" .. required
                             end
-                            GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. averageXP .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+                            XToLevel.Lib:NumberFormat(XToLevel.Lib:round(averageXP, 0))
+                            GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. XToLevel.Lib:NumberFormat(averageXP) .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
                             linesAdded = linesAdded + 1
                         end
                     end
+                    if i < # actions then
+                        GameTooltip:AddLine(" ")
+                    end
                 end
             end
-        end
-        if linesAdded == 0 then
-            GameTooltip:AddLine(" " .. L['No Battles Fought'], self.dataColor.r, self.dataColor.b, self.dataColor.b)
         end
     end,
 }

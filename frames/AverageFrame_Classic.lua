@@ -363,6 +363,12 @@ XToLevel.AverageFrameAPI["Classic"] =
         return true
     end,
     
+    --- Sets the gathering value. NOT IMPLEMENTED IN THIS FRAME!
+    -- TODO: Implement this feature.
+    SetGathering = function(self, value)
+        return true
+    end,
+    
     --- Sets the pet kill value for the frame
     SetPetKills = function(self, value)
         self:WriteToLine("petKills", "Pet", value, self:GetTextColor("pet"))
@@ -377,5 +383,11 @@ XToLevel.AverageFrameAPI["Classic"] =
         else
             self:WriteToLine("petProgress", "Pet XP", percent .. "%", self:GetTextColor("pet"))
         end
+    end,
+    
+    --- Sets the guild progress value. NOT IMPLEMENTED IN THIS FRAME!
+    -- TODO: Implement this feature.
+    SetGuildProgress = function(self, value)
+        return true
     end,
 }

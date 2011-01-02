@@ -1,7 +1,7 @@
 ---
 -- A collection of globally available functions, used througout the addon.
 -- @file Libs.lua
--- @release 4.0.3_20
+-- @release 4.0.3_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Lib" -- For documentation purposes. Do not uncomment!
@@ -539,6 +539,10 @@ function XToLevel.Lib:GetProgressColor_Soft(progress)
     rgb.b = math.floor((proa >= 16 and 102) or (102 * (proa / 16)))
     hex = XToLevel.Lib:DecToHex(rgb.r, 2) .. XToLevel.Lib:DecToHex(rgb.g, 2) .. XToLevel.Lib:DecToHex(rgb.b, 2)
     return hex, rgb
+end
+
+function XToLevel.Lib:GetDifficoultyColor(levelDifference)
+    
 end
 
 ---

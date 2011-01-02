@@ -222,6 +222,8 @@
 	['Show Player Experience'] = "Montrer les expérience de joueur",
 	['Show Battleground Info'] = "Montrer information de bataille",
     ['Show Dungeon Info'] = "Montrer information de donjon",
+    ['Show Gathering Info'] = "Show Gathering Info",
+    ['Show Guild Info'] = "Show Guild Info",
 	['Show Pet Details'] = "Montrer les détails de familier",
     ['Show Timer Details'] = "Show Timer Details",
     

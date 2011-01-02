@@ -37,7 +37,7 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
 XToLevel.version = "4.0.3_23"
-XToLevel.releaseDate = '2010-12-31'
+XToLevel.releaseDate = '2011-01-02'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
@@ -576,7 +576,6 @@ end
 function XToLevel:OnUnitPet(type)
     -- Note, it appears this event is now fired before the PLAYER_LOGIN event
     -- so the player won't be initialized the first time it is fired. (regression bugs wtf!)
-    console:log("OnUnitPet >> UnitName(PET): " .. tostring(UnitName("pet")));
 	if type == "player" and XToLevel.Player.level ~= nil then
 		XToLevel.Pet:Initialize()
 		XToLevel.Average:Update()
@@ -631,7 +630,6 @@ function XToLevel:OnUnitNameUpdate(unit)
         XToLevel.Average:Update()
         XToLevel.LDB:BuildPattern();
         XToLevel.LDB:Update()
-        console:log("Pet name updated: " .. tostring(XToLevel.Pet:GetName()))
     end
 end
 

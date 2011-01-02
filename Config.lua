@@ -642,9 +642,9 @@ XToLevel.Config =
 		self:CreateCheckbox(windowPanel, "PlayerTimer", L["Player Timer"] or "Timer", 
             function(self) self:SetChecked(sConfig.averageDisplay.playerTimer) end, 
             function(self) sConfig.averageDisplay.playerTimer = self:GetChecked() or false end)
-        self:CreateCheckbox(windowPanel, "PlayerGuild", L["Guild"] or "Guild", 
-            function(self) self:SetChecked(sConfig.averageDisplay.guildProgress) end, 
-            function(self) sConfig.averageDisplay.guildProgress = self:GetChecked() or false end)
+        self:CreateCheckbox(windowPanel, "PlayerGathering", L["Gathering"] or "Gathering", 
+            function(self) self:SetChecked(sConfig.averageDisplay.playerGathering) end, 
+            function(self) sConfig.averageDisplay.playerGathering = self:GetChecked() or false end)
             
         --[[ Guild boxes -- REMOVED UNTIL IT CAN BE DONE PROPERLY! --
         self:CreateH2(windowPanel, "GuildDataHeader", L['Guild'], 250)
@@ -903,7 +903,7 @@ XToLevel.Config =
     end,
 	
 	CreateTooltipPanel = function(self, parent)
-		local height = 350
+		local height = 380
         local tooltipPanel = self:CreatePanel("XToLevel_TooltipPanel", L["Tooltip"], height, parent)
 	
 		-- Tooltip sections
@@ -920,6 +920,9 @@ XToLevel.Config =
         self:CreateCheckbox(tooltipPanel, "TooltipDungeon", L['Show Dungeon Info'],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showDungeonInfo)  end,
             function(self) sConfig.ldb.tooltip.showDungeonInfo = self:GetChecked() or false  end)
+        self:CreateCheckbox(tooltipPanel, "TooltipGathering", L['Show Gathering Info'],
+            function(self) self:SetChecked(sConfig.ldb.tooltip.showGatheringInfo)  end,
+            function(self) sConfig.ldb.tooltip.showGatheringInfo = self:GetChecked() or false  end)
         self:CreateCheckbox(tooltipPanel, "TooltipPet", L['Show Pet Details'],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showPetInfo)  end,
             function(self) sConfig.ldb.tooltip.showPetInfo = self:GetChecked() or false end)
@@ -1550,7 +1553,7 @@ function XToLevel.Config:Verify()
     if sConfig.ldb.tooltip.showDungeonInfo == nil then sConfig.ldb.tooltip.showDungeonInfo = true end
     if sConfig.ldb.tooltip.showPetInfo == nil then sConfig.ldb.tooltip.showPetInfo = true end
 	if sConfig.ldb.tooltip.showTimerInfo == nil then sConfig.ldb.tooltip.showTimerInfo = true end
-    if sConfig.ldb.tooltip.showGuildInfo == nil then sConfig.ldb.tooltip.showGuildInfo = true end
+    if sConfig.ldb.tooltip.showGuildInfo ~= false then sConfig.ldb.tooltip.showGuildInfo = false end -- TODO: Fix this when the guild stuff actually works.
     if sConfig.ldb.tooltip.showGatheringInfo == nil then sConfig.ldb.tooltip.showGatheringInfo = true end
 	
 	if sConfig.timer == nil then sConfig.timer = { } end
