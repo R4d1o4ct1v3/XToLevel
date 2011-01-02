@@ -9,6 +9,7 @@ XToLevel.Pet = {
 	isActive = false,
 	hasBeenActive = false,
     isDismissed = false,
+    guid = nil, -- I expecte this to be unique and perminent per pet, even x-session.
 	name = nil,
 	level = nil,
 	xp = nil,
@@ -48,10 +49,12 @@ XToLevel.Pet = {
         local oldXP, oldLevel, oldName
         local output = {}
         
+        oldGUID = self.guid
         oldName = self.name
 		oldXP = self.xp
         oldLevel = self.level
 	
+        self.guid = UnitGUID("pet")
 		self.name = UnitName("pet")
 		self.level = UnitLevel('pet')
 		self.maxLevel = XToLevel.Player.level or UnitLevel('player')
@@ -91,7 +94,7 @@ XToLevel.Pet = {
 			self.hasBeenActive = false;
 		end
         
-		if oldXP and oldName == self.name and oldName ~= "Unknown" then
+		if oldXP and self.name ~= "Unknown" and self.guid ~= nil and self.guid == oldGUID then
 			output.xp = self.xp - oldXP
 			-- Make sure this falls within realistic gains from a kill.
 			-- Otherwise this may be an initialization update.
