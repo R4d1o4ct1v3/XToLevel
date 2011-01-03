@@ -42,9 +42,9 @@ XToLevel.Pet = {
 	---
 	-- function description
 	Update = function(self)
-		--if not self:IsHunterPet() then
-		--	return false;
-		--end
+		if not self:IsHunterPet() then
+			return false;
+		end
         
         local oldXP, oldLevel, oldName
         local output = {}
