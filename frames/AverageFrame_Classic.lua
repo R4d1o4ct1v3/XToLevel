@@ -33,6 +33,11 @@ XToLevel.AverageFrameAPI["Classic"] =
         end
     end,
     
+    --- Hide the window completely.
+    Hide = function(self)
+        XToLevel_AverageFrame_Classic:Hide();
+    end,
+    
     ---
     -- A wrapper to retrieve the anchor point of the window.
     -- Returns the exact same parameters as the Frame:GetPoint method.
@@ -132,45 +137,44 @@ XToLevel.AverageFrameAPI["Classic"] =
         if sConfig.averageDisplay.header then
             self.lines.header:Show()
         end
-        if true then
-	        if not XToLevel.Player.isActive then
-	            self.lines.playerKills:Hide()
-	            self.lines.playerQuests:Hide()
-	        else
-	            self.lines.playerKills:Show()
-	            self.lines.playerQuests:Show()
-	        end
-	        if not (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) then
-	            self.lines.petKills:Hide()
-	        else
-	            self.lines.petKills:Show()
-	        end
-	        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageDungeonsRemaining() == nil or not XToLevel.Lib:ShowDungeonData()) then
-	            self.lines.playerDungeons:Hide()
-	        else
-	            self.lines.playerDungeons:Show()
-	        end
-	        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageBGsRemaining() == nil or not XToLevel.Lib:ShowBattlegroundData()) then
-	            self.lines.playerBGs:Hide()
-	        else
-	            self.lines.playerBGs:Show()
-	        end
-	        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageBGObjectivesRemaining() == nil or not XToLevel.Lib:ShowBattlegroundData()) then
-	            self.lines.playerBGOs:Hide()
-	        else
-	            self.lines.playerBGOs:Show()
-	        end
-	        
-	        if XToLevel.Player.isActive and sConfig.averageDisplay.progress then
-	            self.lines.playerProgress:Show()
-	        else
-	            self.lines.playerProgress:Hide()
-	        end
-	        if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.petProgress then
-	            self.lines.petProgress:Show()
-	        else
-	            self.lines.petProgress:Hide()
-	        end
+        
+        if not XToLevel.Player.isActive then
+            self.lines.playerKills:Hide()
+            self.lines.playerQuests:Hide()
+        else
+            self.lines.playerKills:Show()
+            self.lines.playerQuests:Show()
+        end
+        if not (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) then
+            self.lines.petKills:Hide()
+        else
+            self.lines.petKills:Show()
+        end
+        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageDungeonsRemaining() == nil or not XToLevel.Lib:ShowDungeonData()) then
+            self.lines.playerDungeons:Hide()
+        else
+            self.lines.playerDungeons:Show()
+        end
+        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageBGsRemaining() == nil or not XToLevel.Lib:ShowBattlegroundData()) then
+            self.lines.playerBGs:Hide()
+        else
+            self.lines.playerBGs:Show()
+        end
+        if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageBGObjectivesRemaining() == nil or not XToLevel.Lib:ShowBattlegroundData()) then
+            self.lines.playerBGOs:Hide()
+        else
+            self.lines.playerBGOs:Show()
+        end
+        
+        if XToLevel.Player.isActive and sConfig.averageDisplay.progress then
+            self.lines.playerProgress:Show()
+        else
+            self.lines.playerProgress:Hide()
+        end
+        if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.petProgress then
+            self.lines.petProgress:Show()
+        else
+            self.lines.petProgress:Hide()
         end
     end,
     

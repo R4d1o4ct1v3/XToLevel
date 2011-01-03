@@ -36,7 +36,7 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.3_23"
+XToLevel.version = "4.0.3_24"
 XToLevel.releaseDate = '2011-01-02'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
@@ -393,15 +393,16 @@ function XToLevel:OnPlayerLevelUp(newLevel)
 	XToLevel.Player.timePlayedLevel = 0
 	XToLevel.Player.timePlayedUpdated = time()
 	
-	XToLevel.Pet:Update()
-	XToLevel.Average:Update()
-    XToLevel.LDB:BuildPattern();
-	XToLevel.LDB:Update();
-	
 	if newLevel >= XToLevel.Player:GetMaxLevel() then
+        XToLevel.Player.isActive = false
 		XToLevel:UnregisterEvents()
 		XToLevel:RegisterEvents(newLevel)
 	end
+    
+    XToLevel.Pet:Update()
+	XToLevel.Average:Update()
+    XToLevel.LDB:BuildPattern();
+	XToLevel.LDB:Update();
 end
 
 --- Used to handle Gathering profession XP gains. This stores the info so the
