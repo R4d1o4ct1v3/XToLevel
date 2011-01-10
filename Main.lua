@@ -37,7 +37,7 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
 XToLevel.version = "4.0.3_24"
-XToLevel.releaseDate = '2011-01-02'
+XToLevel.releaseDate = '2011-01-10'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")
