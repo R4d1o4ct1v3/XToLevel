@@ -229,6 +229,13 @@ end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
 function XToLevel:OnPlayerLogin()
+    -- If the player is at max level, and not a hunter, then there is no reason
+    -- to load the addon.
+    if UnitLevel("player") >= XToLevel.Player:GetMaxLevel() and XToLevel.Player:GetClass() ~= "HUNTER" then
+        XToLevel:Unload()
+        return false;
+    end
+
     self:RegisterEvents()
     XToLevel.Config:Verify()
     
@@ -256,6 +263,15 @@ function XToLevel:OnPlayerLogin()
     XToLevel.LDB:Initialize()
     XToLevel.Average:Initialize()
 	XToLevel.Tooltip:Initialize()
+end
+
+--- Disables the addon for this session. Basically, this hides all frames and
+-- wipes the XToLevel table.
+function XToLevel:Unload()
+    for name, ref in pairs(self.AverageFrameAPI) do
+        ref:Hide();
+    end
+    table.wipe(XToLevel)
 end
 
 --------------------------------------------------------------------------------
@@ -394,9 +410,14 @@ function XToLevel:OnPlayerLevelUp(newLevel)
 	XToLevel.Player.timePlayedUpdated = time()
 	
 	if newLevel >= XToLevel.Player:GetMaxLevel() then
-        XToLevel.Player.isActive = false
-		XToLevel:UnregisterEvents()
-		XToLevel:RegisterEvents(newLevel)
+        if self.Player:GetClass() ~= "HUNTER" then
+            self:Disable(true)
+            return;
+        else
+            XToLevel.Player.isActive = false
+            XToLevel:UnregisterEvents()
+            XToLevel:RegisterEvents(newLevel)
+        end
 	end
     
     XToLevel.Pet:Update()
