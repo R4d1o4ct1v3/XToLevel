@@ -278,7 +278,7 @@ XToLevel.Tooltip =
                     self:AddTimerDetailes(true)
                     GameTooltip:AddLine(" ")
                 end
-            elseif (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.ldb.tooltip.showPetInfo then
+            elseif XToLevel.Player:GetClass() == "HUNTER" and sConfig.ldb.tooltip.showPetInfo then
                 GameTooltip:AddLine(L["Pet"] .. ":")
                 self:AddPet()
                 self:AddPetExperience()
@@ -503,19 +503,25 @@ XToLevel.Tooltip =
     -- function description
     AddPet = function(self)
         GameTooltip:AddDoubleLine(" " .. (L["Name"] or "Name") .. ":" , tostring(XToLevel.Pet:GetName()), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
-        GameTooltip:AddDoubleLine(" " .. L["Kills"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Pet:GetAverageKillsRemaining()).." @ "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Pet:GetAverageKillXP(), 0)).." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
+        if XToLevel.Pet.level < XToLevel.Pet.maxLevel then
+            GameTooltip:AddDoubleLine(" " .. L["Kills"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Pet:GetAverageKillsRemaining()).." @ "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Pet:GetAverageKillXP(), 0)).." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
+        else
+            GameTooltip:AddLine(" " .. L['Level Reached'], self.labelColor.r, self.labelColor.g, self.labelColor.b)
+        end
     end,
     
     ---
     -- function description
     AddPetExperience = function(self)
-        local xpProgress = XToLevel.Pet:GetProgressAsPercentage(1) --XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100
-        local xpBars = XToLevel.Pet:GetProgressAsBars()
-        --GameTooltip:AddLine(L["Pet"] .. ":")
-        GameTooltip:AddDoubleLine(" " .. L["XP Progress"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.xp or 0))).." / "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0))).." [".. tostring(xpProgress) .."%]", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-        GameTooltip:AddDoubleLine(" " .. L["XP Bars Remaining"] .. ": " , tostring(xpBars) .. " bars", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-        GameTooltip:AddDoubleLine(" " .. L["Kill XP Required"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0) - (XToLevel.Pet.xp or 0))) .. " xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-        xpProgress = nil
+        if XToLevel.Pet.level < XToLevel.Pet.maxLevel then
+            local xpProgress = XToLevel.Pet:GetProgressAsPercentage(1) --XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100
+            local xpBars = XToLevel.Pet:GetProgressAsBars()
+            --GameTooltip:AddLine(L["Pet"] .. ":")
+            GameTooltip:AddDoubleLine(" " .. L["XP Progress"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.xp or 0))).." / "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0))).." [".. tostring(xpProgress) .."%]", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            GameTooltip:AddDoubleLine(" " .. L["XP Bars Remaining"] .. ": " , tostring(xpBars) .. " bars", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            GameTooltip:AddDoubleLine(" " .. L["Kill XP Required"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0) - (XToLevel.Pet.xp or 0))) .. " xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            xpProgress = nil
+        end
     end,
 	
 	--- Detailed timer info.
