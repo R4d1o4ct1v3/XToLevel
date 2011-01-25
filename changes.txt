@@ -1,3 +1,11 @@
+Version 4.0.3_25
+ - FIX: A nil reference error shown when reaching max level has been fixed.
+
+Version 4.0.3_24
+ - FIX: Max level hunters will again be able to track the progress of their pets.
+ - FIX: Non-hunter players will no longer see the pet section of the average window on level up.
+ - FIX: An error for hunters using the Classic window look has been corrected.
+
 Version 4.0.3_23
  - NEW: The addon now keeps track of how many mining and herbalism nodes need to be gathered to level. The average number is now displayed in a box in the "Blocky" average window and a more detailed list is shown in the tooltip. You will also see a "Needed to level" value on the node tooltips themsleves, much like with the mobs.
  - NEW: You can now use "guildxp" and "guilddaily" in the LDB custom string to show theyr respective percentage values. (More guild leveling features will be coming soon(tm).)
