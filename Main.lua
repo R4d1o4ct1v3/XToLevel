@@ -410,14 +410,9 @@ function XToLevel:OnPlayerLevelUp(newLevel)
 	XToLevel.Player.timePlayedUpdated = time()
 	
 	if newLevel >= XToLevel.Player:GetMaxLevel() then
-        if self.Player:GetClass() ~= "HUNTER" then
-            self:Disable(true)
-            return;
-        else
-            XToLevel.Player.isActive = false
-            XToLevel:UnregisterEvents()
-            XToLevel:RegisterEvents(newLevel)
-        end
+        XToLevel.Player.isActive = false
+        XToLevel:UnregisterEvents()
+        XToLevel:RegisterEvents(newLevel)
 	end
     
     XToLevel.Pet:Update()
@@ -599,6 +594,7 @@ function XToLevel:OnUnitPet(type)
     -- Note, it appears this event is now fired before the PLAYER_LOGIN event
     -- so the player won't be initialized the first time it is fired. (regression bugs wtf!)
 	if type == "player" and XToLevel.Player.level ~= nil then
+        console:log("Pet summoned!")
 		XToLevel.Pet:Initialize()
 		XToLevel.Average:Update()
         XToLevel.LDB:BuildPattern();
