@@ -27,17 +27,11 @@
 	["Battles"] = "Batailles",
     ["Battles Short"] = "B",
 	["Battlegrounds"] = "Champ de bataille",
-    ["Battlegrounds Short"] = "B",
 	["Objectives"] = "Objectifs",
     ["Objectives Short"] = "O",
     ["XP Percent"] = "XP",
-	["XP Percent Short"] = "XP",
-	["XP Bars"] = "XP",
-    ["XP Bars Short"] = "XP",
     ["Pet XP"] = "Familier XP",
     ["Pet XP Short"] = "XP",
-    ["Pet Bars"] = "Familier XP",
-    ["Pet Bars Short"] = "XP",
     ["Bars"] = "bars",
 	["Rested"] = "Rested",
 	["Rested Short"] = "R",
@@ -66,7 +60,6 @@
 	["No Dungeons Completed"] = "Aucune donnée",
 	["Name"] = "Nom",
 	["Total XP"] = "Total XP",
-    ["Total Rested"] = "Total Reposé",
 	["NPC Kills"] = "PNJ tués",
 	["No Battles Fought"] = "Aucune donnée",
 	["Click To Configure"] = "Cliquez ici pour configurer",
@@ -95,8 +88,7 @@
 	  || Configuration 
 	--]]
     ["General Tab"] = 'Général',
-    ["Messages Tab"] = 'Messages',
-    ["Window Tab"] = 'Fenêtre',
+    ["Window"] = 'Fenêtre',
     ["Data Tab"] = 'Données',
     ["LDB Tab"] = 'LDB',
     
@@ -112,10 +104,8 @@
     ["This option becomes available at level 15"] = "Cette option est disponible au niveau 15.",
     
     -- Main panel
-    ["LocaleHeader"] = "Locale",
 	["Debug"] = "Debug",
 	["Show Debug Info"] = "Montrez Debug",
-    ["Close"] = "Fermer",
     ["Config Language Reload Prompt"] = "La langue ne peut pas être mise à jour jusqu'à ce que l'UI soit rechargé. Voulez-vous la recharger maintenant ?",
     ["Yes"] = 'Oui',
     ["No"] = 'Non',
@@ -128,12 +118,7 @@
     ["Messages"] = "Messages",
     ["Tooltip"] = "Tooltip",
     ["Data"] = "Données",
-    ["Window Tab"] = "Fenêtre",
     ["LDB Tab"] = "LDB",
-    ["LDB Text"] = "LDB Texte",
-    ["Average Window"] = "Moyenne fenêtre",
-    ["Average Data"] = "Moyenne des données",
-    ["Verbose"] = "Verbose",
 	
 	-- Messages
 	["Player Messages"] = "Messages de joueur",
@@ -163,7 +148,6 @@
 	
 	["Vertical Align"] = "Aligner Verticalement",
     ["Show Pet Frame"] = "Montrer la fenêtre de familier",
-    ["Detach Pet Frame"] = "Détacher la fenêtre de familier",
 	
 	["Lock Avarage Display"] = "Serrure fenêtre",
 	["Allow Average Click"] = "Clic droit pour ouvrir les paramètres",
@@ -203,7 +187,6 @@
 	["LDB Pattern Header"] = "Text Muster",
     ["LDB Player Data Header"] = "Données de joueur",
 	["LDB Pet Data Header"] = "Données de familier",
-    ["LDB Tooltip Header"] = "Tooltip",
 	["Show Text"] = "Montrer la texte",
 	["Show Label"] = "Montrer la libellé",
 	["Show Icon"] = "Montrer le icône",
@@ -213,8 +196,6 @@
 	["Allow Colored Text"] = "Autoriser la coloration du texte",
 	["Show Verbose"] = "Verbeux",
 	["Color By XP"] = "Couleur par XP progrès",
-	["XP %"] = "XP %",
-	["Pet XP %"] = "Familier XP %",
 	
 	-- Tooltip
 	["Tooltip Sections Header"] = "Sections",
@@ -223,10 +204,16 @@
 	["Show Battleground Info"] = "Montrer information de bataille",
     ["Show Dungeon Info"] = "Montrer information de donjon",
     ["Show Gathering Info"] = "Show Gathering Info",
-    ["Show Guild Info"] = "Show Guild Info",
 	["Show Pet Details"] = "Montrer les détails de familier",
     ["Show Timer Details"] = "Show Timer Details",
     
     -- Timer
-    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?';
+    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?',
+    
+    -- MISSING KEYS
+    ["Player Timer"] = "Timer",
+    ["Gathering"] = "Gathering",
+    ["Enable timer"] = "Enable timer",
+    ["Reset"] = "Reset",
+    ["Reset Session"] = "Reset Session"
 }

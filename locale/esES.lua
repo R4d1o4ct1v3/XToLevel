@@ -27,17 +27,11 @@
 	["Battles"] = "Batallas",
     ["Battles Short"] = "B",
 	["Battlegrounds"] = "Campos de batalla",
-    ["Battlegrounds Short"] = "B",
 	["Objectives"] = "Objetivos",
     ["Objectives Short"] = "O",
 	["XP Percent"] = "XP",
-	["XP Percent Short"] = "XP",
-	["XP Bars"] = "XP",
-    ["XP Bars Short"] = "XP",
     ["Pet XP"] = "Mascota XP",
     ["Pet XP Short"] = "XP",
-    ["Pet Bars"] = "Mascota XP",
-    ["Pet Bars Short"] = "XP",
     ["Bars"] = "bars",
 	["Rested"] = "Rested",
 	["Rested Short"] = "R",
@@ -66,7 +60,6 @@
 	["No Dungeons Completed"] = "No hay datos",
 	["Name"] = "Nombre",
 	["Total XP"] = "Total XP",
-    ["Total Rested"] = "Total Descansado",
 	["NPC Kills"] = "NPC Mata",
 	["No Battles Fought"] = "No hay datos",
 	["Click To Configure"] = "Haga clic aquí para configurar",
@@ -95,8 +88,7 @@
 	  || Configuration 
 	--]]
     ["General Tab"] = 'General',
-    ["Messages Tab"] = 'Mensajes',
-    ["Window Tab"] = 'Ventana',
+    ["Window"] = 'Ventana',
     ["Data Tab"] = 'Datos',
     ["LDB Tab"] = 'LDB',
     
@@ -112,10 +104,8 @@
     ["This option becomes available at level 15"] = "Esta opción está disponible en el nivel 15.",
     
     -- Main panel
-    ["LocaleHeader"] = "Lugar",
 	["Debug"] = "Depurar",
 	["Show Debug Info"] = "Mostrar Depurar",
-    ["Close"] = "Cerrar",
     ["Config Language Reload Prompt"] = "La lengua no puede ser actualizada hasta que se recargue el UI. ¿Usted quiere ahora recargarla?",
     ["Yes"] = 'Sí',
     ["No"] = 'No',
@@ -128,12 +118,7 @@
     ["Messages"] = "Mensajes",
     ["Tooltip"] = "Tooltip",
     ["Data"] = "Datos",
-    ["Window Tab"] = "Ventana",
     ["LDB Tab"] = "LDB",
-    ["LDB Text"] = "LDB Texto",
-    ["Average Window"] = "La media de ventana",
-    ["Average Data"] = "La media de datos",
-    ["Verbose"] = "Verbose",
 	
 	-- Messages
 	["Player Messages"] = "Reproductor de mensajes",
@@ -163,7 +148,6 @@
 	
 	["Vertical Align"] = "Alinear Verticalmente",
     ["Show Pet Frame"] = "Mostrar el marco de mascotas",
-    ["Detach Pet Frame"] = "Separar el marco de mascotas",
 	
 	["Lock Avarage Display"] = "Inmovilizar",
 	["Allow Average Click"] = "Botón derecho abierto configuración",
@@ -203,7 +187,6 @@
 	["LDB Pattern Header"] = "Patrón del texto",
     ["LDB Player Data Header"] = "Jugador Datos",
 	["LDB Pet Data Header"] = "Mascota Datos",
-    ["LDB Tooltip Header"] = "Tooltip",
 	["Show Text"] = "Mostrar la Texto",
 	["Show Label"] = "Mostrar la Etiqueta",
 	["Show Icon"] = "Mostrar la Icon",
@@ -213,8 +196,6 @@
 	["Allow Colored Text"] = "Permiten la color de texto",
 	["Show Verbose"] = "Verbose",
 	["Color By XP"] = "Coloree text por progreso de XP",
-	["XP %"] = "XP %",
-	["Pet XP %"] = "Pet XP %",
 	
 	-- Tooltip
 	["Tooltip Sections Header"] = "Sections",
@@ -223,10 +204,16 @@
 	["Show Battleground Info"] = "Mostrar campo de batalla Información",
 	["Show Dungeon Info"] = "Mostrar Mazmorras Información.",
     ["Show Gathering Info"] = "Show Gathering Info",
-    ["Show Guild Info"] = "Show Guild Info",
 	["Show Pet Details"] = "Mostrar los detalles de mascota.",
     ["Show Timer Details"] = "Show Timer Details",
     
     -- Timer
-    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?';
+    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?',
+    
+    -- MISSING KEYS
+    ["Player Timer"] = "Timer",
+    ["Gathering"] = "Gathering",
+    ["Enable timer"] = "Enable timer",
+    ["Reset"] = "Reset",
+    ["Reset Session"] = "Reset Session"
 }

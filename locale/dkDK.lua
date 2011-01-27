@@ -27,17 +27,11 @@
     ["Battles"] = "Kampe",
     ["Battles Short"] = "K",
 	["Battlegrounds"] = "Battlegrounds",
-    ["Battlegrounds Short"] = "B",
 	["Objectives"] = "Mål",
 	["Objectives Short"] = "M",
     ["XP Percent"] = "XP",
-	["XP Percent Short"] = "XP",
-	["XP Bars"] = "XP",
-    ["XP Bars Short"] = "XP",
     ["Pet XP"] = "Pet XP",
     ["Pet XP Short"] = "XP",
-    ["Pet Bars"] = "Pet XP",
-    ["Pet Bars Short"] = "XP",
     ["Bars"] = "bars",
 	["Rested"] = "Rested",
 	["Rested Short"] = "R",
@@ -66,7 +60,6 @@
 	["No Dungeons Completed"] = "Ingen Data",
 	["Name"] = "Navn",
 	["Total XP"] = "Alt XP",
-    ["Total Rested"] = "Alt Udhvilet",
 	["NPC Kills"] = "NPC Drab",
 	["No Battles Fought"] = "Ingen Data",
     ["Click To Configure"] = "Klik for at konfigurere",
@@ -95,8 +88,7 @@
 	  || Configuration 
 	--]]
     ["General Tab"] = 'Generelt',
-    ["Messages Tab"] = 'Beskeder',
-    ["Window Tab"] = 'Vindue',
+    ["Window"] = 'Vindue',
     ["Data Tab"] = 'Data',
     ["LDB Tab"] = 'LDB',
     
@@ -112,10 +104,8 @@
     ["This option becomes available at level 15"] = "Denne mulighed bliver tilgængelig på niveau 15.",
     
     -- Main panel
-    ["LocaleHeader"] = "Locale",
     ["Debug"] = "Debug",
 	["Show Debug Info"] = "Vis Debug Info",
-    ["Close"] = "Luk",
     ["Config Language Reload Prompt"] = "Sproget vil ikke blive ændret, før UI genindlæses. Ønsker du at genindlæse nu?",
     ["Yes"] = 'Ja',
     ["No"] = 'Nej',
@@ -128,12 +118,7 @@
     ["Messages"] = "Beskeder",
     ["Tooltip"] = "Tooltip",
     ["Data"] = "Data",
-    ["Window Tab"] = "Vindue",
     ["LDB Tab"] = "LDB",
-    ["LDB Text"] = "LDB Tekst",
-    ["Average Window"] = "Det nogenlunde Vindue",
-    ["Average Data"] = "Det nogenlunde Data",
-    ["Verbose"] = "Verbose",
 	
 	-- Messages
 	["Player Messages"] = "Spiller Bedskeder",
@@ -163,7 +148,6 @@
 	
 	["Vertical Align"] = "Juster vertikalt",
     ["Show Pet Frame"] = "Vis pet Vindue",
-    ["Detach Pet Frame"] = "Løsne pet Vindue",
 	
 	["Lock Avarage Display"] = "Lås Vindue",
 	["Allow Average Click"] = "Vis Redigering med højre-klik",
@@ -203,7 +187,6 @@
 	["LDB Pattern Header"] = "Tekst Mønster",
     ["LDB Player Data Header"] = "Spiller Data",
 	["LDB Pet Data Header"] = "Pet Data",
-    ["LDB Tooltip Header"] = "Tooltip",
 	["Show Text"] = "Vis Tekst",
 	["Show Label"] = "Vis Etiket",
 	["Show Icon"] = "Vis Ikon",
@@ -213,8 +196,6 @@
 	["Allow Colored Text"] = "Tillad farvet tekst",
 	["Show Verbose"] = "Verbose",
 	["Color By XP"] = "Farve-data af XP-fremskridt",
-	["XP %"] = "XP %",
-	["Pet XP %"] = "Pet XP %",
 	
 	-- Tooltip
 	["Tooltip Sections Header"] = "Sections",
@@ -223,10 +204,16 @@
 	["Show Battleground Info"] = "Vis Battleground Info",
     ["Show Dungeon Info"] = "Vis Dungeon Info",
     ["Show Gathering Info"] = "Show Gathering Info",
-    ["Show Guild Info"] = "Show Guild Info",
 	["Show Pet Details"] = "Vis Pet Detaljer",
     ["Show Timer Details"] = "Vis Timer Info",
     
     -- Timer
-    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?';
+    ["Reset Timer Dialog"] = 'Are you sure you want to reset the timer?',
+    
+    -- MISSING KEYS
+    ["Player Timer"] = "Timer",
+    ["Gathering"] = "Gathering",
+    ["Enable timer"] = "Enable timer",
+    ["Reset"] = "Reset",
+    ["Reset Session"] = "Reset Session"
 }
