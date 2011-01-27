@@ -174,7 +174,7 @@ XToLevel.Config =
 	    -- Initialize Popup Windows
 	    --
 	    StaticPopupDialogs['XToLevelConfig_MessageColorsReset'] = {
-			text = L['Color Reset Dialog'],
+			text = L["Color Reset Dialog"],
 			button1 = L["Yes"],
 			button2 = L["No"],
 			OnAccept = function()
@@ -200,7 +200,7 @@ XToLevel.Config =
 			hideOnEscape = true,
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPlayerKills'] = {
-			text = L['Reset Player Kill Dialog'],
+			text = L["Reset Player Kill Dialog"],
 			button1 = L["Yes"],
 			button2 = L["No"],
 			OnAccept = function()
@@ -214,7 +214,7 @@ XToLevel.Config =
 			hideOnEscape = true,
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPlayerQuests'] = {
-			text = L['Reset Player Quest Dialog'],
+			text = L["Reset Player Quest Dialog"],
 			button1 = L["Yes"],
 			button2 = L["No"],
 			OnAccept = function()
@@ -228,7 +228,7 @@ XToLevel.Config =
 			hideOnEscape = true,
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetBattles'] = {
-			text = L['Reset Battleground Dialog'],
+			text = L["Reset Battleground Dialog"],
 			button1 = L["Yes"],
 			button2 = L["No"],
 			OnAccept = function()
@@ -242,7 +242,7 @@ XToLevel.Config =
 			hideOnEscape = true,
 		}
 	    StaticPopupDialogs['XToLevelConfig_ResetPetKills'] = {
-			text = L['Reset Pet Kill Dialog'],
+			text = L["Reset Pet Kill Dialog"],
 			button1 = L["Yes"],
 			button2 = L["No"],
 			OnAccept = function()
@@ -256,7 +256,7 @@ XToLevel.Config =
 			hideOnEscape = true,
 		}
 		StaticPopupDialogs['XToLevelConfig_ResetDungeons'] = {
-	        text = L['Reset Dungeon Dialog'],
+	        text = L["Reset Dungeon Dialog"],
 	        button1 = L["Yes"],
 	        button2 = L["No"],
 	        OnAccept = function()
@@ -270,7 +270,7 @@ XToLevel.Config =
 	        hideOnEscape = true,
 	    }
         StaticPopupDialogs['XToLevelConfig_ResetTimer'] = {
-	        text = L['Reset Timer Dialog'],
+	        text = L["Reset Timer Dialog"],
 	        button1 = L["Yes"],
 	        button2 = L["No"],
 	        OnAccept = function()
@@ -284,7 +284,7 @@ XToLevel.Config =
 	        hideOnEscape = true,
 	    }
         StaticPopupDialogs['XToLevelConfig_LdbReload'] = {
-	        text = L['LDB Reload Dialog'],
+	        text = L["LDB Reload Dialog"],
 	        button1 = L["Yes"],
 	        button2 = L["No"],
 	        OnAccept = function()
@@ -324,7 +324,7 @@ XToLevel.Config =
         local mainPanel = self:CreatePanel("XToLevel_MainPanel", "XToLevel", 200)
         
         -- Add the description.
-        self:CreateDescription(mainPanel, "MainDescription", L['MainDescription'], 33, "FFFFFF")
+        self:CreateDescription(mainPanel, "MainDescription", L["MainDescription"], 33, "FFFFFF")
         
         -- Add the about header
         local aboutHeader = self:CreateH2(mainPanel, "AboutHeader", "About", 45)
@@ -353,7 +353,7 @@ XToLevel.Config =
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Category", L["Category"], "Quests & Leveling, Battlegrounds, Dungeons, Pets.", "FFFFFF")
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "License", L["License"], L['All Rights Reserved'] .. " (See LICENSE.txt)", "FFFFFF")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "License", L["License"], L["All Rights Reserved"] .. " (See LICENSE.txt)", "FFFFFF")
         
         
         return mainPanel
@@ -404,7 +404,7 @@ XToLevel.Config =
 	            XToLevel.LDB:Update();
 	            
 	            StaticPopupDialogs['XToLevelConfig_LocaleReload'] = {
-					text = L['Config Language Reload Prompt'],
+					text = L["Config Language Reload Prompt"],
 					button1 = L["Yes"],
 					button2 = L["No"],
 					OnAccept = ReloadUI,
@@ -418,18 +418,18 @@ XToLevel.Config =
 	    )
         
         -- The debug section
-        self:CreateH2(generalPanel, "DebugHeader", L['Debug'], 50)
+        self:CreateH2(generalPanel, "DebugHeader", L["Debug"], 50)
         self:CreateCheckbox(generalPanel, "LocaleBox", L["Show Debug Info"], function(self)
             self:SetChecked(sConfig.general.showDebug)
         end, function(self)
             sConfig.general.showDebug = self:GetChecked() or false
         end)
         
-        self:CreateH2(generalPanel, "RAFHeader", L['Recruit A Friend'], 55)
+        self:CreateH2(generalPanel, "RAFHeader", L["Recruit A Friend"], 55)
         
         self:CreateDescription(generalPanel, "RAFDescription", L["RAF Description"], 44, "FFFFFF")
         
-        self:CreateCheckbox(generalPanel, "RAFBox", L['Enable'] .. " " .. L['Recruit A Friend'], function(self)
+        self:CreateCheckbox(generalPanel, "RAFBox", L["Enable"] .. " " .. L["Recruit A Friend"], function(self)
             self:SetChecked(sConfig.general.rafEnabled)
         end, function(self)
             sConfig.general.rafEnabled = self:GetChecked() or false
@@ -442,21 +442,21 @@ XToLevel.Config =
     -- Creates the main config panel
     CreateMessagesPanel = function(self, parent)
     	local height = XToLevel.Player:GetClass() == "HUNTER" and 300 or 350
-        local messagesPanel = self:CreatePanel("XToLevel_MessagesPanel", L["Messages Tab"], height, parent)
+        local messagesPanel = self:CreatePanel("XToLevel_MessagesPanel", L["Messages"], height, parent)
         
         -- Player boxes
-        self:CreateH2(messagesPanel, "PlayerHeader", L['Player Messages'], 0)
-        self:CreateCheckbox(messagesPanel, "PlayerFloating", L['Show Floating'], function(self)
+        self:CreateH2(messagesPanel, "PlayerHeader", L["Player Messages"], 0)
+        self:CreateCheckbox(messagesPanel, "PlayerFloating", L["Show Floating"], function(self)
             self:SetChecked(sConfig.messages.playerFloating)
         end, function(self)
             sConfig.messages.playerFloating = self:GetChecked() or false
         end)
-        self:CreateCheckbox(messagesPanel, "PlayerChat", L['Show In Chat'], function(self)
+        self:CreateCheckbox(messagesPanel, "PlayerChat", L["Show In Chat"], function(self)
             self:SetChecked(sConfig.messages.playerChat)
         end, function(self)
             sConfig.messages.playerChat = self:GetChecked() or false
         end)
-        self:CreateCheckbox(messagesPanel, "PlayerObjective", L['Show BG Objectives'], function(self)
+        self:CreateCheckbox(messagesPanel, "PlayerObjective", L["Show BG Objectives"], function(self)
             self:SetChecked(sConfig.messages.bgObjectives)
         end, function(self)
             sConfig.messages.bgObjectives = self:GetChecked() or false
@@ -464,13 +464,13 @@ XToLevel.Config =
         
         -- Pet boxes
         if XToLevel.Player:GetClass() == "HUNTER" then
-	        self:CreateH2(messagesPanel, "PetHeader", L['Pet Messages'], 120)
-	        self:CreateCheckbox(messagesPanel, "PetFloating", L['Show Floating'], function(self)
+	        self:CreateH2(messagesPanel, "PetHeader", L["Pet Messages"], 120)
+	        self:CreateCheckbox(messagesPanel, "PetFloating", L["Show Floating"], function(self)
 	            self:SetChecked(sConfig.messages.petFloating)
 	        end, function(self)
 	            sConfig.messages.petFloating = self:GetChecked() or false
 	        end)
-	        self:CreateCheckbox(messagesPanel, "PetChat", L['Show In Chat'], function(self)
+	        self:CreateCheckbox(messagesPanel, "PetChat", L["Show In Chat"], function(self)
 	            self:SetChecked(sConfig.messages.petChat)
 	        end, function(self)
 	            sConfig.messages.petChat = self:GetChecked() or false
@@ -478,45 +478,45 @@ XToLevel.Config =
         end
         
         -- Colors
-        self:CreateH2(messagesPanel, "ColorHeader", L['Message Colors'], 210)
-        self:CreateColorPicker(messagesPanel, "KillColorPicker", L['Player Kills'], sConfig.messages.colors.playerKill,
+        self:CreateH2(messagesPanel, "ColorHeader", L["Message Colors"], 210)
+        self:CreateColorPicker(messagesPanel, "KillColorPicker", L["Player Kills"], sConfig.messages.colors.playerKill,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.playerKill = self.currentColor
         		end
         	end)
-    	self:CreateColorPicker(messagesPanel, "QuestColorPicker", L['Player Quests'], sConfig.messages.colors.playerQuest,
+    	self:CreateColorPicker(messagesPanel, "QuestColorPicker", L["Player Quests"], sConfig.messages.colors.playerQuest,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.playerQuest = self.currentColor
         		end
         	end)
-    	self:CreateColorPicker(messagesPanel, "DungeonColorPicker", L['Player Dungeons'], sConfig.messages.colors.playerDungeon,
+    	self:CreateColorPicker(messagesPanel, "DungeonColorPicker", L["Player Dungeons"], sConfig.messages.colors.playerDungeon,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.playerDungeon = self.currentColor
         		end
         	end)
-    	self:CreateColorPicker(messagesPanel, "BattleColorPicker", L['Player Battles'], sConfig.messages.colors.playerBattleground,
+    	self:CreateColorPicker(messagesPanel, "BattleColorPicker", L["Player Battles"], sConfig.messages.colors.playerBattleground,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.playerBattleground = self.currentColor
         		end
         	end)
-    	self:CreateColorPicker(messagesPanel, "LevelColorPicker", L['Player Levelup'], sConfig.messages.colors.playerLevel,
+    	self:CreateColorPicker(messagesPanel, "LevelColorPicker", L["Player Levelup"], sConfig.messages.colors.playerLevel,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.playerLevel = self.currentColor
         		end
         	end)
-    	self:CreateColorPicker(messagesPanel, "PetColorPicker", L['Pet Kills'], sConfig.messages.colors.petKill,
+    	self:CreateColorPicker(messagesPanel, "PetColorPicker", L["Pet Kills"], sConfig.messages.colors.petKill,
         	function(self)
         		if type(self.currentColor) == "table" then
     				sConfig.messages.colors.petKill = self.currentColor
         		end
         	end)
         	
-    	local resetButton = self:CreateButton(messagesPanel, "ColorReset", L['Color Reset'], 75, 25,
+    	local resetButton = self:CreateButton(messagesPanel, "ColorReset", L["Color Reset"], 75, 25,
     		function(self) end,
     		function(self) StaticPopup_Show("XToLevelConfig_MessageColorsReset") end)
 		resetButton:ClearAllPoints()
@@ -532,9 +532,9 @@ XToLevel.Config =
     	if XToLevel.Player:GetClass() == "HUNTER" then
     		height = 900
         end
-        local windowPanel = self:CreatePanel("XToLevel_WindowPanel", L["Window Tab"], height, parent)
+        local windowPanel = self:CreatePanel("XToLevel_WindowPanel", L["Window"], height, parent)
         
-    	self:CreateH2(windowPanel, "ActiveHeader", L['Active Window Header'], 0)
+    	self:CreateH2(windowPanel, "ActiveHeader", L["Active Window Header"], 0)
         self:CreateSelectBox(windowPanel, "WindowSelect", {"None", "Blocky", "Classic"}, "Blocky",
 	        -- OnShow
 	        function(self)
@@ -568,14 +568,14 @@ XToLevel.Config =
 	        end
 	    )
         
-        self:CreateRange(windowPanel, "WindowScaleRange", (L['Window Size'] or "Size") .. " (%)", 50, 200, ceil(sConfig.averageDisplay.scale * 100),
+        self:CreateRange(windowPanel, "WindowScaleRange", (L["Window Size"] or "Size") .. " (%)", 50, 200, ceil(sConfig.averageDisplay.scale * 100),
             function(self, newValue)
                 sConfig.averageDisplay.scale  = newValue / 100
                 XToLevel.Average:Update()
             end)
 	   
         -- Classic boxes.
-        self:CreateH2(windowPanel, "ClassicHeader", L['Classic Specific Options'], 0)
+        self:CreateH2(windowPanel, "ClassicHeader", L["Classic Specific Options"], 0)
         self:CreateCheckbox(windowPanel, "ShowHeader", L["Show XToLevel Header"], 
             function(self) self:SetChecked(sConfig.averageDisplay.header) end, 
             function(self) sConfig.averageDisplay.header = self:GetChecked() or false end)
@@ -590,7 +590,7 @@ XToLevel.Config =
             function(self) sConfig.averageDisplay.colorText = self:GetChecked() or false end)
             
         -- Blocky boxes.
-        self:CreateH2(windowPanel, "BlockyHeader", L['Blocky Specific Options'], 0)
+        self:CreateH2(windowPanel, "BlockyHeader", L["Blocky Specific Options"], 0)
         self:CreateCheckbox(windowPanel, "ShowPetFrame", L["Vertical Align"], 
             function(self) self:SetChecked(sConfig.averageDisplay.orientation == "v") end, 
             function(self) sConfig.averageDisplay.orientation = self:GetChecked() and "v" or "h" end)
@@ -602,7 +602,7 @@ XToLevel.Config =
        	end
         
 	    -- Behavior boxes
-        self:CreateH2(windowPanel, "BehaviorHeader", L['Window Behavior Header'], 125)
+        self:CreateH2(windowPanel, "BehaviorHeader", L["Window Behavior Header"], 125)
         self:CreateCheckbox(windowPanel, "LockWindow", L["Lock Avarage Display"], 
             function(self) self:SetChecked(not sConfig.general.allowDrag) end, 
             function(self) sConfig.general.allowDrag = not (self:GetChecked() or false) end)
@@ -620,7 +620,7 @@ XToLevel.Config =
             function(self) sConfig.averageDisplay.progressAsBars = self:GetChecked() or false end)
         
         -- Data boxes
-        self:CreateH2(windowPanel, "PlayerDataHeader", L['LDB Player Data Header'], 250)
+        self:CreateH2(windowPanel, "PlayerDataHeader", L["LDB Player Data Header"], 250)
         self:CreateCheckbox(windowPanel, "PlayerKills", L["Kills"], 
             function(self) self:SetChecked(sConfig.averageDisplay.playerKills) end, 
             function(self) sConfig.averageDisplay.playerKills = self:GetChecked() or false end)
@@ -647,8 +647,8 @@ XToLevel.Config =
             function(self) sConfig.averageDisplay.playerGathering = self:GetChecked() or false end)
             
         --[[ Guild boxes -- REMOVED UNTIL IT CAN BE DONE PROPERLY! --
-        self:CreateH2(windowPanel, "GuildDataHeader", L['Guild'], 250)
-        self:CreateDescription(windowPanel, "MainDescription", L['Guild Window Chioce Description'], 22, "FFFFFF")
+        self:CreateH2(windowPanel, "GuildDataHeader", L["Guild"], 250)
+        self:CreateDescription(windowPanel, "MainDescription", L["Guild Window Chioce Description"], 22, "FFFFFF")
         self:CreateSelectBox(windowPanel, "GuildTypeSelect", {"Level", "Daily"}, "Level",
 	        -- OnShow
 	        function(self)
@@ -693,7 +693,7 @@ XToLevel.Config =
        	-- Set tooltips for hunter-only options, in case the player is not a
        	-- hunter.
        	if XToLevel.Player:GetClass() == "HUNTER" then
-        	self:CreateH2(windowPanel, "PetDataHeader", L['LDB Pet Data Header'], 250)
+        	self:CreateH2(windowPanel, "PetDataHeader", L["LDB Pet Data Header"], 250)
 	        self:CreateCheckbox(windowPanel, "PetKills", L["Pet Kills"], 
 	            function(self) self:SetChecked(sConfig.averageDisplay.petKills) end, 
 	            function(self) sConfig.averageDisplay.petKills = self:GetChecked() or false end)
@@ -724,11 +724,11 @@ XToLevel.Config =
                 sConfig.ldb.enabled = self:GetChecked() or false
                 StaticPopup_Show("XToLevelConfig_LdbReload");
             end)
-        self:CreateDescription(ldbPanel, "LdbEnableDescription", L['LDB Enabled Description'], 33, "FFFFFF")
+        self:CreateDescription(ldbPanel, "LdbEnableDescription", L["LDB Enabled Description"], 33, "FFFFFF")
         
         
         -- Text pattern section
-        self:CreateH2(ldbPanel, "TextPatternHeader", L['LDB Pattern Header'])
+        self:CreateH2(ldbPanel, "TextPatternHeader", L["LDB Pattern Header"])
         self:CreateSelectBox(ldbPanel, "LDBPatternSelect", {"default", "minimal", "minimal_dashed", "brackets", "countdown", "custom"}, "default",
             -- OnShow
             function(self)
@@ -766,7 +766,7 @@ XToLevel.Config =
         end
         
         -- Appearence header
-        self:CreateH2(ldbPanel, "AppearenceHeader", L['LDB Appearence Header'])
+        self:CreateH2(ldbPanel, "AppearenceHeader", L["LDB Appearence Header"])
         self:CreateCheckbox(ldbPanel, "ShowTextBox", L["Show Text"],
             function(self) self:SetChecked(sConfig.ldb.showText)  end,
             function(self) sConfig.ldb.showText = self:GetChecked() or false end)
@@ -779,27 +779,27 @@ XToLevel.Config =
         self:CreateCheckbox(ldbPanel, "ShowIconBox", L["Show Icon"],
             function(self) self:SetChecked(sConfig.ldb.showIcon)  end,
             function(self) sConfig.ldb.showIcon = self:GetChecked() or false end)
-        self:CreateCheckbox(ldbPanel, "AllowColoredTextBox", L['Allow Colored Text'],
+        self:CreateCheckbox(ldbPanel, "AllowColoredTextBox", L["Allow Colored Text"],
             function(self) self:SetChecked(sConfig.ldb.allowTextColor)  end,
             function(self) sConfig.ldb.allowTextColor = self:GetChecked() or false end)
-        self:CreateCheckbox(ldbPanel, "ColorDataByProgressBox", L['Color By XP'],
+        self:CreateCheckbox(ldbPanel, "ColorDataByProgressBox", L["Color By XP"],
             function(self) self:SetChecked(sConfig.ldb.text.colorValues)  end,
             function(self) sConfig.ldb.text.colorValues = self:GetChecked() or false end)
-        self:CreateCheckbox(ldbPanel, "ShowXpAsBarsBox", L['Show Progress As Bars'],
+        self:CreateCheckbox(ldbPanel, "ShowXpAsBarsBox", L["Show Progress As Bars"],
             function(self) self:SetChecked(sConfig.ldb.text.xpAsBars)  end,
             function(self) sConfig.ldb.text.xpAsBars = self:GetChecked() or false end)
-         self:CreateCheckbox(ldbPanel, "ShowVerboseText", L['Show Verbose'],
+         self:CreateCheckbox(ldbPanel, "ShowVerboseText", L["Show Verbose"],
             function(self) self:SetChecked(sConfig.ldb.text.verbose)  end,
             function(self) sConfig.ldb.text.verbose = self:GetChecked() or false end)
-		self:CreateCheckbox(ldbPanel, "CountXpDown", L['Show XP remaining'],
+		self:CreateCheckbox(ldbPanel, "CountXpDown", L["Show XP remaining"],
             function(self) self:SetChecked(sConfig.ldb.text.xpCountdown)  end,
             function(self) sConfig.ldb.text.xpCountdown = self:GetChecked() or false end)
-		self:CreateCheckbox(ldbPanel, "ShrinkXpValues", L['Shorten XP values'],
+		self:CreateCheckbox(ldbPanel, "ShrinkXpValues", L["Shorten XP values"],
             function(self) self:SetChecked(sConfig.ldb.text.xpnumFormat)  end,
             function(self) sConfig.ldb.text.xpnumFormat = self:GetChecked() or false end)
             
         -- Player data
-        self:CreateH2(ldbPanel, "PlayerData", L['LDB Player Data Header'])
+        self:CreateH2(ldbPanel, "PlayerData", L["LDB Player Data Header"])
         self:CreateCheckbox(ldbPanel, "ShowKills", L["Player Kills"],
             function(self) self:SetChecked(sConfig.ldb.text.kills)  end,
             function(self) sConfig.ldb.text.kills = self:GetChecked() or false end)
@@ -833,7 +833,7 @@ XToLevel.Config =
         
         -- Pet data
         if XToLevel.Player:GetClass() == "HUNTER" then
-	        self:CreateH2(ldbPanel, "PlayerData", L['LDB Pet Data Header'])
+	        self:CreateH2(ldbPanel, "PlayerData", L["LDB Pet Data Header"])
 	        self:CreateCheckbox(ldbPanel, "ShowPetKills", L["Pet Kills"],
 	            function(self) self:SetChecked(sConfig.ldb.text.pet)  end,
 	            function(self) sConfig.ldb.text.pet = self:GetChecked() or false end)
@@ -856,46 +856,46 @@ XToLevel.Config =
         local ldbPanel = self:CreatePanel("XToLevel_DataPanel", L["Data Tab"], height, parent)
         
         -- Add the header and description.
-        self:CreateH2(ldbPanel, "RangeHeader", L['Data Range Header'])
-        self:CreateDescription(ldbPanel, "RangeDescription1", L['Data Range Subheader'], 33, "FFFFFF")
+        self:CreateH2(ldbPanel, "RangeHeader", L["Data Range Header"])
+        self:CreateDescription(ldbPanel, "RangeDescription1", L["Data Range Subheader"], 33, "FFFFFF")
         
         -- Add ranges
-        self:CreateRange(ldbPanel, "KillDataLength", L['Player Kills'], 1, 100, sConfig.averageDisplay.playerKillListLength,
+        self:CreateRange(ldbPanel, "KillDataLength", L["Player Kills"], 1, 100, sConfig.averageDisplay.playerKillListLength,
         	function(self, newValue) XToLevel.Player:SetKillAverageLength(newValue) end)
-    	self:CreateRange(ldbPanel, "QuestDataLength", L['Player Quests'], 1, 100, sConfig.averageDisplay.playerQuestListLength,
+    	self:CreateRange(ldbPanel, "QuestDataLength", L["Player Quests"], 1, 100, sConfig.averageDisplay.playerQuestListLength,
         	function(self, newValue) XToLevel.Player:SetQuestAverageLength(newValue) end)
-    	self:CreateRange(ldbPanel, "BattleDataLength", L['Player Battles'], 1, 100, sConfig.averageDisplay.playerBGListLength,
+    	self:CreateRange(ldbPanel, "BattleDataLength", L["Player Battles"], 1, 100, sConfig.averageDisplay.playerBGListLength,
         	function(self, newValue) XToLevel.Player:SetBattleAverageLength(newValue) end)
-    	self:CreateRange(ldbPanel, "ObjectiveDataLength", L['Player Objectives'], 1, 100, sConfig.averageDisplay.playerBGOListLength,
+    	self:CreateRange(ldbPanel, "ObjectiveDataLength", L["Player Objectives"], 1, 100, sConfig.averageDisplay.playerBGOListLength,
         	function(self, newValue) XToLevel.Player:SetObjectiveAverageLength(newValue); end)
-    	self:CreateRange(ldbPanel, "DungeonDataLength", L['Player Dungeons'], 1, 100, sConfig.averageDisplay.playerDungeonListLength,
+    	self:CreateRange(ldbPanel, "DungeonDataLength", L["Player Dungeons"], 1, 100, sConfig.averageDisplay.playerDungeonListLength,
         	function(self, newValue) XToLevel.Player:SetDungeonAverageLength(newValue) end)
     	if XToLevel.Player:GetClass() == "HUNTER" then
-	    	self:CreateRange(ldbPanel, "PetDataLength", L['Reset Pet Kills'], 1, 100, sConfig.averageDisplay.petKillListLength,
+	    	self:CreateRange(ldbPanel, "PetDataLength", L["Reset Pet Kills"], 1, 100, sConfig.averageDisplay.petKillListLength,
 	        	function(self, newValue) XToLevel.Pet:SetKillAverageLength(newValue) end)
     	end
     	
     	-- Add the header and description.
-        self:CreateH2(ldbPanel, "ClearHeader", L['Clear Data Header'])
-        self:CreateDescription(ldbPanel, "ClearDescription", L['Clear Data Subheader'], 22, "FFFFFF")
-        self:CreateButton(ldbPanel, "ClearKillsButton", L['Reset Player Kills'], 105, 30, 
+        self:CreateH2(ldbPanel, "ClearHeader", L["Clear Data Header"])
+        self:CreateDescription(ldbPanel, "ClearDescription", L["Clear Data Subheader"], 22, "FFFFFF")
+        self:CreateButton(ldbPanel, "ClearKillsButton", L["Reset Player Kills"], 105, 30, 
         	function(self) end, 
         	function(self) StaticPopup_Show("XToLevelConfig_ResetPlayerKills"); end, 
     	true)
-    	self:CreateButton(ldbPanel, "ClearQuestsButton", L['Reset Player Quests'], 105, 30, 
+    	self:CreateButton(ldbPanel, "ClearQuestsButton", L["Reset Player Quests"], 105, 30, 
         	function(self) end, 
         	function(self) StaticPopup_Show("XToLevelConfig_ResetPlayerQuests"); end, 
     	true)
-    	self:CreateButton(ldbPanel, "ClearDungeonsButton", L['Reset Dungeons'], 105, 30, 
+    	self:CreateButton(ldbPanel, "ClearDungeonsButton", L["Reset Dungeons"], 105, 30, 
         	function(self) end, 
         	function(self) StaticPopup_Show("XToLevelConfig_ResetDungeons"); end, 
     	false)
-    	self:CreateButton(ldbPanel, "ClearBattlesButton", L['Reset Battlegrounds'], 105, 30, 
+    	self:CreateButton(ldbPanel, "ClearBattlesButton", L["Reset Battlegrounds"], 105, 30, 
         	function(self) end, 
         	function(self) StaticPopup_Show("XToLevelConfig_ResetBattles"); end, 
     	true)
     	if XToLevel.Player:GetClass() == "HUNTER" then
-			self:CreateButton(ldbPanel, "ClearPetButton", L['Reset Pet Kills'], 105, 30, 
+			self:CreateButton(ldbPanel, "ClearPetButton", L["Reset Pet Kills"], 105, 30, 
 		    	function(self) end, 
 		    	function(self) StaticPopup_Show("XToLevelConfig_ResetPetKills"); end, 
 			false)
@@ -907,26 +907,26 @@ XToLevel.Config =
         local tooltipPanel = self:CreatePanel("XToLevel_TooltipPanel", L["Tooltip"], height, parent)
 	
 		-- Tooltip sections
-        self:CreateH2(tooltipPanel, "TooltipSectionsHeader", L['Tooltip Sections Header'])
-        self:CreateCheckbox(tooltipPanel, "TooltipPlayer", L['Show Player Details'],
+        self:CreateH2(tooltipPanel, "TooltipSectionsHeader", L["Tooltip Sections Header"])
+        self:CreateCheckbox(tooltipPanel, "TooltipPlayer", L["Show Player Details"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showDetails)  end,
             function(self) sConfig.ldb.tooltip.showDetails = self:GetChecked() or false end)
-        self:CreateCheckbox(tooltipPanel, "TooltipXP", L['Show Player Experience'],
+        self:CreateCheckbox(tooltipPanel, "TooltipXP", L["Show Player Experience"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showExperience)  end,
             function(self) sConfig.ldb.tooltip.showExperience = self:GetChecked() or false end)
-        self:CreateCheckbox(tooltipPanel, "TooltipBG", L['Show Battleground Info'],
+        self:CreateCheckbox(tooltipPanel, "TooltipBG", L["Show Battleground Info"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showBGInfo)  end,
             function(self) sConfig.ldb.tooltip.showBGInfo = self:GetChecked() or false end)
-        self:CreateCheckbox(tooltipPanel, "TooltipDungeon", L['Show Dungeon Info'],
+        self:CreateCheckbox(tooltipPanel, "TooltipDungeon", L["Show Dungeon Info"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showDungeonInfo)  end,
             function(self) sConfig.ldb.tooltip.showDungeonInfo = self:GetChecked() or false  end)
-        self:CreateCheckbox(tooltipPanel, "TooltipGathering", L['Show Gathering Info'],
+        self:CreateCheckbox(tooltipPanel, "TooltipGathering", L["Show Gathering Info"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showGatheringInfo)  end,
             function(self) sConfig.ldb.tooltip.showGatheringInfo = self:GetChecked() or false  end)
-        self:CreateCheckbox(tooltipPanel, "TooltipPet", L['Show Pet Details'],
+        self:CreateCheckbox(tooltipPanel, "TooltipPet", L["Show Pet Details"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showPetInfo)  end,
             function(self) sConfig.ldb.tooltip.showPetInfo = self:GetChecked() or false end)
-        self:CreateCheckbox(tooltipPanel, "TooltipTimer", L['Show Timer Details'],
+        self:CreateCheckbox(tooltipPanel, "TooltipTimer", L["Show Timer Details"],
             function(self) self:SetChecked(sConfig.ldb.tooltip.showTimerInfo)  end,
             function(self) sConfig.ldb.tooltip.showTimerInfo = self:GetChecked() or false end)
 			
@@ -984,7 +984,7 @@ XToLevel.Config =
         )
 		
 		---self:CreateH2(timerPanel, "TimerFallbackPadder", " ")
-		--self:CreateCheckbox(timerPanel, "TimerModeFallback", L['TimerModeFallback'] or "Fall back on \"Level\" if session data is not available",
+		--self:CreateCheckbox(timerPanel, "TimerModeFallback", L["TimerModeFallback"] or "Fall back on \"Level\" if session data is not available",
         --    function(self) self:SetChecked(sConfig.ldb.tooltip.showDetails)  end,
         --    function(self) sConfig.ldb.tooltip.showDetails = self:GetChecked() or false end)
 		

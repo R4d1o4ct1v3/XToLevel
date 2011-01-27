@@ -267,7 +267,7 @@ XToLevel.Player = {
 	--- Returns details about the estimated time remaining.
 	-- @return mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning
 	GetTimerData = function(self)
-		local mode = sConfig.timer.mode == 1 and (L['Session'] or "Session") or (L['Level'] or "Level")
+		local mode = sConfig.timer.mode == 1 and (L["Session"] or "Session") or (L["Level"] or "Level")
 		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel, warning;
 		if sConfig.timer.mode == 1 and tonumber(sData.player.timer.total) > 0 then
 			mode = 1

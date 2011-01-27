@@ -63,7 +63,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
         if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
+	        local footer = (sConfig.general.allowSettingsClick and L["Right Click To Configure"]) or nil
 	        local childPoint, parentFrame, parentPoint = XToLevel.Lib:FindAnchor(self.window);
 	        
             if parentPoint ~= "TOP" and parentPoint ~= "BOTTOM" then

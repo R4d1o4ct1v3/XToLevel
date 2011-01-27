@@ -113,7 +113,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
         if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
+	        local footer = (sConfig.general.allowSettingsClick and L["Right Click To Configure"]) or nil
 	        local usePetAsParent = (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.showPetFrame and (sConfig.averageDisplay.petKills or sConfig.averageDisplay.petProgress)
 	        -- a1 = child anchor point, f1 = parent frame, a2 = anchor-at point.
 	        local a1, f1, a2 = XToLevel.Lib:FindAnchor(XToLevel_AverageFrame_Blocky_PlayerFrame);
@@ -343,7 +343,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             
             progressBar:SetWidth(barWidth)
             if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
+                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
             end
@@ -373,7 +373,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             
             progressBar:SetWidth(barWidth)
             if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
+                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
             end
@@ -413,7 +413,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             
             progressBar:SetWidth(barWidth)
             if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
+                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
             end

@@ -67,7 +67,7 @@ XToLevel.LDB =
         function self.dataObject:OnEnter()
             XToLevel.LDB.mouseOver = true;
             local a1, f1, a2 = XToLevel.Lib:FindAnchor(self);
-            XToLevel.Tooltip:Show(self, a1, f1, a2, L['Click To Configure']);
+            XToLevel.Tooltip:Show(self, a1, f1, a2, L["Click To Configure"]);
         end
         function self.dataObject:OnLeave()
             XToLevel.LDB.mouseOver = false;
@@ -104,7 +104,7 @@ XToLevel.LDB =
         function self.timerObject:OnEnter()
             XToLevel.LDB.timerMouseOver = true;
             local a1, f1, a2 = XToLevel.Lib:FindAnchor(self);
-            XToLevel.Tooltip:Show(self, a1, f1, a2, L['Click To Configure'], "timer");
+            XToLevel.Tooltip:Show(self, a1, f1, a2, L["Click To Configure"], "timer");
         end
         function self.timerObject:OnLeave()
             XToLevel.LDB.timerMouseOver = false;
@@ -367,7 +367,7 @@ XToLevel.LDB =
                 pattern = string.gsub(pattern, '%$%$dungeons%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageDungeonsRemaining()) or "~"));
 				
                 if sConfig.ldb.text.xpAsBars then
-                    pattern = string.gsub(pattern, '%$%$xp%$%$', tostring(XToLevel.Player:GetProgressAsBars()) .. " " .. L['Bars']);
+                    pattern = string.gsub(pattern, '%$%$xp%$%$', tostring(XToLevel.Player:GetProgressAsBars()) .. " " .. L["Bars"]);
                 else
 					local progressDisplay = playerProgress
 					if sConfig.ldb.text.xpCountdown then
@@ -393,7 +393,7 @@ XToLevel.LDB =
 				end
 				if sConfig.ldb.text.xpAsBars then
 					local restedbars = XToLevel.Lib:round(XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage()) / 5, 0, false)
-					pattern = string.gsub(pattern, '%$%$restedp%$%$', restedbars .. " " .. L['Bars']);
+					pattern = string.gsub(pattern, '%$%$restedp%$%$', restedbars .. " " .. L["Bars"]);
 				else
 					pattern = string.gsub(pattern, '%$%$restedp%$%$', (XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage(1)) .. "%%" or "~"));
 				end
@@ -439,7 +439,7 @@ XToLevel.LDB =
                 pattern = string.gsub(pattern, '%$%$petcolor%$%$', petProgressColor);
                 pattern = string.gsub(pattern, '%$%$pet%$%$', (XToLevel.Lib:round(XToLevel.Pet:GetAverageKillsRemaining()) or "~"));
                 if sConfig.ldb.text.xpAsBars then
-                    pattern = string.gsub(pattern, '%$%$petxp%$%$', tostring(XToLevel.Pet:GetProgressAsBars()) .. " " .. L['Bars']);
+                    pattern = string.gsub(pattern, '%$%$petxp%$%$', tostring(XToLevel.Pet:GetProgressAsBars()) .. " " .. L["Bars"]);
                 else
 					local progressDisplay = petProgress
 					if sConfig.ldb.text.xpCountdown then
