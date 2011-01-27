@@ -1,8 +1,8 @@
 ﻿---
 -- Defines the Pet functionality.
 -- functionality.
--- @file XToLevel.Pet.lua
--- @release 4.0.1_23
+-- @file objects/Pet.lua
+-- @version @file-revision@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 XToLevel.Pet = {

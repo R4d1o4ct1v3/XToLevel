@@ -1,7 +1,7 @@
 ---
 -- Controls all Playe related functionality.
--- @file XToLevel.Player.lua
--- @release 4.0.3_21
+-- @file objects/Player.lua
+-- @version @file-revision@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!

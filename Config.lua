@@ -1,8 +1,8 @@
 ﻿---
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
--- @file XToLevel.Config.lua
--- @release 4.0.3_23
+-- @file Config.lua
+-- @version @file-revision@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
@@ -353,7 +353,7 @@ XToLevel.Config =
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Email", L["Email"], "atli.j@advefir.com", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Website", L["Website"], "http://wow.curseforge.com/addons/xto-level/", "FFFFFF")
         self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "Category", L["Category"], "Quests & Leveling, Battlegrounds, Dungeons, Pets.", "FFFFFF")
-        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "License", L["License"], L["All Rights Reserved"] .. " (See LICENSE.txt)", "FFFFFF")
+        self:CreateTextLine(mainPanel.childFrame["AboutFrame"], "License", L["License"], "MIT (See LICENSE.txt)", "FFFFFF")
         
         
         return mainPanel
