@@ -534,6 +534,9 @@ XToLevel.Config =
             
         -- Blocky boxes.
         self:CreateH2(windowPanel, "BlockyHeader", L['Blocky Specific Options'], 0)
+        self:CreateCheckbox(windowPanel, "VerticalAlign", L["Vertical Align"], 
+            function(self) self:SetChecked(sConfig.averageDisplay.orientation == "v") end, 
+            function(self) sConfig.averageDisplay.orientation = self:GetChecked() and "v" or "h" end)
         
 	    -- Behavior boxes
         self:CreateH2(windowPanel, "BehaviorHeader", L['Window Behavior Header'], 125)
