@@ -1,7 +1,7 @@
 ---
 -- Controls all Playe related functionality.
--- @file objects/Player.lua
--- @version @file-revision@
+-- @file XToLevel.Player.lua
+-- @release 4.0.3_21
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
@@ -267,7 +267,7 @@ XToLevel.Player = {
 	--- Returns details about the estimated time remaining.
 	-- @return mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning
 	GetTimerData = function(self)
-		local mode = sConfig.timer.mode == 1 and (L["Session"] or "Session") or (L["Level"] or "Level")
+		local mode = sConfig.timer.mode == 1 and (L['Session'] or "Session") or (L['Level'] or "Level")
 		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel, warning;
 		if sConfig.timer.mode == 1 and tonumber(sData.player.timer.total) > 0 then
 			mode = 1

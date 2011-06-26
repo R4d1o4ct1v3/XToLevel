@@ -1,7 +1,7 @@
 ---
 -- Contains definitions for the Average Information windows
--- @file objects/Average.lua
--- @version @file-revision@
+-- @file XToLevel.Average.lua
+-- @release 4.0.1_24
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 XToLevel.Average =
@@ -28,7 +28,7 @@ end
 ---
 -- Updates the active AverageFrame window.
 function XToLevel.Average:Update()
-    if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() or (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) then
+    if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
         if self.activeAPI ~= self.knownAPIs[sConfig.averageDisplay.mode] then
             for index, name in ipairs(self.knownAPIs) do
                 XToLevel.AverageFrameAPI[name]:Update()
@@ -53,10 +53,6 @@ function XToLevel.Average:Update()
                 else
                     XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
                 end
-            end
-            if XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive then
-                XToLevel.AverageFrameAPI[self.activeAPI]:SetPetKills    (XToLevel.Pet:GetAverageKillsRemaining() or nil);
-                XToLevel.AverageFrameAPI[self.activeAPI]:SetPetProgress (floor(XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100));
             end
             XToLevel.AverageFrameAPI[self.activeAPI]:Update()
         end

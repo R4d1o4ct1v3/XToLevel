@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for Chat and Floating Error window message controls.
 -- @file objects/Messages.lua
--- @version @file-revision@
+-- @release 4.0.1_20
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Messages" -- For documentation purposes. Do not uncomment!
@@ -38,7 +38,6 @@ XToLevel.Messages =
     Floating = 
     {
         killStyle =  { r=0.5, g=1.0, b=0.7, group=56, fade=5 },
-		petStyle =  { r=1.0, g=0.7, b=0.5, group=57, fade=5 },
         questStyle = { r=0.5, g=1.0, b=0.7, group=56, fade=5 },
         levelStyle = { r=0.35, g=1.0, b=0.35, group=56, fade=6 },
         
@@ -48,15 +47,6 @@ XToLevel.Messages =
             if sConfig.messages.playerFloating then
                 local message = mobsRequired .." ".. mobName .. L["Kills Needed"]
                 self:Print(message, sConfig.messages.colors.playerKill, self.killStyle)
-            end
-        end,
-		
-		---
-		-- function description
-		PrintPetKill = function(self, petName, mobName, mobsRequired)
-            if sConfig.messages.petFloating then
-                local message = mobsRequired .. " " .. mobName .. L["Pet Kills Needed"] .. petName
-                self:Print(message, sConfig.messages.colors.petKill, self.petStyle)
             end
         end,
         
@@ -106,15 +96,6 @@ XToLevel.Messages =
         
         ---
         -- function description
-        PrintPetLevel = function(self, petName)
-            if sConfig.messages.petFloating then
-                local message = petName .. L["Pet Level Reached"]
-                self:Print(message, sConfig.messages.colors.playerLevel, self.levelStyle)
-            end
-        end,
-        
-        ---
-        -- function description
         Print = function(self, text, color, style)
         	local r, g, b = unpack(color or {1, 0.75, 0.35})
 			if type(style) ~= "table" then
@@ -130,7 +111,6 @@ XToLevel.Messages =
     Chat = 
     {
         killStyle =  { r=0.5, g=1.0, b=0.7, group=56, addToStart=false },
-		petStyle =  { r=1.0, g=0.7, b=0.5, group=57, fade=5, addToStart=false },
         questStyle = { r=0.5, g=1.0, b=0.7, group=56, addToStart=false },
         levelStyle = { r=0.35, g=1.0, b=0.35, group=56, addToStart=false},
         
@@ -140,15 +120,6 @@ XToLevel.Messages =
             if sConfig.messages.playerChat then
                 local message = mobsRequired .." ".. mobName .. L["Kills Needed"]
                 XToLevel.Messages:Print(message, self.killStyle, sConfig.messages.colors.playerKill)
-            end
-        end,
-		
-		---
-		-- function description
-		PrintPetKill = function(self, petName, mobName, mobsRequired)
-            if sConfig.messages.petChat then
-                local message = mobsRequired .. " " .. mobName .. L["Pet Kills Needed"] .. petName
-                XToLevel.Messages:Print(message, self.petStyle, sConfig.messages.colors.petKill)
             end
         end,
         
@@ -193,15 +164,6 @@ XToLevel.Messages =
             if sConfig.messages.playerChat then
                 local message = remaining .. L["Dungeons Needed"]
                 XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerDungeon)
-            end
-        end,
-        
-        ---
-        -- function description
-        PrintPetLevel = function(self, petName)
-            if sConfig.messages.petChat then
-                local message = petName .. L["Pet Level Reached"]
-                XToLevel.Messages:Print(message, self.levelStyle, sConfig.messages.colors.playerLevel)
             end
         end,
     }

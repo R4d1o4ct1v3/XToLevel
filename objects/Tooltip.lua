@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the Tooltip display.
--- @file objects/Display.lua
--- @version @file-revision@
+-- @file XToLevel.Display.lua
+-- @release 4.0.3_23
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
@@ -41,6 +41,8 @@ XToLevel.Tooltip =
                 local classification = UnitClassification(unit)
                 
                 local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, classification);
+                -- console:log("XToLevel.Lib:MobXP(" .. tostring(XToLevel.Player.level) .. ", " .. tostring(level) .. ", " .. tostring(classification) .. ") = " .. tostring(thexp))
+                
                 local requiredText = ""
                 local cl = nil
                 
@@ -72,7 +74,7 @@ XToLevel.Tooltip =
                             color = XToLevel.Lib:GetProgressColor(percent)
                         end
                         
-                        GameTooltip:AddLine("|cFFAAAAAA" .. L["Kills to level"] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
                         GameTooltip:Show()
                     else
                         requiredText = nil
@@ -162,7 +164,7 @@ XToLevel.Tooltip =
     -- @param footerText The text to display at the foot of the tooltip.
     -- @param mode A string to indicate what info should be shown in the tooltip.
     --        This is one of: "bg", "kills", "quests", "dungeons", "experience",
-    --        "pet", "pet xp" or "all". ("all" is the default, if an invalid mode
+    --        "all". ("all" is the default, if an invalid mode
     --        is passed.)
     Show = function(self, frame, anchorPont, relativeFrame, relativePoint, footerText, mode)
         -- Initialize
@@ -189,21 +191,21 @@ XToLevel.Tooltip =
             self:AddBattles()
             GameTooltip:AddLine(" ")
         elseif mode == "kills" then
-            GameTooltip:AddLine(L["Kills"])
+            GameTooltip:AddLine(L['Kills'])
             self:AddKillRange()
             GameTooltip:AddLine(" ")
         elseif mode == "quests" then
-            GameTooltip:AddLine(L["Quests"])
+            GameTooltip:AddLine(L['Quests'])
             self:AddQuestRange()
             GameTooltip:AddLine(" ")
         elseif mode == "dungeons" then
-            GameTooltip:AddLine(L["Dungeons"])
+            GameTooltip:AddLine(L['Dungeons'])
             self:AddDungeonInfo()
             GameTooltip:AddLine(" ")
             self:AddDungeons()
             GameTooltip:AddLine(" ")
         elseif mode == "gathering" then
-            GameTooltip:AddLine(L["Gathering"] or "Gathering")
+            GameTooltip:AddLine(L['Gathering'] or "Gathering")
             self:AddGathering()
             GameTooltip:AddLine(" ")
             if XToLevel.Player:HasGatheringInfo() then
@@ -211,23 +213,15 @@ XToLevel.Tooltip =
                 GameTooltip:AddLine(" ")
             end
         elseif mode == "experience" then
-            GameTooltip:AddLine(L["Experience"])
+            GameTooltip:AddLine(L['Experience'])
             self:AddExperience()
-            GameTooltip:AddLine(" ")
-        elseif mode == "pet" then
-            GameTooltip:AddLine(L["Pet"])
-            self:AddPet()
-            GameTooltip:AddLine(" ")
-        elseif mode == "pet xp" then
-            GameTooltip:AddLine(L["Pet Experience"])
-            self:AddPetExperience()
             GameTooltip:AddLine(" ")
 		elseif mode == "timer" then
 			GameTooltip:AddLine("Time to level")
             self:AddTimerDetailes(false)
             GameTooltip:AddLine(" ")
         elseif mode == "guild" then
-            GameTooltip:AddLine(L["Guild"] .. ": ")
+            GameTooltip:AddLine(L['Guild'] .. ": ")
             self:AddGuildInfo()
             GameTooltip:AddLine(" ")
         else
@@ -252,7 +246,7 @@ XToLevel.Tooltip =
                     GameTooltip:AddLine(" ")
                 end
                 if sConfig.ldb.tooltip.showGuildInfo then
-                    GameTooltip:AddLine(L["Guild"] .. ": ")
+                    GameTooltip:AddLine(L['Guild'] .. ": ")
                     self:AddGuildInfo()
                     GameTooltip:AddLine(" ")
                 end
@@ -278,13 +272,8 @@ XToLevel.Tooltip =
                     self:AddTimerDetailes(true)
                     GameTooltip:AddLine(" ")
                 end
-            elseif XToLevel.Player:GetClass() == "HUNTER" and sConfig.ldb.tooltip.showPetInfo then
-                GameTooltip:AddLine(L["Pet"] .. ":")
-                self:AddPet()
-                self:AddPetExperience()
-                GameTooltip:AddLine(" ")
             else
-                GameTooltip:AddLine(L["Max Level LDB Message"], 255, 255, 255)
+                GameTooltip:AddLine(L['Max Level LDB Message'], 255, 255, 255)
             end
         end -- END "Overall" tooltip creation
         
@@ -338,7 +327,7 @@ XToLevel.Tooltip =
     ---
     -- function description
     AddDungeonInfo = function(self)
-        GameTooltip:AddDoubleLine(" " .. L["Dungeons"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetAverageDungeonsRemaining()) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Player:GetAverageDungeonXP(), 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        GameTooltip:AddDoubleLine(" " .. L['Dungeons'] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetAverageDungeonsRemaining()) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Player:GetAverageDungeonXP(), 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
     end,
     
     ---
@@ -351,7 +340,7 @@ XToLevel.Tooltip =
             latestData = XToLevel.Player:GetLatestDungeonDetails();
             
             if dungeons ~= nil then
-                GameTooltip:AddLine(L["Dungeons Required"] .. ":")
+                GameTooltip:AddLine(L['Dungeons Required'] .. ":")
                 for name, count in pairs(dungeons) do
                     if name == false then
                         name = "Unknown"
@@ -367,9 +356,9 @@ XToLevel.Tooltip =
             end
             
             if sData.player.dungeonList[1].inProgress then
-                GameTooltip:AddLine(L["Current Dungeon"] .. ":")
+                GameTooltip:AddLine(L['Current Dungeon'] .. ":")
             else
-                GameTooltip:AddLine(L["Last Dungeon"] .. ":")
+                GameTooltip:AddLine(L['Last Dungeon'] .. ":")
             end
             
             local dungeonName = nil
@@ -384,14 +373,14 @@ XToLevel.Tooltip =
         		dungeonName = sData.player.dungeonList[1].name
             end
             
-            GameTooltip:AddDoubleLine(" ".. L["Name"] ..": " , dungeonName, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-            GameTooltip:AddDoubleLine(" ".. L["Kills"] ..": " , XToLevel.Lib:NumberFormat(latestData.killCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerKill) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , dungeonName, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            GameTooltip:AddDoubleLine(" ".. L['Kills'] ..": " , XToLevel.Lib:NumberFormat(latestData.killCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerKill) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
             
             if latestData.rested > 0 then
             	local total = latestData.totalXP + latestData.rested
-            	GameTooltip:AddDoubleLine(" ".. L["Total XP"] ..": " , XToLevel.Lib:NumberFormat(total) .. " (" .. XToLevel.Lib:NumberFormat(latestData.rested) .. " " .. L["XP Rested"] ..")", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            	GameTooltip:AddDoubleLine(" ".. L['Total XP'] ..": " , XToLevel.Lib:NumberFormat(total) .. " (" .. XToLevel.Lib:NumberFormat(latestData.rested) .. " " .. L['XP Rested'] ..")", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
             else
-            	GameTooltip:AddDoubleLine(" ".. L["Total XP"] ..": " , XToLevel.Lib:NumberFormat(latestData.totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            	GameTooltip:AddDoubleLine(" ".. L['Total XP'] ..": " , XToLevel.Lib:NumberFormat(latestData.totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
             end
             dungeons = nil 
             latestData = nil 
@@ -399,8 +388,8 @@ XToLevel.Tooltip =
             averageFormatted = nil 
             needed = nil
         else
-            GameTooltip:AddLine(L["Dungeons Required"] .. ":")
-            GameTooltip:AddLine(" " .. L["No Dungeons Completed"], self.labelColor.r, self.labelColor.g, self.labelColor.b)
+            GameTooltip:AddLine(L['Dungeons Required'] .. ":")
+            GameTooltip:AddLine(" " .. L['No Dungeons Completed'], self.labelColor.r, self.labelColor.g, self.labelColor.b)
         end
     end,
     
@@ -438,7 +427,7 @@ XToLevel.Tooltip =
             local dialyGained = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXPDaily))
             local dialyTotal = tostring(XToLevel.Lib:ShrinkNumber(XToLevel.Player.guildXPDailyMax))
             local dialyProgress = tostring(XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
-            GameTooltip:AddDoubleLine(" " .. L["Daily Progress"] .. ": " , dialyGained .. ' / ' .. dialyTotal .. ' [' .. dialyProgress .. '%]' , self.labelColor.r, self.labelColor.g, self.labelColor.b,    self.dataColor.r, self.dataColor.b, self.dataColor.b)
+            GameTooltip:AddDoubleLine(" " .. L['Daily Progress'] .. ": " , dialyGained .. ' / ' .. dialyTotal .. ' [' .. dialyProgress .. '%]' , self.labelColor.r, self.labelColor.g, self.labelColor.b,    self.dataColor.r, self.dataColor.b, self.dataColor.b)
         else
             GameTooltip:AddLine(" No guild leveling info found.", self.labelColor.r, self.labelColor.g, self.labelColor.b)
         end
@@ -459,7 +448,7 @@ XToLevel.Tooltip =
             local latestData, averageRaw, averageFormatted, needed;
             latestData = XToLevel.Player:GetLatestBattlegroundDetails();
             
-            GameTooltip:AddLine(L["Battlegrounds Required"] .. ":")
+            GameTooltip:AddLine(L['Battlegrounds Required'] .. ":")
                 for name, count in pairs(bgs) do
                     if name == false then
                         name = "Unknown"
@@ -476,17 +465,17 @@ XToLevel.Tooltip =
             
            	if latestData ~= nil then
 	            if sData.player.bgList[1].inProgress then
-	                GameTooltip:AddLine(L["Current Battleground"] .. ":")
+	                GameTooltip:AddLine(L['Current Battleground'] .. ":")
 	            else
-	                GameTooltip:AddLine(L["Last Battleground"] .. ":")
+	                GameTooltip:AddLine(L['Last Battleground'] .. ":")
 	                if sData.player.bgList[1].name ~= false then
-	                    GameTooltip:AddDoubleLine(" ".. L["Name"] ..": " , sData.player.bgList[1].name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+	                    GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , sData.player.bgList[1].name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 	                end
 	            end
 	            
-	            GameTooltip:AddDoubleLine(" ".. L["Total XP"] ..": " , XToLevel.Lib:NumberFormat(latestData.totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-	            GameTooltip:AddDoubleLine(" ".. L["Objectives"] ..": " , XToLevel.Lib:NumberFormat(latestData.objCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerObj) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-	            GameTooltip:AddDoubleLine(" ".. L["NPC Kills"] ..": " , XToLevel.Lib:NumberFormat(latestData.killCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerKill) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+	            GameTooltip:AddDoubleLine(" ".. L['Total XP'] ..": " , XToLevel.Lib:NumberFormat(latestData.totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+	            GameTooltip:AddDoubleLine(" ".. L['Objectives'] ..": " , XToLevel.Lib:NumberFormat(latestData.objCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerObj) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+	            GameTooltip:AddDoubleLine(" ".. L['NPC Kills'] ..": " , XToLevel.Lib:NumberFormat(latestData.killCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerKill) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
             end
             bgs = nil 
             latestData = nil 
@@ -494,33 +483,8 @@ XToLevel.Tooltip =
             averageFormatted = nil 
             needed = nil
         else
-            GameTooltip:AddLine(L["Battlegrounds Required"] .. ":")
-            GameTooltip:AddLine(" " .. L["No Battles Fought"], self.labelColor.r, self.labelColor.g, self.labelColor.b)
-        end
-    end,
-    
-    ---
-    -- function description
-    AddPet = function(self)
-        GameTooltip:AddDoubleLine(" " .. (L["Name"] or "Name") .. ":" , tostring(XToLevel.Pet:GetName()), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
-        if XToLevel.Pet.level < XToLevel.Pet.maxLevel then
-            GameTooltip:AddDoubleLine(" " .. L["Kills"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Pet:GetAverageKillsRemaining()).." @ "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round(XToLevel.Pet:GetAverageKillXP(), 0)).." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)     
-        else
-            GameTooltip:AddLine(" " .. L["Level Reached"], self.labelColor.r, self.labelColor.g, self.labelColor.b)
-        end
-    end,
-    
-    ---
-    -- function description
-    AddPetExperience = function(self)
-        if XToLevel.Pet.level < XToLevel.Pet.maxLevel then
-            local xpProgress = XToLevel.Pet:GetProgressAsPercentage(1) --XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100
-            local xpBars = XToLevel.Pet:GetProgressAsBars()
-            --GameTooltip:AddLine(L["Pet"] .. ":")
-            GameTooltip:AddDoubleLine(" " .. L["XP Progress"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.xp or 0))).." / "..XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0))).." [".. tostring(xpProgress) .."%]", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-            GameTooltip:AddDoubleLine(" " .. L["XP Bars Remaining"] .. ": " , tostring(xpBars) .. " bars", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-            GameTooltip:AddDoubleLine(" " .. L["Kill XP Required"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Lib:round((XToLevel.Pet.maxXP or 0) - (XToLevel.Pet.xp or 0))) .. " xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-            xpProgress = nil
+            GameTooltip:AddLine(L['Battlegrounds Required'] .. ":")
+            GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.g, self.labelColor.b)
         end
     end,
 	
@@ -585,7 +549,7 @@ XToLevel.Tooltip =
             xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
             GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
         else
-            GameTooltip:AddLine(" " .. L["No Battles Fought"], self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
         end
     end,
     

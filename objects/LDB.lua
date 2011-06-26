@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the LDB data source.
--- @file objects/Display.lua
--- @version @file-revision@
+-- @file XToLevel.Display.lua
+-- @release 4.0.3_16
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
@@ -10,11 +10,11 @@ XToLevel.LDB =
 {
     -- Constants
     textPatterns = {
-        default = "{kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{dungeons}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/dungeons}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{bgo}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgo}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}{pet}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/pet}{petxp}{$seperator: }{progress}[{$value}]{/progress}{/petxp}",
-        minimal = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/petxp}",
-        minimal_dashed = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/petxp}",
-        brackets = "{kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{dungeons}{progress}[{$value}]{/progress}{/dungeons}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}{pet}{$seperator:-}{progress}[{$value}]{/progress}{/pet}{petxp}{progress}[{$value}]{/progress}{/petxp}",
-		countdown = "{xpnum}{color=cfcfdf}XP:{/color}{$seperator: }{progress}{$value}{/progress}{xp} {color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/xp}{$seperator: }{/xpnum}{rested}{color=cfcfdf}R:{/color}{$seperator: }{progress}{$value}{/progress} {restedp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/restedp}{$seperator: }{/rested}{petxpnum}{$seperator: }{color=cfcfdf}Pet: {/color}{progress}{$value}{/progress} {petxp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/petxp}{/petxpnum}",
+        default = "{kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{dungeons}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/dungeons}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{bgo}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgo}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}",
+        minimal = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}",
+        minimal_dashed = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}",
+        brackets = "{kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{dungeons}{progress}[{$value}]{/progress}{/dungeons}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}",
+		countdown = "{xpnum}{color=cfcfdf}XP:{/color}{$seperator: }{progress}{$value}{/progress}{xp} {color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/xp}{$seperator: }{/xpnum}{rested}{color=cfcfdf}R:{/color}{$seperator: }{progress}{$value}{/progress} {restedp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/restedp}{$seperator: }{/rested}",
     },
     textTags = {
         [1] = { tag = "kills", label = 'init', value = '~', color = nil, },
@@ -23,14 +23,11 @@ XToLevel.LDB =
         [4] = { tag = "bgs", label = 'init', value = '~', color = nil, }, 
         [5] = { tag = "bgo", label = 'init', value = '~', color = nil, }, 
         [6] = { tag = "xp", label = 'init', value = '~', color = nil, },
-        [7] = { tag = "pet", label = 'init', value = '~', color = nil, },
-        [8] = { tag = "petxp", label = 'init', value = '~', color = nil, },
-		[9] = { tag = "restedp", label = 'init', value = '~', color = nil, },
-		[10] = { tag = "rested", label = 'init', value = '~', color = nil, },
-		[11] = { tag = "xpnum", label = 'init', value = '~', color = nil, },
-		[12] = { tag = "petxpnum", label = 'init', value = '~', color = nil, },
-        [13] = { tag = "guildxp", label = 'init', value = '~', color = nil, },
-        [14] = { tag = "guilddaily", label = 'init', value = '~', color = nil },
+		[7] = { tag = "restedp", label = 'init', value = '~', color = nil, },
+		[8] = { tag = "rested", label = 'init', value = '~', color = nil, },
+		[9] = { tag = "xpnum", label = 'init', value = '~', color = nil, },
+        [10] = { tag = "guildxp", label = 'init', value = '~', color = nil, },
+        [11] = { tag = "guilddaily", label = 'init', value = '~', color = nil },
     },
 
     -- Members
@@ -67,7 +64,7 @@ XToLevel.LDB =
         function self.dataObject:OnEnter()
             XToLevel.LDB.mouseOver = true;
             local a1, f1, a2 = XToLevel.Lib:FindAnchor(self);
-            XToLevel.Tooltip:Show(self, a1, f1, a2, L["Click To Configure"]);
+            XToLevel.Tooltip:Show(self, a1, f1, a2, L['Click To Configure']);
         end
         function self.dataObject:OnLeave()
             XToLevel.LDB.mouseOver = false;
@@ -104,7 +101,7 @@ XToLevel.LDB =
         function self.timerObject:OnEnter()
             XToLevel.LDB.timerMouseOver = true;
             local a1, f1, a2 = XToLevel.Lib:FindAnchor(self);
-            XToLevel.Tooltip:Show(self, a1, f1, a2, L["Click To Configure"], "timer");
+            XToLevel.Tooltip:Show(self, a1, f1, a2, L['Click To Configure'], "timer");
         end
         function self.timerObject:OnLeave()
             XToLevel.LDB.timerMouseOver = false;
@@ -120,22 +117,16 @@ XToLevel.LDB =
     ---
     -- Creates the text pattern to be used.
     BuildPattern = function(self)
-        if ((XToLevel.Player.level < XToLevel.Player.maxLevel) or XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) then
-            local showPlayer, showPet, playerProgress, playerProgressColor, petProgress, petProgressColor;
+        if XToLevel.Player.level < XToLevel.Player.maxLevel then
+            local showPlayer, playerProgress, playerProgressColor;
             local newText, useColors, isFirst, sPos, ePost, value, rest, attributes, out;
         
             showPlayer = XToLevel.Player.isActive and (XToLevel.Player.level < XToLevel.Player.maxLevel)
-            showPet = XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive
             
             -- User is leveling, proceed normally.
             if showPlayer then
                 playerProgress = XToLevel.Lib:round(XToLevel.Player.currentXP / XToLevel.Player.maxXP * 100, 1)
                 playerProgressColor = XToLevel.Lib:GetProgressColor_Soft(playerProgress)
-            end
-                
-            if showPet then
-                petProgress = XToLevel.Lib:round(XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100, 1)
-                petProgressColor = XToLevel.Lib:GetProgressColor_Soft(petProgress)
             end
             
             -- Load the appropriate pattern, attempting to find one in the config.
@@ -224,60 +215,36 @@ XToLevel.LDB =
                     value = (showPlayer and ('$$xp$$')) or nil,
                     color = (sConfig.ldb.allowTextColor and '$$playercolor$$') or nil,
                 },
-                [7] = { 
-                    tag = "pet",
-                    label = (sConfig.ldb.text.verbose and L["Pet"] ) or L["Pet Short"],
-                    value = (showPet and '$$pet$$') or nil,
-                    color = (useColors and '$$petcolor$$') or nil,
-                },
-                [8] = { 
-                    tag = "petxp",
-                    label = (sConfig.ldb.text.verbose and L["Pet XP"] ) or L["Pet XP Short"],
-                    value = (showPet and '$$petxp$$') or nil,
-                    color = (sConfig.ldb.allowTextColor and '$$petcolor$$') or nil,
-                },
-				[9] = { 
+				[7] = { 
                     tag = "restedp",
                     label =(sConfig.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                     value = (showPlayer and '$$restedp$$') or nil,
                     color = (sConfig.ldb.allowTextColor and '$$playercolor$$') or nil,
                 },
-				[10] = { 
+				[8] = { 
                     tag = "rested",
                     label = (sConfig.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                     value = (showPlayer and '$$rested$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 },
-				[11] = { 
+				[9] = { 
                     tag = "xpnum",
                     label = (sConfig.ldb.text.verbose and L["XP"] ) or L["XP"],
                     value = (showPlayer and '$$xpnum$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 },
-				[12] = { 
-                    tag = "petxpnum",
-                    label = (sConfig.ldb.text.verbose and L["Pet XP"] ) or L["Pet XP Short"],
-                    value = (showPet and '$$petxpnum$$') or nil,
-                    color = (useColors and '$$petcolor$$') or nil,
-                },
-                [13] = { 
+                [10] = { 
                     tag = "guildxp",
                     label = (sConfig.ldb.text.verbose and "Guild XP" ) or "GXP",
                     value = (showPlayer and '$$guildxp$$') or nil,
                     color = (useColors and '$$guildcolor$$') or nil,
                 },
-                [14] = { 
+                [11] = { 
                     tag = "guilddaily",
                     label = (sConfig.ldb.text.verbose and "Guild Daily" ) or "GDXP",
                     value = (showPlayer and '$$guilddaily$$') or nil,
                     color = (useColors and '$$guilddailycolor$$') or nil,
                 },
-				--[[[13] = { 
-                    tag = "timer",
-                    label = (sConfig.ldb.text.verbose and L["Timer"] ) or L["Timer Short"],
-                    value = (showPlayer and '$$timer$$') or nil,
-                    color = (useColors and '$$playercolor$$') or nil,
-                },--]]
             }
             
             -- Replace values
@@ -308,11 +275,8 @@ XToLevel.LDB =
             
             -- Free resources
             showPlayer = nil;
-            showPet = nil;
             playerProgress = nil;
             playerProgressColor = nil;
-            petProgress = nil;
-            petProgressColor = nil;
             newText = nil;
             useColors = nil;
             isFirst = nil;
@@ -324,7 +288,7 @@ XToLevel.LDB =
             out = nil;
             
         else
-            -- Player is at max level and has no pets.
+            -- Player is at max level.
             if sConfig.ldb.customColors then
                 self.currentPattern = "|cFFaaaaaaInactive|r"
             else
@@ -367,7 +331,7 @@ XToLevel.LDB =
                 pattern = string.gsub(pattern, '%$%$dungeons%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageDungeonsRemaining()) or "~"));
 				
                 if sConfig.ldb.text.xpAsBars then
-                    pattern = string.gsub(pattern, '%$%$xp%$%$', tostring(XToLevel.Player:GetProgressAsBars()) .. " " .. L["Bars"]);
+                    pattern = string.gsub(pattern, '%$%$xp%$%$', tostring(XToLevel.Player:GetProgressAsBars()) .. " " .. L['Bars']);
                 else
 					local progressDisplay = playerProgress
 					if sConfig.ldb.text.xpCountdown then
@@ -393,7 +357,7 @@ XToLevel.LDB =
 				end
 				if sConfig.ldb.text.xpAsBars then
 					local restedbars = XToLevel.Lib:round(XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage()) / 5, 0, false)
-					pattern = string.gsub(pattern, '%$%$restedp%$%$', restedbars .. " " .. L["Bars"]);
+					pattern = string.gsub(pattern, '%$%$restedp%$%$', restedbars .. " " .. L['Bars']);
 				else
 					pattern = string.gsub(pattern, '%$%$restedp%$%$', (XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage(1)) .. "%%" or "~"));
 				end
@@ -429,33 +393,6 @@ XToLevel.LDB =
 				pattern = string.gsub(pattern, '%$%$restedp%$%$', '');
 				pattern = string.gsub(pattern, '%$%$guildxp%$%$', "");
                 pattern = string.gsub(pattern, '%$%$guilddaily%$%$', "");
-            end
-                
-            if XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive then
-                local petProgress, petProgressColor;
-                petProgress = XToLevel.Lib:round(XToLevel.Pet.xp / XToLevel.Pet.maxXP * 100, 1)
-                petProgressColor = XToLevel.Lib:GetProgressColor_Soft(petProgress)
-                
-                pattern = string.gsub(pattern, '%$%$petcolor%$%$', petProgressColor);
-                pattern = string.gsub(pattern, '%$%$pet%$%$', (XToLevel.Lib:round(XToLevel.Pet:GetAverageKillsRemaining()) or "~"));
-                if sConfig.ldb.text.xpAsBars then
-                    pattern = string.gsub(pattern, '%$%$petxp%$%$', tostring(XToLevel.Pet:GetProgressAsBars()) .. " " .. L["Bars"]);
-                else
-					local progressDisplay = petProgress
-					if sConfig.ldb.text.xpCountdown then
-						progressDisplay = 100 - progressDisplay
-					end
-                    pattern = string.gsub(pattern, '%$%$petxp%$%$', progressDisplay .. "%%");
-                end
-				
-				local xpnum = sConfig.ldb.text.xpCountdown and XToLevel.Pet:GetXpRemaining() or XToLevel.Pet.xp
-				xpnum = sConfig.ldb.text.xpnumFormat and XToLevel.Lib:ShrinkNumber(xpnum) or XToLevel.Lib:round(xpnum)
-				pattern = string.gsub(pattern, '%$%$petxpnum%$%$', xpnum);
-            else
-                pattern = string.gsub(pattern, '%$%$petcolor%$%$', '');
-                pattern = string.gsub(pattern, '%$%$pet%$%$', '');
-                pattern = string.gsub(pattern, '%$%$petxp%$%$', '');
-				pattern = string.gsub(pattern, '%$%$petxpnum%$%$', '');
             end
             self.dataObject.text = pattern;
         else

@@ -1,3 +1,10 @@
+Version 4.1.0_26
+ - REMOVED: All pet related functionality removed. It's no longer needed.
+ - FIX: An issue preventing gathering profession XP from being collected has been resolved.
+ - FIX: Quest XP is now detected more reliably, and not just assumed by the lack of a mob name in the message.
+ - FIX: Several minor compatibility issues fixed.
+ - NOTE: I have yet to review all the changes to the AddOn API while I was away. There may still be bugs lurking around.
+
 Version 4.0.3_25
  - FIX: A nil reference error shown when reaching max level has been fixed.
 

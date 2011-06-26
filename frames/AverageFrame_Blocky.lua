@@ -11,7 +11,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
     isMoving = false,
     lastTooltip = nil,
     playerBoxes = {},
-    petBoxes = {},
 
     --- Called when the frame first loads
     Initialize = function(self)
@@ -63,18 +62,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	            visible = sConfig.averageDisplay.guildProgress
 	        }
 	    }
-	    self.petBoxes = {
-	        {   
-	            name =  'XToLevel_AverageFrame_Blocky_PetFrameCounterKills',
-	            ref =    XToLevel_AverageFrame_Blocky_PetFrameCounterKills,
-	            visible = sConfig.averageDisplay.petKills
-	        },
-	        {   
-	            name = 'XToLevel_AverageFrame_Blocky_PetFrameCounterProgress',
-	            ref =   XToLevel_AverageFrame_Blocky_PetFrameCounterProgress,
-	            visible = sConfig.averageDisplay.petProgress
-	        }
-	    }
         
         -- Stack frames
         self:Update()
@@ -83,7 +70,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
     ---
     -- Hides the frame
     Hide = function(self)
-        XToLevel_AverageFrame_Blocky_PetFrame:Hide()
         XToLevel_AverageFrame_Blocky_PlayerFrame:Hide()
     end,
     
@@ -113,8 +99,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
         if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L["Right Click To Configure"]) or nil
-	        local usePetAsParent = (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.showPetFrame and (sConfig.averageDisplay.petKills or sConfig.averageDisplay.petProgress)
+	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
 	        -- a1 = child anchor point, f1 = parent frame, a2 = anchor-at point.
 	        local a1, f1, a2 = XToLevel.Lib:FindAnchor(XToLevel_AverageFrame_Blocky_PlayerFrame);
 	        if sConfig.averageDisplay.orientation == "v" then
@@ -123,15 +108,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	           if a2 == "TOPRIGHT" or a2 == "TOPLEFT" or a2 == "BOTTOMLEFT" or a2 == "BOTTOMRIGHT" then
 	               a2 = XToLevel.Lib:ReverseAnchor(a2)
                end
-               -- If the tooltip is covering the pet frame, make the pet frame the parent.
-               if usePetAsParent and string.find(a2, "RIGHT") then
-                    f1 = XToLevel_AverageFrame_Blocky_PetFrame
-                end
-            else
-                -- If the tooltip is covering the pet frame, make the pet frame the parent.
-                if usePetAsParent and string.find(a2, "BOTTOM") then
-                    f1 = XToLevel_AverageFrame_Blocky_PetFrame
-                end
             end
             
             if sConfig.averageDisplay.combineTooltip then
@@ -190,18 +166,8 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	        else
                 XToLevel_AverageFrame_Blocky_PlayerFrame:Hide()
 	        end
-	        
-	        -- Update the pet frame
-	        if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.showPetFrame then
-                XToLevel_AverageFrame_Blocky_PetFrame:Show()
-                XToLevel_AverageFrame_Blocky_PetFrame:SetScale(sConfig.averageDisplay.scale)
-                self:StackPet()
-            else
-                XToLevel_AverageFrame_Blocky_PetFrame:Hide()
-            end
         else
             XToLevel_AverageFrame_Blocky_PlayerFrame:Hide()
-            XToLevel_AverageFrame_Blocky_PetFrame:Hide()
         end
     end,
     
@@ -220,32 +186,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
     
         local orientation = sConfig.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
-    end,
-    
-    ---
-    -- function description
-    StackPet = function(self)
-        self.petBoxes[1]["visible"] = sConfig.averageDisplay.petKills
-        self.petBoxes[2]["visible"] = sConfig.averageDisplay.petProgress
-    
-        local orientation = sConfig.averageDisplay.orientation or 'v'
-        self:StackBoxes(orientation, self.petBoxes, XToLevel_AverageFrame_Blocky_PetFrame, 'XToLevel_AverageFrame_Blocky_PetFrameCounter');
-        
-        if XToLevel_AverageFrame_Blocky_PlayerFrame:IsVisible() then
-            XToLevel_AverageFrame_Blocky_PetFrame:ClearAllPoints()
-            if orientation == 'h' then
-                XToLevel_AverageFrame_Blocky_PetFrame:SetPoint('TOPLEFT', 'XToLevel_AverageFrame_Blocky_PlayerFrame', 'TOPLEFT', 0, -(XToLevel_AverageFrame_Blocky_PlayerFrame:GetHeight() + 5));
-            else
-                XToLevel_AverageFrame_Blocky_PetFrame:SetPoint('TOPLEFT', 'XToLevel_AverageFrame_Blocky_PlayerFrame', 'TOPLEFT', XToLevel_AverageFrame_Blocky_PlayerFrameCounterKills:GetWidth() + 5, 0);
-            end
-        else
-            XToLevel_AverageFrame_Blocky_PetFrame:ClearAllPoints()
-            if orientation == 'h' then
-                XToLevel_AverageFrame_Blocky_PetFrame:SetPoint('TOPLEFT', 'XToLevel_AverageFrame_Blocky_PlayerFrame', 'TOPLEFT', 0, 0);
-            else
-                XToLevel_AverageFrame_Blocky_PetFrame:SetPoint('TOPLEFT', 'XToLevel_AverageFrame_Blocky_PlayerFrame', 'TOPLEFT', 0, 0);
-            end
-        end
     end,
     
     ---
@@ -343,7 +283,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             
             progressBar:SetWidth(barWidth)
             if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
+                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
             end
@@ -373,7 +313,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             
             progressBar:SetWidth(barWidth)
             if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
+                progressText:SetText(tostring(bars) .. " " .. L['Bars'])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
             end
@@ -386,40 +326,6 @@ XToLevel.AverageFrameAPI["Blocky"] =
 			XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimerValueText:SetText(timeString)
 		end
 	end,
-    
-      --- Sets the pet kill value for the frame
-    SetPetKills = function(self, value)
-        XToLevel_AverageFrame_Blocky_PetFrameCounterKillsValueText:SetText(tonumber(value))
-    end,
-    
-      --- Sets the pet progress for the frame
-    SetPetProgress = function(self, percent)
-       if percent ~= nil and (percent >= 0 and percent <= 100) then
-            local progressFrame = XToLevel_AverageFrame_Blocky_PetFrameCounterProgress
-            local progressBar = XToLevel_AverageFrame_Blocky_PetFrameCounterProgressBar
-            local progressBarColor = XToLevel_AverageFrame_Blocky_PetFrameCounterProgressBarColor
-            local progressText = XToLevel_AverageFrame_Blocky_PetFrameCounterProgressValueText
-            
-            local totalWidth = progressFrame:GetWidth() - 5
-            local barWidth = totalWidth * (percent / 100)
-            local bars = ceil((100 - percent) / 5)
-            
-            if barWidth == 0 then
-                barWidth = 1
-            end
-            
-            local hex, rgb = XToLevel.Lib:GetProgressColor(percent)
-            rgb = { r= (rgb.r / 256), g= (rgb.g) / 256, b= (rgb.b / 256) }
-            
-            progressBar:SetWidth(barWidth)
-            if sConfig.averageDisplay.progressAsBars then
-                progressText:SetText(tostring(bars) .. " " .. L["Bars"])
-            else
-                progressText:SetText(tostring(floor(percent)) .. "%")
-            end
-            progressText:SetTextColor(rgb.r, rgb.g, rgb.b, 1.0)
-        end
-    end,
     
     --- Sets whether or not to hide the XToLevel header.
     HeaderVisible = function(self, value)

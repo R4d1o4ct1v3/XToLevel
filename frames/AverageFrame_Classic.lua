@@ -16,7 +16,6 @@ XToLevel.AverageFrameAPI["Classic"] =
     lineSpacing = 2,
     lastTooltip = nil,
     playerProgressColor = "0088ff",
-    petProgressColor = "0088ff",
     labelColor = "ffffff",
 
     --- Called when the frame first loads
@@ -63,7 +62,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
         if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L["Right Click To Configure"]) or nil
+	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
 	        local childPoint, parentFrame, parentPoint = XToLevel.Lib:FindAnchor(self.window);
 	        
             if parentPoint ~= "TOP" and parentPoint ~= "BOTTOM" then
@@ -145,11 +144,6 @@ XToLevel.AverageFrameAPI["Classic"] =
             self.lines.playerKills:Show()
             self.lines.playerQuests:Show()
         end
-        if not (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) then
-            self.lines.petKills:Hide()
-        else
-            self.lines.petKills:Show()
-        end
         if not XToLevel.Player.isActive or (XToLevel.Player:GetAverageDungeonsRemaining() == nil or not XToLevel.Lib:ShowDungeonData()) then
             self.lines.playerDungeons:Hide()
         else
@@ -170,11 +164,6 @@ XToLevel.AverageFrameAPI["Classic"] =
             self.lines.playerProgress:Show()
         else
             self.lines.playerProgress:Hide()
-        end
-        if (XToLevel.Pet.isActive or XToLevel.Pet.hasBeenActive) and sConfig.averageDisplay.petProgress then
-            self.lines.petProgress:Show()
-        else
-            self.lines.petProgress:Hide()
         end
     end,
     
@@ -281,8 +270,6 @@ XToLevel.AverageFrameAPI["Classic"] =
         self:CreateLine('playerBGs', 'player', 5, 'bg', L["Battles"], 'XToLevel_span')
         self:CreateLine('playerBGOs', 'player', 6, 'bg', L["Objectives"], 'XToLevel_span')
         self:CreateLine('playerProgress', 'player', 7, 'experience', L["XP Percent"], 'XToLevel_span')
-        self:CreateLine('petKills', 'player', 8, 'pet', L["Pet"], 'XToLevel_span')
-        self:CreateLine('petProgress', 'player', 9, 'pet xp', L["Pet XP"], 'XToLevel_span')
     end,
     
     ---
@@ -314,8 +301,6 @@ XToLevel.AverageFrameAPI["Classic"] =
         if sConfig.averageDisplay.colorText then
             if type == "player" then
                 return XToLevel.Lib:GetProgressColor(XToLevel.Player:GetProgressAsPercentage());
-            elseif type == "pet" then
-                return XToLevel.Lib:GetProgressColor(XToLevel.Pet:GetProgressAsPercentage());
             else
                 console:log("Unable to determine the color to use. Type '" .. tostring(type) .."' is not valid")
                 return nil
@@ -371,22 +356,6 @@ XToLevel.AverageFrameAPI["Classic"] =
     -- TODO: Implement this feature.
     SetGathering = function(self, value)
         return true
-    end,
-    
-    --- Sets the pet kill value for the frame
-    SetPetKills = function(self, value)
-        self:WriteToLine("petKills", "Pet", value, self:GetTextColor("pet"))
-    end,
-    
-    --- Sets the pet progress for the frame
-    SetPetProgress = function(self, percent)
-        
-        if sConfig.averageDisplay.progressAsBars then
-            local barsRemaining = XToLevel.Pet:GetProgressAsBars()
-            self:WriteToLine("petProgress", "Pet Bars", barsRemaining .. " " .. L["Bars"], self:GetTextColor("pet"))
-        else
-            self:WriteToLine("petProgress", "Pet XP", percent .. "%", self:GetTextColor("pet"))
-        end
     end,
     
     --- Sets the guild progress value. NOT IMPLEMENTED IN THIS FRAME!
