@@ -303,6 +303,10 @@ end
 function XToLevel:OnCombatLogEventUnfiltered(...)
     local cl_event = select(2, ...)
     local npc_guid = select(7, ...)
+    -- 4.2 compatibility fix. (In case I miss the patch week again.)
+    if tonumber(select(4, GetBuildInfo())) >= 40200 then
+        npc_guid = select(8, ...)
+    end
     if cl_event ~= nil and npc_guid ~= nil and cl_event == "UNIT_DIED" then
         for i, data in ipairs(targetList) do
             if data.guid == npc_guid then
