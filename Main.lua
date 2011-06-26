@@ -2,7 +2,7 @@
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
--- @release 4.0.3_26
+-- @release 4.1.0_26
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
@@ -36,8 +36,8 @@ rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
 XToLevel = { }
-XToLevel.version = "4.0.3_26"
-XToLevel.releaseDate = '2011-06-24'
+XToLevel.version = "@project-version@"
+XToLevel.releaseDate = '@project-date-iso@'
 
 XToLevel.frame = CreateFrame("FRAME", "XToLevel", UIParent)
 XToLevel.frame:RegisterEvent("PLAYER_LOGIN")

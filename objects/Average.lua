@@ -1,7 +1,7 @@
 ---
 -- Contains definitions for the Average Information windows
 -- @file XToLevel.Average.lua
--- @release 4.0.1_24
+-- @release 4.1.0_26
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 XToLevel.Average =

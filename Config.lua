@@ -2,7 +2,7 @@
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
--- @release 4.0.3_23
+-- @release 4.1.0_26
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
