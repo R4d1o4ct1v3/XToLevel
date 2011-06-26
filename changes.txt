@@ -1,3 +1,7 @@
+Version 4.1.0_27
+ - FIX: Added the "Vertical Align" option for the widow again. It was removed in the last version by mistake.
+ - FIX: Made compatible with the COMBAT_LOG_EVENT_UNFILTERED change we're expecting in 4.2. (In case I miss the patch week.)
+
 Version 4.1.0_26
  - REMOVED: All pet related functionality removed. It's no longer needed.
  - FIX: An issue preventing gathering profession XP from being collected has been resolved.
