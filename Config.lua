@@ -475,6 +475,8 @@ XToLevel.Config =
     				sConfig.messages.colors.playerLevel = self.currentColor
         		end
         	end)
+
+        self:CreateH2(messagesPanel, "ColorResetHeader", " ", 210)
         	
     	local resetButton = self:CreateButton(messagesPanel, "ColorReset", L['Color Reset'], 75, 25,
     		function(self) end,
