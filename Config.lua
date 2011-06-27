@@ -538,6 +538,9 @@ XToLevel.Config =
 	   
         -- Classic boxes.
         self:CreateH2(windowPanel, "ClassicHeader", L['Classic Specific Options'], 0)
+        self:CreateCheckbox(windowPanel, "ShowWindowFrame", L["Show Window Frame"], 
+            function(self) self:SetChecked(sConfig.averageDisplay.backdrop) end, 
+            function(self) sConfig.averageDisplay.backdrop = self:GetChecked() or false end)
         self:CreateCheckbox(windowPanel, "ShowHeader", L["Show XToLevel Header"], 
             function(self) self:SetChecked(sConfig.averageDisplay.header) end, 
             function(self) sConfig.averageDisplay.header = self:GetChecked() or false end)

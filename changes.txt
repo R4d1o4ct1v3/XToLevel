@@ -1,3 +1,6 @@
+Version 4.1.0_28
+ - FIX: Added the ability to enable/disable the background for the Classic window mode again. Was removed with the pet code.
+
 Version 4.1.0_27
  - NEW: Added a button to the Data config tab that clears the gathering data.
  - FIX: Added the "Vertical Align" option for the widow again. It was removed in the last version by mistake.
