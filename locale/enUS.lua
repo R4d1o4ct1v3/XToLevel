@@ -188,12 +188,14 @@
     ['Reset Player Quests'] = "Quests",
     ['Reset Battlegrounds'] = "Battles",
     ['Reset Dungeons'] = "Dungeons",
+    ['Reset Gathering'] = "Gathering",
     ['Reset Pet Kills'] = "Pet",
     ['Reset Player Kill Dialog'] = "Are you sure you want to delete the player kill records?",
     ['Reset Player Quest Dialog'] = "Are you sure you want to delete the player quest records?",
     ['Reset Battleground Dialog'] = "Are you sure you want to delete the battleground records?",
     ['Reset Dungeon Dialog'] = "Are you sure you want to delete the dungeon records?",
     ['Reset Pet Kill Dialog'] = "Are you sure you want to delete the kill records for your pets?",
+    ['Reset Gathering Dialog'] = "Are you sure you want to delete the gathering records?",
 	
 	-- LDB Text
     ['LDB Enabled'] = "Enabled",

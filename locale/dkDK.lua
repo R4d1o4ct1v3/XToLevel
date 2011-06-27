@@ -189,11 +189,13 @@
     ['Reset Battlegrounds'] = "Battlegrounds",
     ['Reset Dungeons'] = "Dungeons",
     ['Reset Pet Kills'] = "Pet Drab",
+    ['Reset Gathering'] = "Gathering",
     ['Reset Player Kill Dialog'] = "Er du sikker på at du vil slette spillerens drab-optagelser?",
     ['Reset Player Quest Dialog'] = "Er du sikker på at du vil slette spillerens quest-optagelser?",
     ['Reset Battleground Dialog'] = "Er du sikker på at du vil slette battleground-optagelser?",
     ['Reset Dungeon Dialog'] = "Er du sikker på at du vil slette spillerens dungeon-optagelser?",
     ['Reset Pet Kill Dialog'] = "Er du sikker på at du vil slette dit pets' drab-optagelser?",
+    ['Reset Gathering Dialog'] = "Er du sikker på du vil slette indsamling records?",
 	
 	-- LDB Text
     ['LDB Enabled'] = "Aktivere",

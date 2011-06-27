@@ -189,11 +189,13 @@
     ['Reset Battlegrounds'] = "Schlachtfeld",
     ['Reset Dungeons'] = "Dungeons",
     ['Reset Pet Kills'] = "Begleiter",
+    ['Reset Gathering'] = "Gathering",
     ['Reset Player Kill Dialog'] = "Sind Sie sicher, dass Sie löschen möchten der Spieler tötet?",
     ['Reset Player Quest Dialog'] = "Sind Sie sicher, dass Sie löschen möchten der Spieler quests?",
     ['Reset Battleground Dialog'] = "Sind Sie sicher, dass Sie löschen möchten das Schlachtfeld Daten?",
     ['Reset Dungeon Dialog'] = "Sind Sie sicher, dass Sie löschen möchten das Dungeon Daten?",
     ['Reset Pet Kill Dialog'] = "Sind Sie sicher, dass Sie löschen möchten der Begleiter tötet?",
+    ['Reset Gathering Dialog'] = "Sind Sie sicher, dass Sie die Sammlung Datensätze zu löschen?",
 	
 	-- LDB Text
     ['LDB Enabled'] = "Aktivieren",

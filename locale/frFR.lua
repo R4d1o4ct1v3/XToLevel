@@ -189,11 +189,13 @@
     ['Reset Battlegrounds'] = "Batailles",
     ['Reset Dungeons'] = "Donjon",
     ['Reset Pet Kills'] = "Familier",
+    ['Reset Gathering'] = "Gathering",
     ['Reset Player Kill Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de mob?",
     ['Reset Player Quest Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de quest?",
     ['Reset Battleground Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de bataille?",
     ['Reset Dungeon Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de donjon?",
     ['Reset Pet Kill Dialog'] = "Êtes-vous sûr vous voulez-vous supprimer toutes les données de familier?",
+    ['Reset Gathering Dialog'] = "Etes-vous sûr de vouloir supprimer les enregistrements de collecte?",
 	
 	-- LDB Text
     ['LDB Enabled'] = "Activer",

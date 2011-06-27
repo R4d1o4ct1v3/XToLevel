@@ -189,11 +189,13 @@
     ['Reset Battlegrounds'] = "Batallas",
     ['Reset Dungeons'] = "Mazmorras",
     ['Reset Pet Kills'] = "Mascota",
+    ['Reset Gathering'] = "Gathering",
     ['Reset Player Kill Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de matar?",
     ['Reset Player Quest Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de misiones?",
     ['Reset Battleground Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de batallas?",
     ['Reset Dungeon Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de mazmorras?",
     ['Reset Pet Kill Dialog'] = "¿Estás seguro de que deseas eliminar todos los datos de mascota?",
+    ['Reset Gathering Dialog'] = "¿Está seguro que desea eliminar los registros de la recolección?",
 	
 	-- LDB Text
     ['LDB Enabled'] = "Habilitar",

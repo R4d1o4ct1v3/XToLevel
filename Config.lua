@@ -250,6 +250,20 @@ XToLevel.Config =
 	        whileDead = true,
 	        hideOnEscape = true,
 	    }
+        StaticPopupDialogs['XToLevelConfig_ResetGathering'] = {
+	        text = L['Reset Gathering Dialog'],
+	        button1 = L["Yes"],
+	        button2 = L["No"],
+	        OnAccept = function()
+	            sData.player.gathering = { }
+				XToLevel.Average:Update()
+                XToLevel.LDB:BuildPattern();
+				XToLevel.LDB:Update()
+	        end,
+	        timeout = 0,
+	        whileDead = true,
+	        hideOnEscape = true,
+	    }
         StaticPopupDialogs['XToLevelConfig_LdbReload'] = {
 	        text = L['LDB Reload Dialog'],
 	        button1 = L["Yes"],
@@ -799,6 +813,10 @@ XToLevel.Config =
     	self:CreateButton(ldbPanel, "ClearBattlesButton", L['Reset Battlegrounds'], 105, 30, 
         	function(self) end, 
         	function(self) StaticPopup_Show("XToLevelConfig_ResetBattles"); end, 
+    	true)
+    	self:CreateButton(ldbPanel, "ClearGatheringButton", L['Reset Gathering'], 105, 30, 
+        	function(self) end, 
+        	function(self) StaticPopup_Show("XToLevelConfig_ResetGathering"); end, 
     	true)
     end,
 	
