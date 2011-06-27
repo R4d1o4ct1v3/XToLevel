@@ -2,6 +2,7 @@ Version 4.1.0_27
  - NEW: Added a button to the Data config tab that clears the gathering data.
  - FIX: Added the "Vertical Align" option for the widow again. It was removed in the last version by mistake.
  - FIX: Made compatible with the COMBAT_LOG_EVENT_UNFILTERED change we're expecting in 4.2. (In case I miss the patch week.)
+ - FIX: Removed the now redundant warning message for the "Kills to level" tooltip checkbox in the config.
 
 Version 4.1.0_26
  - REMOVED: All pet related functionality removed. It's no longer needed.
