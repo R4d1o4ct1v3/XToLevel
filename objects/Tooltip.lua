@@ -1,7 +1,7 @@
 ﻿---
 -- Contains definitions for the Tooltip display.
 -- @file XToLevel.Display.lua
--- @release 4.1.0_26
+-- @release @project-version@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
