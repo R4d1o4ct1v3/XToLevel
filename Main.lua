@@ -210,9 +210,8 @@ end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
 function XToLevel:OnPlayerLogin()
-    -- If the player is at max level, and not a hunter, then there is no reason
-    -- to load the addon.
-    if UnitLevel("player") >= XToLevel.Player:GetMaxLevel() and XToLevel.Player:GetClass() ~= "HUNTER" then
+    -- If the player is at max level, then there is no reason to load the addon.
+    if UnitLevel("player") >= XToLevel.Player:GetMaxLevel() then
         XToLevel:Unload()
         return false;
     end
@@ -235,10 +234,7 @@ function XToLevel:OnPlayerLogin()
     XToLevel.Player:Initialize(sData.player.killAverage, sData.player.questAverage)
     XToLevel.Config:Initialize()
     
-    -- Register the played message to be executed after 2 seconds
-    if UnitLevel("player") < XToLevel.Player:GetMaxLevel() then
-        self.timer:ScheduleTimer(XToLevel.TimePlayedTriggerCallback, 2)
-    end
+    self.timer:ScheduleTimer(XToLevel.TimePlayedTriggerCallback, 2)
     
     XToLevel.LDB:Initialize()
     XToLevel.Average:Initialize()
