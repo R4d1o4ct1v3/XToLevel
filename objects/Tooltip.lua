@@ -567,8 +567,8 @@ XToLevel.Tooltip =
                             if isOldData then
                                 required = "~" .. required
                             end
-                            XToLevel.Lib:NumberFormat(XToLevel.Lib:round(averageXP, 0))
-                            GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. XToLevel.Lib:NumberFormat(averageXP) .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+                            local avgxpFormatted = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(averageXP, 1))
+                            GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. tostring(avgxpFormatted) .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
                             linesAdded = linesAdded + 1
                         end
                     end
