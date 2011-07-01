@@ -16,16 +16,16 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariablesPerCharacter: sConfig,sData
-libs\LibStub\LibStub.lua
-libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
-libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
-libs\AceTimer-3.0\AceTimer-3.0.xml
+
+embeds.xml
+
 Locale.lua
 locale\enUS.lua
 locale\frFR.lua
 locale\deDE.lua
 locale\esES.lua
 locale\dkDK.lua
+
 Main.lua
 Tables.lua
 Libs.lua

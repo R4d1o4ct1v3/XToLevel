@@ -4,6 +4,12 @@
     [2] = "Classic"
 }
 
+XToLevel.TIMER_MODES = 
+{
+    [1] = "Session",
+    [2] = "Level"
+}
+
 XToLevel.MAX_PLAYER_LEVELS =
 {
     [0] = 60, -- Classic
@@ -23,13 +29,23 @@ XToLevel.BG_NAMES =
     [6] = "Isle of Conquest"
 }
 
+XToLevel.LDB_PATTERNS = 
+{
+    [1] = "default", 
+    [2] = "minimal", 
+    [3] = "minimal_dashed", 
+    [4] = "brackets", 
+    [5] = "countdown", 
+    [6] = "custom"
+}
+
 XToLevel.DISPLAY_LOCALES =
 {
-    ["English"] = "enUS",
-    ["Deutsch"] = "deDE",
-    ["Français"] = "frFR",
-    ["Español"] = "esES",
-    ["Dansk"] = "dkDK",
+    enUS = "English", 
+    frFR = "Français", 
+    deDE = "Deutsch", 
+    esES = "Español", 
+    dkDK = "Dansk"
 }
 
 XToLevel.UNIT_CLASSIFICATIONS = {

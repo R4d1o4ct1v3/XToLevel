@@ -1,3 +1,6 @@
+Version 4.2.0_29
+ - CHANGED: The config window has been remade using the Ace3 GUI and Config libraries. It looks a little different, but should work exactly the same.
+
 Version 4.2.0_28
  - FIX: Added the ability to enable/disable the background for the Classic window mode again. Was removed with the pet code.
  - FIX: A rounding issue with the XP values in the Gathering tooltip has been fixed. They are now rounded to 1 decimal when needed.

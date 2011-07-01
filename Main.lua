@@ -830,6 +830,6 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("No mob data")
         end
 	else
-		XToLevel.Config:Open("messages")
+		XToLevel.Config:Open("Messages")
 	end
 end

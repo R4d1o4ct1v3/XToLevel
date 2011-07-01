@@ -126,7 +126,7 @@
 	    </OnDragStop>
 	    <OnMouseUp>
             if sConfig.general.allowSettingsClick and button == "RightButton" then
-                XToLevel.Config:Open("average")
+                XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
 	</Scripts>
@@ -204,7 +204,7 @@
         </OnDragStop>
         <OnMouseUp>
             if sConfig.general.allowSettingsClick and button == "RightButton" then
-                XToLevel.Config:Open("average")
+                XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
     </Scripts>
@@ -282,7 +282,7 @@
         </OnDragStop>
         <OnMouseUp>
             if sConfig.general.allowSettingsClick and button == "RightButton" then
-                XToLevel.Config:Open("average")
+                XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
     </Scripts>
@@ -480,7 +480,7 @@
                         </OnEnter>
 						<OnMouseUp>
 							if sConfig.general.allowSettingsClick and button == "RightButton" then
-								XToLevel.Config:Open("timer")
+								XToLevel.Config:Open("Timer")
 							end
 						</OnMouseUp>
                     </Scripts> 
