@@ -16,7 +16,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: XToLevelDB
-## SavedVariablesPerCharacter: sData
+## SavedVariablesPerCharacter: sConfig,sData
 
 embeds.xml
 
