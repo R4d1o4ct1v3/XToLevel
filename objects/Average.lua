@@ -17,7 +17,7 @@ XToLevel.Average =
 -- Initialize the Average control methods. This basically just sets
 -- which API should be used.
 function XToLevel.Average:Initialize()
-    self.activeAPI = self.knownAPIs[sConfig.averageDisplay.mode]
+    self.activeAPI = self.knownAPIs[XToLevel.db.profile.averageDisplay.mode]
     for index, name in ipairs(self.knownAPIs) do
         XToLevel.AverageFrameAPI[name]:Initialize()
     end
@@ -29,16 +29,16 @@ end
 -- Updates the active AverageFrame window.
 function XToLevel.Average:Update()
     if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
-        if self.activeAPI ~= self.knownAPIs[sConfig.averageDisplay.mode] then
+        if self.activeAPI ~= self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] then
             for index, name in ipairs(self.knownAPIs) do
                 XToLevel.AverageFrameAPI[name]:Update()
             end
-            if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
-                self:AlignBoxes(self.activeAPI, self.knownAPIs[sConfig.averageDisplay.mode])
-                self.activeAPI = self.knownAPIs[sConfig.averageDisplay.mode]
+            if self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] ~= nil then
+                self:AlignBoxes(self.activeAPI, self.knownAPIs[XToLevel.db.profile.averageDisplay.mode])
+                self.activeAPI = self.knownAPIs[XToLevel.db.profile.averageDisplay.mode]
             end
         end
-        if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
+        if self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] ~= nil then
             if XToLevel.Player.isActive then
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetKills       (XToLevel.Player:GetAverageKillsRemaining() or nil)
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetQuests      (XToLevel.Player:GetAverageQuestsRemaining() or nil)
@@ -48,7 +48,7 @@ function XToLevel.Average:Update()
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetProgress    (XToLevel.Lib:round((XToLevel.Player.currentXP or 0) / (XToLevel.Player.maxXP or 1) * 100, 1))
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetGathering   (XToLevel.Player:GetAverageGatheringRequired())
                 
-                if sConfig.averageDisplay.guildProgressType == 1 then
+                if XToLevel.db.profile.averageDisplay.guildProgressType == 1 then
                     XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildProgressAsPercentage(1))
                 else
                     XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
@@ -62,7 +62,7 @@ function XToLevel.Average:Update()
 end
 
 function XToLevel.Average:UpdateTimer(secondsToLevel)
-    if self.knownAPIs[sConfig.averageDisplay.mode] ~= nil then
+    if self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] ~= nil then
         if type(secondsToLevel) == "number" and secondsToLevel > 0 and tostring(secondsToLevel) ~= "1.#INF" then
             local formattedTime
             if secondsToLevel < 60 then

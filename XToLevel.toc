@@ -12,10 +12,11 @@
 ## X-Curse-Project-Name: XToLevel
 ## X-Curse-Project-ID: xto-level
 ## X-Curse-Repository-ID: wow/xto-level/mainline
-## OptionalDeps: LibStub,CallbackHandler-1.0,LibDataBroker-1.1,AceTimer-3.0
+## OptionalDeps: LibStub,CallbackHandler-1.0,LibDataBroker-1.1,AceTimer-3.0,AceConfig-3.0,AceGUI-3.0
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## SavedVariablesPerCharacter: sConfig,sData
+## SavedVariables: XToLevelDB
+## SavedVariablesPerCharacter: sData
 
 embeds.xml
 

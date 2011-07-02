@@ -20,7 +20,7 @@ XToLevel.Tooltip =
     ---
     -- function description
     Initialize = function(self)
-        if sConfig.ldb.allowTextColor then
+        if XToLevel.db.profile.ldb.allowTextColor then
             self.labelColor = { r=0.75, g=0.75, b=0.75 }
             self.dataColor = { r=0.9, g=1, b=0.9 }
             self.footerColor = { r=0.6, g=0.6, b=0.6 }
@@ -34,7 +34,7 @@ XToLevel.Tooltip =
 	-- Callback for the GameTooltip:OnShow hook
 	-- Adds the number of kills needed to unfriendly NPC tooltips.
 	OnShow_HookCallback = function(self, ...)
-		if sConfig.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
+		if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
 			local name, unit = GameTooltip:GetUnit()
 			if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitHealthMax(unit) > -1 then
 				local level = UnitLevel(unit)
@@ -229,7 +229,7 @@ XToLevel.Tooltip =
             GameTooltip:AddLine(L["XToLevel"])
             
             if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
-                if sConfig.ldb.tooltip.showDetails then
+                if XToLevel.db.profile.ldb.tooltip.showDetails then
                     self:AddKills()
                     self:AddQuests()
                 end
@@ -240,17 +240,17 @@ XToLevel.Tooltip =
                     self:AddBattlegroundInfo()
                 end
                 GameTooltip:AddLine(" ")
-                if sConfig.ldb.tooltip.showExperience then
+                if XToLevel.db.profile.ldb.tooltip.showExperience then
                     GameTooltip:AddLine(L["Experience"] .. ": ")
                     self:AddExperience()
                     GameTooltip:AddLine(" ")
                 end
-                if sConfig.ldb.tooltip.showGuildInfo then
+                if XToLevel.db.profile.ldb.tooltip.showGuildInfo then
                     GameTooltip:AddLine(L['Guild'] .. ": ")
                     self:AddGuildInfo()
                     GameTooltip:AddLine(" ")
                 end
-                if sConfig.ldb.tooltip.showGatheringInfo then
+                if XToLevel.db.profile.ldb.tooltip.showGatheringInfo then
                     GameTooltip:AddLine((L["Gathering"] or "Gathering") .. ": ")
                     self:AddGathering()
                     GameTooltip:AddLine(" ")
@@ -267,7 +267,7 @@ XToLevel.Tooltip =
                     self:AddBattles()
                     GameTooltip:AddLine(" ")
                 end
-                if sConfig.timer.enabled and sConfig.ldb.tooltip.showTimerInfo then
+                if XToLevel.db.profile.timer.enabled and XToLevel.db.profile.ldb.tooltip.showTimerInfo then
                     GameTooltip:AddLine(L["Timer"] .. ":")
                     self:AddTimerDetailes(true)
                     GameTooltip:AddLine(" ")
@@ -333,7 +333,7 @@ XToLevel.Tooltip =
     ---
     -- function description
     AddDungeons = function(self)
-        if (# sData.player.dungeonList) > 0 then
+        if (# XToLevel.db.char.data.dungeonList) > 0 then
             local dungeons, latestData, averageRaw, averageFormatted, needed;
             
             dungeons = XToLevel.Player:GetDungeonsListed()
@@ -355,22 +355,22 @@ XToLevel.Tooltip =
                 GameTooltip:AddLine(" ")
             end
             
-            if sData.player.dungeonList[1].inProgress then
+            if XToLevel.db.char.data.dungeonList[1].inProgress then
                 GameTooltip:AddLine(L['Current Dungeon'] .. ":")
             else
                 GameTooltip:AddLine(L['Last Dungeon'] .. ":")
             end
             
             local dungeonName = nil
-            if type(sData.player.dungeonList[1].name) ~= "string" then
+            if type(XToLevel.db.char.data.dungeonList[1].name) ~= "string" then
             	if GetRealZoneText() ~= nil then
-            		sData.player.dungeonList[1].name = GetRealZoneText()
-            		dungeonName = sData.player.dungeonList[1].name
+            		XToLevel.db.char.data.dungeonList[1].name = GetRealZoneText()
+            		dungeonName = XToLevel.db.char.data.dungeonList[1].name
         		else
         			dungeonName = "Unknown"
             	end
         	else
-        		dungeonName = sData.player.dungeonList[1].name
+        		dungeonName = XToLevel.db.char.data.dungeonList[1].name
             end
             
             GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , dungeonName, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
@@ -444,7 +444,7 @@ XToLevel.Tooltip =
     -- function description
     AddBattles = function(self)
     	local bgs = XToLevel.Player:GetBattlegroundsListed()
-        if bgs ~= nil and (# sData.player.bgList) > 0 then
+        if bgs ~= nil and (# XToLevel.db.char.data.bgList) > 0 then
             local latestData, averageRaw, averageFormatted, needed;
             latestData = XToLevel.Player:GetLatestBattlegroundDetails();
             
@@ -464,12 +464,12 @@ XToLevel.Tooltip =
             GameTooltip:AddLine(" ")
             
            	if latestData ~= nil then
-	            if sData.player.bgList[1].inProgress then
+	            if XToLevel.db.char.data.bgList[1].inProgress then
 	                GameTooltip:AddLine(L['Current Battleground'] .. ":")
 	            else
 	                GameTooltip:AddLine(L['Last Battleground'] .. ":")
-	                if sData.player.bgList[1].name ~= false then
-	                    GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , sData.player.bgList[1].name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+	                if XToLevel.db.char.data.bgList[1].name ~= false then
+	                    GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , XToLevel.db.char.data.bgList[1].name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 	                end
 	            end
 	            
@@ -490,10 +490,10 @@ XToLevel.Tooltip =
 	
 	--- Detailed timer info.
 	AddTimerDetailes = function(self, mininmal)
-		if sConfig.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
+		if XToLevel.db.profile.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
 			-- Gather data.
 			local mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning = XToLevel.Player:GetTimerData()
-			--local showUsingLevelWarning = mode ~= nil and mode ~= sConfig.timer.mode
+			--local showUsingLevelWarning = mode ~= nil and mode ~= XToLevel.db.profile.timer.mode
             --local showUsingOldDataWarning = mode == 1 and timePlayed == 0
 			
 			if mode == nil then

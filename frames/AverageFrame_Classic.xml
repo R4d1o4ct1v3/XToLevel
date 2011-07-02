@@ -31,7 +31,7 @@
             self:RegisterForDrag("LeftButton");
 		</OnLoad>
         <OnMouseUp>
-			if sConfig.general.allowSettingsClick and button == "RightButton" then
+			if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
 				XToLevel.Config:Open("window")
 			end
 		</OnMouseUp>

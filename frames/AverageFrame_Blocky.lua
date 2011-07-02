@@ -22,44 +22,44 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	        {   
 	            name =  'XToLevel_AverageFrame_Blocky_PlayerFrameCounterKills',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterKills,
-	            visible = sConfig.averageDisplay.playerKills
+	            visible = XToLevel.db.profile.averageDisplay.playerKills
 	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterQuests',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterQuests,
-	            visible = sConfig.averageDisplay.playerQuests
+	            visible = XToLevel.db.profile.averageDisplay.playerQuests
 	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterDungeons',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterDungeons,
-	            visible = sConfig.averageDisplay.playerDungeons
+	            visible = XToLevel.db.profile.averageDisplay.playerDungeons
 	        },
 	        {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterBattles',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterBattles,
-	            visible = sConfig.averageDisplay.playerBGs
+	            visible = XToLevel.db.profile.averageDisplay.playerBGs
 	        },
 	        {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectives',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectives,
-	            visible = sConfig.averageDisplay.playerBGOs
+	            visible = XToLevel.db.profile.averageDisplay.playerBGOs
 	        },
 	        {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering,
-	            visible = sConfig.averageDisplay.playerGathering
+	            visible = XToLevel.db.profile.averageDisplay.playerGathering
 	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress,
-	            visible = sConfig.averageDisplay.playerProgress
+	            visible = XToLevel.db.profile.averageDisplay.playerProgress
 	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimer',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimer,
-	            visible = sConfig.averageDisplay.playerTimer
+	            visible = XToLevel.db.profile.averageDisplay.playerTimer
 	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgress',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGuildProgress,
-	            visible = sConfig.averageDisplay.guildProgress
+	            visible = XToLevel.db.profile.averageDisplay.guildProgress
 	        }
 	    }
         
@@ -98,11 +98,11 @@ XToLevel.AverageFrameAPI["Blocky"] =
         
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
-        if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
+        if not self.isMoving and XToLevel.db.profile.averageDisplay.tooltip then
+	        local footer = (XToLevel.db.profile.general.allowSettingsClick and L['Right Click To Configure']) or nil
 	        -- a1 = child anchor point, f1 = parent frame, a2 = anchor-at point.
 	        local a1, f1, a2 = XToLevel.Lib:FindAnchor(XToLevel_AverageFrame_Blocky_PlayerFrame);
-	        if sConfig.averageDisplay.orientation == "v" then
+	        if XToLevel.db.profile.averageDisplay.orientation == "v" then
 	           -- If the tooltip is aligning at the bottom/top of the frame while
 	           -- it is vertical, reverse it so it aligns at the side of it instead.
 	           if a2 == "TOPRIGHT" or a2 == "TOPLEFT" or a2 == "BOTTOMLEFT" or a2 == "BOTTOMRIGHT" then
@@ -110,7 +110,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
                end
             end
             
-            if sConfig.averageDisplay.combineTooltip then
+            if XToLevel.db.profile.averageDisplay.combineTooltip then
                 mode = nil
             end
             
@@ -131,7 +131,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
     --- 
     -- Starts moving the frame
     StartDrag = function(self)
-        if not self.isMoving and sConfig.general.allowDrag then
+        if not self.isMoving and XToLevel.db.profile.general.allowDrag then
             XToLevel_AverageFrame_Blocky_PlayerFrame:StartMoving();
             self.isMoving = true
             XToLevel.Tooltip:Hide();
@@ -155,13 +155,13 @@ XToLevel.AverageFrameAPI["Blocky"] =
     -- Updates the LAYOUT of the frame.
     -- NOTE! This does NOT updated the values of the frames, only the positions.
     Update = function(self)
-        if sConfig.averageDisplay.mode == 1 then
+        if XToLevel.db.profile.averageDisplay.mode == 1 then
             -- Update the player frame
             local level = XToLevel.Player.level;
             local maxLevel = XToLevel.Player:GetMaxLevel()
 	        if type(level) == "number" and type(maxLevel) == "number" and level < maxLevel then
 	            XToLevel_AverageFrame_Blocky_PlayerFrame:Show()
-                XToLevel_AverageFrame_Blocky_PlayerFrame:SetScale(sConfig.averageDisplay.scale)
+                XToLevel_AverageFrame_Blocky_PlayerFrame:SetScale(XToLevel.db.profile.averageDisplay.scale)
 		        self:StackPlayer()
 	        else
                 XToLevel_AverageFrame_Blocky_PlayerFrame:Hide()
@@ -174,17 +174,17 @@ XToLevel.AverageFrameAPI["Blocky"] =
     ---
     -- function description
     StackPlayer = function(self)           
-        self.playerBoxes[1]["visible"] = sConfig.averageDisplay.playerKills
-        self.playerBoxes[2]["visible"] = sConfig.averageDisplay.playerQuests
-        self.playerBoxes[3]["visible"] = sConfig.averageDisplay.playerDungeons and XToLevel.Player.level >= 15
-        self.playerBoxes[4]["visible"] = sConfig.averageDisplay.playerBGs and XToLevel.Player.level >= 10
-        self.playerBoxes[5]["visible"] = sConfig.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
-        self.playerBoxes[6]["visible"] = sConfig.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
-        self.playerBoxes[7]["visible"] = sConfig.averageDisplay.playerProgress
-		self.playerBoxes[8]["visible"] = sConfig.averageDisplay.playerTimer and sConfig.averageDisplay.playerTimer
-        self.playerBoxes[9]["visible"] = sConfig.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
+        self.playerBoxes[1]["visible"] = XToLevel.db.profile.averageDisplay.playerKills
+        self.playerBoxes[2]["visible"] = XToLevel.db.profile.averageDisplay.playerQuests
+        self.playerBoxes[3]["visible"] = XToLevel.db.profile.averageDisplay.playerDungeons and XToLevel.Player.level >= 15
+        self.playerBoxes[4]["visible"] = XToLevel.db.profile.averageDisplay.playerBGs and XToLevel.Player.level >= 10
+        self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
+        self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
+        self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
+		self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
+        self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
     
-        local orientation = sConfig.averageDisplay.orientation or 'v'
+        local orientation = XToLevel.db.profile.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
     end,
     
@@ -282,7 +282,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             rgb = { r= (rgb.r / 256), g= (rgb.g) / 256, b= (rgb.b / 256) }
             
             progressBar:SetWidth(barWidth)
-            if sConfig.averageDisplay.progressAsBars then
+            if XToLevel.db.profile.averageDisplay.progressAsBars then
                 progressText:SetText(tostring(bars) .. " " .. L['Bars'])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")
@@ -312,7 +312,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
             rgb = { r= (rgb.r / 256), g= (rgb.g) / 256, b= (rgb.b / 256) }
             
             progressBar:SetWidth(barWidth)
-            if sConfig.averageDisplay.progressAsBars then
+            if XToLevel.db.profile.averageDisplay.progressAsBars then
                 progressText:SetText(tostring(bars) .. " " .. L['Bars'])
             else
                 progressText:SetText(tostring(floor(percent)) .. "%")

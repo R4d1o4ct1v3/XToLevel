@@ -27,7 +27,7 @@ XToLevel.Messages =
 	---
 	-- function description
 	Debug = function(self, message)
-		if sConfig.general.showDebug then
+		if XToLevel.db.profile.general.showDebug then
 			self:Print(message, self.printStyle.gray, {0.5, 0.5, 0.5})
 		end
 	end,
@@ -44,53 +44,53 @@ XToLevel.Messages =
         ---
         -- function description
         PrintKill = function(self, mobName, mobsRequired)
-            if sConfig.messages.playerFloating then
+            if XToLevel.db.profile.messages.playerFloating then
                 local message = mobsRequired .." ".. mobName .. L["Kills Needed"]
-                self:Print(message, sConfig.messages.colors.playerKill, self.killStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerKill, self.killStyle)
             end
         end,
         
         ---
         -- function description
         PrintQuest = function(self, questsRequired)
-            if sConfig.messages.playerFloating then
+            if XToLevel.db.profile.messages.playerFloating then
                 local message = questsRequired .. L["Quests Needed"]
-                self:Print(message, sConfig.messages.colors.playerQuest, self.questStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerQuest, self.questStyle)
             end
         end,
         
         ---
         -- Use to print anonymous XP gains (mining and such).
         PrintAnonymous = function(self, required)
-            if sConfig.messages.playerFloating then
+            if XToLevel.db.profile.messages.playerFloating then
                 local message = required .. L["Anonymous Needed"]
-                self:Print(message, sConfig.messages.colors.playerQuest, self.questStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerQuest, self.questStyle)
             end
         end,
 		
 		---
 		-- function description
 		PrintBattleground = function(self, bgsRequired)
-            if sConfig.messages.playerFloating then
+            if XToLevel.db.profile.messages.playerFloating then
                 local message = bgsRequired .. L["Battlegrounds Needed"]
-                self:Print(message, sConfig.messages.colors.playerBattleground, self.questStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerBattleground, self.questStyle)
             end
         end,
 		---
 		-- function description
 		PrintBGObjective = function(self, bgsRequired)
-            if sConfig.messages.playerFloating and sConfig.messages.bgObjectives then
+            if XToLevel.db.profile.messages.playerFloating and XToLevel.db.profile.messages.bgObjectives then
                 local message = bgsRequired .. L["Battleground Objectives Needed"]
-                self:Print(message, sConfig.messages.colors.playerBattleground, self.questStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerBattleground, self.questStyle)
             end
         end,
         
         ---
         -- function description
         PrintDungeon = function(self, remaining)
-            if sConfig.messages.playerFloating then
+            if XToLevel.db.profile.messages.playerFloating then
                 local message = remaining .. L["Dungeons Needed"]
-                self:Print(message, sConfig.messages.colors.playerDungeon, self.questStyle)
+                self:Print(message, XToLevel.db.profile.messages.colors.playerDungeon, self.questStyle)
             end
         end,
         
@@ -117,53 +117,53 @@ XToLevel.Messages =
         ---
         -- function description
         PrintKill = function(self, mobName, mobsRequired)
-            if sConfig.messages.playerChat then
+            if XToLevel.db.profile.messages.playerChat then
                 local message = mobsRequired .." ".. mobName .. L["Kills Needed"]
-                XToLevel.Messages:Print(message, self.killStyle, sConfig.messages.colors.playerKill)
+                XToLevel.Messages:Print(message, self.killStyle, XToLevel.db.profile.messages.colors.playerKill)
             end
         end,
         
         ---
         -- function description
         PrintQuest = function(self, questsRequired)
-            if sConfig.messages.playerChat then
+            if XToLevel.db.profile.messages.playerChat then
                 local message = questsRequired .. L["Quests Needed"]
-                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerQuest)
+                XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerQuest)
             end
         end,
         
         ---
         -- Use to print anonymous XP gains (mining and such).
         PrintAnonymous = function(self, questsRequired)
-            if sConfig.messages.playerChat then
+            if XToLevel.db.profile.messages.playerChat then
                 local message = questsRequired .. L["Anonymous Needed"]
-                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerQuest)
+                XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerQuest)
             end
         end,
 		
 		---
 		-- function description
 		PrintBattleground = function(self, bgsRequired)
-            if sConfig.messages.playerChat then
+            if XToLevel.db.profile.messages.playerChat then
                 local message = bgsRequired .. L["Battlegrounds Needed"]
-                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerBattleground)
+                XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerBattleground)
             end
         end,
 		---
 		-- function description
 		PrintBGObjective = function(self, bgsRequired)
-            if sConfig.messages.playerChat and sConfig.messages.bgObjectives then
+            if XToLevel.db.profile.messages.playerChat and XToLevel.db.profile.messages.bgObjectives then
                 local message = bgsRequired .. L["Battleground Objectives Needed"]
-                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerBattleground)
+                XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerBattleground)
             end
         end,
         
         ---
         -- function description
         PrintDungeon = function(self, remaining)
-            if sConfig.messages.playerChat then
+            if XToLevel.db.profile.messages.playerChat then
                 local message = remaining .. L["Dungeons Needed"]
-                XToLevel.Messages:Print(message, self.questStyle, sConfig.messages.colors.playerDungeon)
+                XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerDungeon)
             end
         end,
     }

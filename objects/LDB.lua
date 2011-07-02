@@ -38,14 +38,17 @@ XToLevel.LDB =
 	-- Timer members
 	timerObject = nil,
 	timerMouseOver = false,
-	timerLabelShown = sConfig.ldb.showLabel,
+	timerLabelShown = true,
         
     ---
     -- Constructor
     Initialize = function(self)
-        if not sConfig.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
+        if not XToLevel.db.profile.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
             return;
         end
+
+        self.timerLabelShown = XToLevel.db.profile.ldb.showLabel
+
         -- Initialize the data object
         local iconName = (UnitFactionGroup("player") == "Alliance") and "INV_Jewelry_TrinketPVP_01" or "INV_Jewelry_TrinketPVP_02"
         local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
@@ -53,7 +56,7 @@ XToLevel.LDB =
             type = "data source",
             icon = "Interface\\Icons\\" .. iconName,
             text = "XToLevel",
-            label = sConfig.ldb.showLabel and L["XToLevel"] or nil,
+            label = XToLevel.db.profile.ldb.showLabel and L["XToLevel"] or nil,
             version = XToLevel.version,
             align = "right",
             ["X-Category"] = "Information"
@@ -81,7 +84,7 @@ XToLevel.LDB =
     end,
 	
 	InitializeTimer = function(self)
-        if not sConfig.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
+        if not XToLevel.db.profile.ldb.enabled or (XToLevel.Player:GetMaxLevel() == XToLevel.Player.level and XToLevel.Player:GetClass() ~= "HUNTER")then
             return;
         end
 		-- Initialize the data object
@@ -90,7 +93,7 @@ XToLevel.LDB =
             type = "data source",
             icon = "Interface\\Icons\\inv_misc_pocketwatch_01",
             text = L["Updating..."],
-            label = sConfig.ldb.showLabel and L["TimeToLevel"] or nil,
+            label = XToLevel.db.profile.ldb.showLabel and L["TimeToLevel"] or nil,
             version = XToLevel.version,
             align = "right",
 			["X-Category"] = "Information"
@@ -131,9 +134,9 @@ XToLevel.LDB =
             
             -- Load the appropriate pattern, attempting to find one in the config.
             newText = self.textPatterns.default
-            if sConfig.ldb.textPattern ~= nil then
-                if sConfig.ldb.textPattern == "custom" then
-                    newText = sData.customPattern or "Please choose a pattern."
+            if XToLevel.db.profile.ldb.textPattern ~= nil then
+                if XToLevel.db.profile.ldb.textPattern == "custom" then
+                    newText = XToLevel.db.char.customPattern or "Please choose a pattern."
                     
                     -- Parse html-like syntax
                     newText = string.gsub(newText, '<(%w+) ?(.-)>', function(tag, attr)
@@ -165,47 +168,47 @@ XToLevel.LDB =
                         return out
                     end)
                 else
-                    newText = self.textPatterns[sConfig.ldb.textPattern]
+                    newText = self.textPatterns[XToLevel.db.profile.ldb.textPattern]
                 end
             end
             
             -- Replace {color} tags
-            if sConfig.ldb.allowTextColor then 
+            if XToLevel.db.profile.ldb.allowTextColor then 
                 newText = string.gsub(newText, "{color=([0-9A-Fa-f]+)}(.-){/color}", "|cFF%1%2|r")
             else
                 newText = string.gsub(newText, "{color=[0-9A-Fa-f]+}(.-){/color}", "%1")
             end
             
             -- Prepare tags
-            useColors = (sConfig.ldb.allowTextColor and sConfig.ldb.text.colorValues)
+            useColors = (XToLevel.db.profile.ldb.allowTextColor and XToLevel.db.profile.ldb.text.colorValues)
             self.textTags = {
                 [1] = {
                     tag = "kills",
-                    label = (sConfig.ldb.text.verbose and L["Kills"] ) or L["Kills Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Kills"] ) or L["Kills Short"],
                     value = (showPlayer and '$$kills$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 },
                 [2] = { 
                     tag = "quests",
-                    label = (sConfig.ldb.text.verbose and L["Quests"] ) or L["Quests Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Quests"] ) or L["Quests Short"],
                     value = (showPlayer and '$$quests$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 }, 
                 [3] = { 
                     tag = "dungeons",
-                    label = (sConfig.ldb.text.verbose and L["Dungeons"] ) or L["Dungeons Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Dungeons"] ) or L["Dungeons Short"],
                     value = ((showPlayer and UnitLevel("Player") >= 15) and '$$dungeons$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 }, 
                 [4] = { 
                     tag = "bgs",
-                    label = (sConfig.ldb.text.verbose and L["Battles"] ) or L["Battles Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Battles"] ) or L["Battles Short"],
                     value = ((showPlayer and UnitLevel("Player") >= 10) and '$$bgs$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 }, 
                 [5] = { 
                     tag = "bgo",
-                    label = (sConfig.ldb.text.verbose and L["Objectives"] ) or L["Objectives Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Objectives"] ) or L["Objectives Short"],
                     value = ((showPlayer and UnitLevel("Player") >= 10) and '$$bgo$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 }, 
@@ -213,35 +216,35 @@ XToLevel.LDB =
                     tag = "xp",
                     label = L["XP"],
                     value = (showPlayer and ('$$xp$$')) or nil,
-                    color = (sConfig.ldb.allowTextColor and '$$playercolor$$') or nil,
+                    color = (XToLevel.db.profile.ldb.allowTextColor and '$$playercolor$$') or nil,
                 },
 				[7] = { 
                     tag = "restedp",
-                    label =(sConfig.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
+                    label =(XToLevel.db.profile.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                     value = (showPlayer and '$$restedp$$') or nil,
-                    color = (sConfig.ldb.allowTextColor and '$$playercolor$$') or nil,
+                    color = (XToLevel.db.profile.ldb.allowTextColor and '$$playercolor$$') or nil,
                 },
 				[8] = { 
                     tag = "rested",
-                    label = (sConfig.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                     value = (showPlayer and '$$rested$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 },
 				[9] = { 
                     tag = "xpnum",
-                    label = (sConfig.ldb.text.verbose and L["XP"] ) or L["XP"],
+                    label = (XToLevel.db.profile.ldb.text.verbose and L["XP"] ) or L["XP"],
                     value = (showPlayer and '$$xpnum$$') or nil,
                     color = (useColors and '$$playercolor$$') or nil,
                 },
                 [10] = { 
                     tag = "guildxp",
-                    label = (sConfig.ldb.text.verbose and "Guild XP" ) or "GXP",
+                    label = (XToLevel.db.profile.ldb.text.verbose and "Guild XP" ) or "GXP",
                     value = (showPlayer and '$$guildxp$$') or nil,
                     color = (useColors and '$$guildcolor$$') or nil,
                 },
                 [11] = { 
                     tag = "guilddaily",
-                    label = (sConfig.ldb.text.verbose and "Guild Daily" ) or "GDXP",
+                    label = (XToLevel.db.profile.ldb.text.verbose and "Guild Daily" ) or "GDXP",
                     value = (showPlayer and '$$guilddaily$$') or nil,
                     color = (useColors and '$$guilddailycolor$$') or nil,
                 },
@@ -250,7 +253,7 @@ XToLevel.LDB =
             -- Replace values
             isFirst = true
             for i, object in ipairs(self.textTags) do
-                if sConfig.ldb.text[object.tag] and object.value ~= nil then
+                if XToLevel.db.profile.ldb.text[object.tag] and object.value ~= nil then
                     newText = string.gsub(newText, "{".. object.tag .."}(.-){/".. object.tag .."}", function(str)
                         str = string.gsub(str, "{$label}", object.label)
                         str = string.gsub(str, "{$value}", object.value)
@@ -289,7 +292,7 @@ XToLevel.LDB =
             
         else
             -- Player is at max level.
-            if sConfig.ldb.customColors then
+            if XToLevel.db.profile.ldb.customColors then
                 self.currentPattern = "|cFFaaaaaaInactive|r"
             else
                 self.currentPattern = "Inactive"
@@ -306,20 +309,20 @@ XToLevel.LDB =
             return false;
         end
         
-        if sConfig.ldb.showLabel then
+        if XToLevel.db.profile.ldb.showLabel then
             self.dataObject.label = L["XToLevel"]
         else
             self.dataObject.label = nil
         end
             
-        if sConfig.ldb.showIcon then
+        if XToLevel.db.profile.ldb.showIcon then
             local iconName = (UnitFactionGroup("player") == "Alliance") and "INV_Jewelry_TrinketPVP_01" or "INV_Jewelry_TrinketPVP_02"
             self.dataObject.icon = "Interface\\Icons\\" .. iconName
         else
             self.dataObject.icon = nil
         end
         
-        if sConfig.ldb.showText then
+        if XToLevel.db.profile.ldb.showText then
             local pattern = self.currentPattern;
             if XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
                 local playerProgress = XToLevel.Player:GetProgressAsPercentage(0)
@@ -330,11 +333,11 @@ XToLevel.LDB =
                 pattern = string.gsub(pattern, '%$%$quests%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageQuestsRemaining()) or "~"));
                 pattern = string.gsub(pattern, '%$%$dungeons%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageDungeonsRemaining()) or "~"));
 				
-                if sConfig.ldb.text.xpAsBars then
+                if XToLevel.db.profile.ldb.text.xpAsBars then
                     pattern = string.gsub(pattern, '%$%$xp%$%$', tostring(XToLevel.Player:GetProgressAsBars()) .. " " .. L['Bars']);
                 else
 					local progressDisplay = playerProgress
-					if sConfig.ldb.text.xpCountdown then
+					if XToLevel.db.profile.ldb.text.xpCountdown then
 						progressDisplay = 100 - playerProgress
                         if progressDisplay < 1 then
                             progressDisplay = '<1' 
@@ -343,19 +346,19 @@ XToLevel.LDB =
                     pattern = string.gsub(pattern, '%$%$xp%$%$', progressDisplay .. "%%");
                 end
 				
-				local xpnum = sConfig.ldb.text.xpCountdown and XToLevel.Player:GetXpRemaining() or XToLevel.Player.currentXP
-				xpnum = sConfig.ldb.text.xpnumFormat and XToLevel.Lib:ShrinkNumber(xpnum) or XToLevel.Lib:round(xpnum)
+				local xpnum = XToLevel.db.profile.ldb.text.xpCountdown and XToLevel.Player:GetXpRemaining() or XToLevel.Player.currentXP
+				xpnum = XToLevel.db.profile.ldb.text.xpnumFormat and XToLevel.Lib:ShrinkNumber(xpnum) or XToLevel.Lib:round(xpnum)
 				pattern = string.gsub(pattern, '%$%$xpnum%$%$', xpnum);
 				
                 pattern = string.gsub(pattern, '%$%$bgs%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageBGsRemaining()) or "~"));
                 pattern = string.gsub(pattern, '%$%$bgo%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageBGObjectivesRemaining()) or "~"));
 				
-				if sConfig.ldb.text.xpnumFormat then
+				if XToLevel.db.profile.ldb.text.xpnumFormat then
 					pattern = string.gsub(pattern, '%$%$rested%$%$', (XToLevel.Lib:ShrinkNumber(XToLevel.Player.restedXP) or "~"));
 				else
 					pattern = string.gsub(pattern, '%$%$rested%$%$', (XToLevel.Lib:round(XToLevel.Player.restedXP) or "~"));
 				end
-				if sConfig.ldb.text.xpAsBars then
+				if XToLevel.db.profile.ldb.text.xpAsBars then
 					local restedbars = XToLevel.Lib:round(XToLevel.Lib:round(XToLevel.Player:GetRestedPercentage()) / 5, 0, false)
 					pattern = string.gsub(pattern, '%$%$restedp%$%$', restedbars .. " " .. L['Bars']);
 				else
@@ -404,10 +407,10 @@ XToLevel.LDB =
         if self.timerObject == nil then
             return false;
         end
-        if sConfig.ldb.showLabel ~= self.timerLabelShown then -- changed
-            self.timerObject.label = sConfig.ldb.showLabel and L["XToLevel"] or nil
+        if XToLevel.db.profile.ldb.showLabel ~= self.timerLabelShown then -- changed
+            self.timerObject.label = XToLevel.db.profile.ldb.showLabel and L["XToLevel"] or nil
         end
-        if sConfig.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
+        if XToLevel.db.profile.timer.enabled and XToLevel.Player.level < XToLevel.Player:GetMaxLevel() then
             local mode, timeToLevel = XToLevel.Player:GetTimerData()
             timeToLevel = XToLevel.Lib:TimeFormat(timeToLevel)
             if timeToLevel == "NaN" then
@@ -415,7 +418,7 @@ XToLevel.LDB =
             end
             self.timerObject.text = timeToLevel;
         else
-            if sConfig.ldb.customColors then
+            if XToLevel.db.profile.ldb.customColors then
                 self.timerObject.text = "|cFFFF0000Inactive|r"
             else
                 self.timerObject.text = "Inactive"

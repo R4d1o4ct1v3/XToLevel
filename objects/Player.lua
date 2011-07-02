@@ -101,7 +101,7 @@ XToLevel.Player = {
 		self.bgObjAverage = nil
         self.questAverage = nil
 		
-		if sConfig.timer.enabled then
+		if XToLevel.db.profile.timer.enabled then
 			self.timerHandler = XToLevel.timer:ScheduleRepeatingTimer(XToLevel.Player.TriggerTimerUpdate, self.xpPerSecTimeout)
 		end
 	end,
@@ -225,19 +225,19 @@ XToLevel.Player = {
 	UpdateTimer = function(self)
 		self = XToLevel.Player
 		self.lastXpPerHourUpdate = GetTime();
-		sData.player.timer.lastUpdated = self.lastXpPerHourUpdate;
+		XToLevel.db.char.data.timer.lastUpdated = self.lastXpPerHourUpdate;
         
-		local useMode = sConfig.timer.mode
+		local useMode = XToLevel.db.profile.timer.mode
 		
 		-- Use the session data
 		if useMode == 1 then
-			if type(sData.player.timer.start) == "number" and type(sData.player.timer.total) == "number" and sData.player.timer.total > 0 then
-				sData.player.timer.xpPerSec = sData.player.timer.total / (sData.player.timer.lastUpdated - sData.player.timer.start)
-				local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
+			if type(XToLevel.db.char.data.timer.start) == "number" and type(XToLevel.db.char.data.timer.total) == "number" and XToLevel.db.char.data.timer.total > 0 then
+				XToLevel.db.char.data.timer.xpPerSec = XToLevel.db.char.data.timer.total / (XToLevel.db.char.data.timer.lastUpdated - XToLevel.db.char.data.timer.start)
+				local secondsToLevel = (self.maxXP - self.currentXP) / XToLevel.db.char.data.timer.xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
-			elseif type(sData.player.timer.xpPerSec) == "number" and sData.player.timer.xpPerSec > 0 then
+			elseif type(XToLevel.db.char.data.timer.xpPerSec) == "number" and XToLevel.db.char.data.timer.xpPerSec > 0 then
                 -- Fallback method #1, in case no XP has been gained this session, but data remains from the last session.
-                local secondsToLevel = (self.maxXP - self.currentXP) / sData.player.timer.xpPerSec
+                local secondsToLevel = (self.maxXP - self.currentXP) / XToLevel.db.char.data.timer.xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
             else
                 -- Fallback method #2. Use level data.
@@ -247,8 +247,8 @@ XToLevel.Player = {
 		
 		-- Use the level data.
 		if useMode == 2 then
-			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (sData.player.timer.lastUpdated - self.timePlayedUpdated)) > 0 then
-				local xpPerSec = self.currentXP / (self.timePlayedLevel + (sData.player.timer.lastUpdated - self.timePlayedUpdated))
+			if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (XToLevel.db.char.data.timer.lastUpdated - self.timePlayedUpdated)) > 0 then
+				local xpPerSec = self.currentXP / (self.timePlayedLevel + (XToLevel.db.char.data.timer.lastUpdated - self.timePlayedUpdated))
 				local secondsToLevel = (self.maxXP - self.currentXP) / xpPerSec
 				XToLevel.Average:UpdateTimer(secondsToLevel)
 			else
@@ -258,7 +258,7 @@ XToLevel.Player = {
 		
 		-- Fallback, in case both above failed.
 		if useMode == false then		
-			sData.player.timer.xpPerSec = 0
+			XToLevel.db.char.data.timer.xpPerSec = 0
 			XToLevel.Average:UpdateTimer(nil)
 		end
 		XToLevel.LDB:UpdateTimer()
@@ -267,28 +267,28 @@ XToLevel.Player = {
 	--- Returns details about the estimated time remaining.
 	-- @return mode, timeToLevel, timePlayed, xpPerHour, totalXP, warning
 	GetTimerData = function(self)
-		local mode = sConfig.timer.mode == 1 and (L['Session'] or "Session") or (L['Level'] or "Level")
+		local mode = XToLevel.db.profile.timer.mode == 1 and (L['Session'] or "Session") or (L['Level'] or "Level")
 		local timePlayed, totalXP, xpPerSecond, xpPerHour, timeToLevel, warning;
-		if sConfig.timer.mode == 1 and tonumber(sData.player.timer.total) > 0 then
+		if XToLevel.db.profile.timer.mode == 1 and tonumber(XToLevel.db.char.data.timer.total) > 0 then
 			mode = 1
             warning = 0
-			timePlayed = GetTime() - sData.player.timer.start
-			totalXP = sData.player.timer.total
+			timePlayed = GetTime() - XToLevel.db.char.data.timer.start
+			totalXP = XToLevel.db.char.data.timer.total
 			xpPerSecond = totalXP / timePlayed 
 			xpPerHour = ceil(xpPerSecond * 3600)
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
-        elseif sConfig.timer.mode == 1 and tonumber(sData.player.timer.xpPerSec) > 0 then
+        elseif XToLevel.db.profile.timer.mode == 1 and XToLevel.db.char.data.timer.xpPerSec ~= nil and tonumber(XToLevel.db.char.data.timer.xpPerSec) > 0 then
             mode = 1
             warning = 1
-            timePlayed = GetTime() - sData.player.timer.start
+            timePlayed = GetTime() - XToLevel.db.char.data.timer.start
 			totalXP = self.currentXP
-			xpPerSecond = sData.player.timer.xpPerSec   
+			xpPerSecond = XToLevel.db.char.data.timer.xpPerSec   
 			xpPerHour = ceil(xpPerSecond * 3600)
 			timeToLevel = (self.maxXP - self.currentXP) / xpPerSecond
 		elseif XToLevel.Player.timePlayedLevel then
             if XToLevel.Player.currentXP > 0 then
                 mode = 2
-                if sConfig.timer.mode ~= 2 then
+                if XToLevel.db.profile.timer.mode ~= 2 then
                     warning = 2
                 else
                     warning = 0;
@@ -359,11 +359,11 @@ XToLevel.Player = {
         end
     
 		self.killAverage = nil
-        table.insert(sData.player.killList, 1, {mob=mobName, xp=killXP})
-		if(# sData.player.killList > self.killListLength) then
-			table.remove(sData.player.killList)
+        table.insert(XToLevel.db.char.data.killList, 1, {mob=mobName, xp=killXP})
+		if(# XToLevel.db.char.data.killList > self.killListLength) then
+			table.remove(XToLevel.db.char.data.killList)
 		end
-        sData.player.total.mobKills = (sData.player.total.mobKills or 0) + 1
+        XToLevel.db.char.data.total.mobKills = (XToLevel.db.char.data.total.mobKills or 0) + 1
 
         return killXP
 	end,
@@ -375,11 +375,11 @@ XToLevel.Player = {
 	AddQuest = function (self, xpGained)
 		self.questAverage = nil
 		self.currentXP = self.currentXP + xpGained
-        table.insert(sData.player.questList, 1, xpGained)
-		if(# sData.player.questList > self.questListLength) then
-			table.remove(sData.player.questList)
+        table.insert(XToLevel.db.char.data.questList, 1, xpGained)
+		if(# XToLevel.db.char.data.questList > self.questListLength) then
+			table.remove(XToLevel.db.char.data.questList)
 		end
-        sData.player.total.quests = (sData.player.total.quests or 0) + 1
+        XToLevel.db.char.data.total.quests = (XToLevel.db.char.data.total.quests or 0) + 1
 	end,
     
     ---
@@ -395,29 +395,29 @@ XToLevel.Player = {
         else
             self.currentXP = self.currentXP + xp
         
-            if sData.player.gathering[action] == nil then
-                sData.player.gathering[action] = {};
+            if XToLevel.db.char.data.gathering[action] == nil then
+                XToLevel.db.char.data.gathering[action] = {};
             end
             
             local zoneID = XToLevel.Lib:ZoneID();
             
             local incremented = false
-            for i, v in ipairs(sData.player.gathering[action]) do
+            for i, v in ipairs(XToLevel.db.char.data.gathering[action]) do
                 if v["target"] == target and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
                     incremented = true
-                    sData.player.gathering[action][i]["count"] = sData.player.gathering[action][i]["count"] + 1
+                    XToLevel.db.char.data.gathering[action][i]["count"] = XToLevel.db.char.data.gathering[action][i]["count"] + 1
                     
                     -- The XP of an item can change, apparently. I'm guessing it's
                     -- a combination of player level vs the item's level range
                     -- and the players skill at the given profession.
                     -- In any case, if there is a change it should alter the record
                     -- rather than be calculated as an average.
-                    sData.player.gathering[action][i]["xp"] = xp
+                    XToLevel.db.char.data.gathering[action][i]["xp"] = xp
                 end
             end
             
             if not incremented then
-                table.insert(sData.player.gathering[action], {
+                table.insert(XToLevel.db.char.data.gathering[action], {
                     ["target"] = target,
                     ["xp"] = xp,
                     ["level"] = XToLevel.Player.level,
@@ -450,7 +450,7 @@ XToLevel.Player = {
             end
             local tXP = 0;
             local tCount = 0;
-            for action, dataTable in pairs(sData.player.gathering) do
+            for action, dataTable in pairs(XToLevel.db.char.data.gathering) do
                 for i, data in ipairs(dataTable) do
                     if data["target"] == itemName and data["level"] > XToLevel.Player.level - levelRange then
                         tXP = tXP + (data["xp"] * data["count"]);
@@ -493,7 +493,7 @@ XToLevel.Player = {
     -- Get the gathering actions recorded. That is; "Mining" and/or "Herb Gathering"
     GetGatheringActions = function(self)
         local actions = { };
-        for action, __ in pairs(sData.player.gathering) do
+        for action, __ in pairs(XToLevel.db.char.data.gathering) do
             table.insert(actions, action);
         end
         if # actions > 0 then
@@ -508,9 +508,9 @@ XToLevel.Player = {
     -- or "Silverleaf")
     GetGatheringItems = function(self, action)
         local items = { }
-        for a, __ in pairs(sData.player.gathering) do
+        for a, __ in pairs(XToLevel.db.char.data.gathering) do
             if action == a then
-                for _, c_item in ipairs(sData.player.gathering[a]) do
+                for _, c_item in ipairs(XToLevel.db.char.data.gathering[a]) do
                     local alreadyListed = false;
                     for _, r_item in ipairs(items) do
                         if c_item.target == r_item then
@@ -536,13 +536,13 @@ XToLevel.Player = {
     --                   Defaults to 2 (that is: this and the last level)
     -- @return Returns the avarge xp as a number on success or nil on failure.
     GetAverageGatheringXP = function(self, levelRange)
-        if type(sData.player.gathering) == "table" then
+        if type(XToLevel.db.char.data.gathering) == "table" then
             if type(levelRange) ~= "number" or levelRange <= 0 then
                 levelRange = 2
             end
             local tXP = 0;
             local tCount = 0;
-            for action, dataTable in pairs(sData.player.gathering) do
+            for action, dataTable in pairs(XToLevel.db.char.data.gathering) do
                 for i, data in ipairs(dataTable) do
                     if data["level"] > XToLevel.Player.level - levelRange then
                         tXP = tXP + (data["xp"] * data["count"]);
@@ -585,9 +585,9 @@ XToLevel.Player = {
     -- Determines whether there is any gathering info to show.
     -- Similar in many ways to the GetGatheringActions function but cheaper.
     HasGatheringInfo = function(self)
-        if type(sData.player.gathering) == "table" then
+        if type(XToLevel.db.char.data.gathering) == "table" then
             local actionCount = 0
-            for key, __ in pairs(sData.player.gathering) do
+            for key, __ in pairs(XToLevel.db.char.data.gathering) do
                 actionCount = actionCount + 1
             end
             return actionCount > 0
@@ -603,19 +603,19 @@ XToLevel.Player = {
 	-- @return boolean
 	---
 	BattlegroundStart = function(self, bgName)
-		if (# sData.player.bgList) > 0 and sData.player.bgList[1].inProgress == true then
+		if (# XToLevel.db.char.data.bgList) > 0 and XToLevel.db.char.data.bgList[1].inProgress == true then
 			console:log("Attempted to start a BG while another one is in progress.")
 			return false
 		else
 			local bgDataArray = self:CreateBgDataArray();
-			table.insert(sData.player.bgList, 1, bgDataArray)
-			if(# sData.player.bgList > self.bgListLength) then
-				table.remove(sData.player.bgList)
+			table.insert(XToLevel.db.char.data.bgList, 1, bgDataArray)
+			if(# XToLevel.db.char.data.bgList > self.bgListLength) then
+				table.remove(XToLevel.db.char.data.bgList)
 			end
-			sData.player.bgList[1].inProgress = true
-			sData.player.bgList[1].name = bgName or false
-			sData.player.bgList[1].level = self.level
-			console:log("BG Started! (" .. tostring(sData.player.bgList[1].name) .. ")")
+			XToLevel.db.char.data.bgList[1].inProgress = true
+			XToLevel.db.char.data.bgList[1].name = bgName or false
+			XToLevel.db.char.data.bgList[1].level = self.level
+			console:log("BG Started! (" .. tostring(XToLevel.db.char.data.bgList[1].name) .. ")")
 			return true
 		end
 	end,
@@ -627,15 +627,15 @@ XToLevel.Player = {
 	-- @return boolean
 	---
 	BattlegroundEnd = function(self)
-		if sData.player.bgList[1].inProgress == true then
-			sData.player.bgList[1].inProgress = false
-			console:log("BG Ended! (" .. tostring(sData.player.bgList[1].name)  .. ")")
+		if XToLevel.db.char.data.bgList[1].inProgress == true then
+			XToLevel.db.char.data.bgList[1].inProgress = false
+			console:log("BG Ended! (" .. tostring(XToLevel.db.char.data.bgList[1].name)  .. ")")
 			
 			self.bgAverage = nil
             self.bgObjAverage = nil
 			
-			if sData.player.bgList[1].totalXP == 0 then
-				table.remove(sData.player.bgList, 1)
+			if XToLevel.db.char.data.bgList[1].totalXP == 0 then
+				table.remove(XToLevel.db.char.data.bgList, 1)
 				console:log("BG ended without any honor gain. Disregarding it.)")
 				return false
 			else
@@ -652,8 +652,8 @@ XToLevel.Player = {
 	-- @return A boolean, indicating whether a battleground is in progress.
     ---
 	IsBattlegroundInProgress = function(self)
-	   if # sData.player.bgList > 0 then
-            return sData.player.bgList[1].inProgress
+	   if # XToLevel.db.char.data.bgList > 0 then
+            return XToLevel.db.char.data.bgList[1].inProgress
         else
             return false
         end
@@ -669,13 +669,13 @@ XToLevel.Player = {
 	-- @return boolean
 	---
     AddBattlegroundObjective = function(self, xpGained)
-        if sData.player.bgList[1].inProgress then
+        if XToLevel.db.char.data.bgList[1].inProgress then
             if xpGained > XToLevel.Lib:GetBGObjectiveMinXP() then
                 self.bgObjAverage = nil
-                sData.player.bgList[1].totalXP = sData.player.bgList[1].totalXP + xpGained
-                sData.player.bgList[1].objTotal = sData.player.bgList[1].objTotal + xpGained
-                sData.player.bgList[1].objCount = sData.player.bgList[1].objCount + 1
-                sData.player.total.objectives = (sData.player.total.objectives or 0) + 1
+                XToLevel.db.char.data.bgList[1].totalXP = XToLevel.db.char.data.bgList[1].totalXP + xpGained
+                XToLevel.db.char.data.bgList[1].objTotal = XToLevel.db.char.data.bgList[1].objTotal + xpGained
+                XToLevel.db.char.data.bgList[1].objCount = XToLevel.db.char.data.bgList[1].objCount + 1
+                XToLevel.db.char.data.total.objectives = (XToLevel.db.char.data.total.objectives or 0) + 1
                 return true
             else
                 return self:AddBattlegroundKill(xpGained, 'Unknown')
@@ -694,11 +694,11 @@ XToLevel.Player = {
     -- @return boolean
     ---
     AddBattlegroundKill = function(self, xpGained, name)
-        if sData.player.bgList[1].inProgress then
-            sData.player.bgList[1].totalXP = sData.player.bgList[1].totalXP + xpGained
-            sData.player.bgList[1].killCount = sData.player.bgList[1].killCount + 1
-            sData.player.bgList[1].killTotal = sData.player.bgList[1].killTotal + xpGained
-            sData.player.total.pvpKills = (sData.player.total.pvpKills or 0) + 1
+        if XToLevel.db.char.data.bgList[1].inProgress then
+            XToLevel.db.char.data.bgList[1].totalXP = XToLevel.db.char.data.bgList[1].totalXP + xpGained
+            XToLevel.db.char.data.bgList[1].killCount = XToLevel.db.char.data.bgList[1].killCount + 1
+            XToLevel.db.char.data.bgList[1].killTotal = XToLevel.db.char.data.bgList[1].killTotal + xpGained
+            XToLevel.db.char.data.total.pvpKills = (XToLevel.db.char.data.total.pvpKills or 0) + 1
         else
             console:log("Attempt to add a BG kill without starting a BG.")
         end
@@ -712,15 +712,15 @@ XToLevel.Player = {
         if self.isActive and not self:IsDungeonInProgress() then
 	        local dungeonName = GetRealZoneText()
             local dungeonDataArray = self:CreateDungeonDataArray()
-            table.insert(sData.player.dungeonList, 1, dungeonDataArray)
-            if(# sData.player.dungeonList > self.dungeonListLength) then
-                table.remove(sData.player.dungeonList)
+            table.insert(XToLevel.db.char.data.dungeonList, 1, dungeonDataArray)
+            if(# XToLevel.db.char.data.dungeonList > self.dungeonListLength) then
+                table.remove(XToLevel.db.char.data.dungeonList)
             end
             
-            sData.player.dungeonList[1].inProgress = true
-            sData.player.dungeonList[1].name = dungeonName or false
-            sData.player.dungeonList[1].level = self.level
-            console:log("Dungeon Started! (" .. tostring(sData.player.dungeonList[1].name) .. ")")
+            XToLevel.db.char.data.dungeonList[1].inProgress = true
+            XToLevel.db.char.data.dungeonList[1].name = dungeonName or false
+            XToLevel.db.char.data.dungeonList[1].level = self.level
+            console:log("Dungeon Started! (" .. tostring(XToLevel.db.char.data.dungeonList[1].name) .. ")")
             return true
 	    else
 	        console:log("Attempt to start a dungeon failed. Player either not active or already in a dungeon.")
@@ -736,15 +736,15 @@ XToLevel.Player = {
     -- @return boolean
     ---
     DungeonEnd = function(self)
-        if sData.player.dungeonList[1].inProgress == true then
-            sData.player.dungeonList[1].inProgress = false
+        if XToLevel.db.char.data.dungeonList[1].inProgress == true then
+            XToLevel.db.char.data.dungeonList[1].inProgress = false
             self:UpdateDungeonName()
-            console:log("Dungeon Ended! (" .. tostring(sData.player.dungeonList[1].name)  .. ")")
+            console:log("Dungeon Ended! (" .. tostring(XToLevel.db.char.data.dungeonList[1].name)  .. ")")
             
             self.dungeonAverage = nil
                       
-            if sData.player.dungeonList[1].totalXP == 0 then
-                table.remove(sData.player.dungeonList, 1)
+            if XToLevel.db.char.data.dungeonList[1].totalXP == 0 then
+                table.remove(XToLevel.db.char.data.dungeonList, 1)
                 console:log("Dungeon ended without any XP gain. Disregarding it.)")
                 return false
             else
@@ -762,8 +762,8 @@ XToLevel.Player = {
     -- @return boolean
     ---
     IsDungeonInProgress = function(self)
-        if # sData.player.dungeonList > 0 then
-            return sData.player.dungeonList[1].inProgress
+        if # XToLevel.db.char.data.dungeonList > 0 then
+            return XToLevel.db.char.data.dungeonList[1].inProgress
         else
             return false
         end
@@ -778,8 +778,8 @@ XToLevel.Player = {
         local inInstance, type = IsInInstance()
         if self:IsDungeonInProgress() and inInstance and type == "party" then
             local zoneName = GetRealZoneText()
-            if sData.player.dungeonList[1].name ~= zoneName then
-                sData.player.dungeonList[1].name = zoneName
+            if XToLevel.db.char.data.dungeonList[1].name ~= zoneName then
+                XToLevel.db.char.data.dungeonList[1].name = zoneName
                 console:log("Dungeon name updated (" .. tostring(zoneName) ..")")
                 return true
             else
@@ -804,13 +804,13 @@ XToLevel.Player = {
     ---
     AddDungeonKill = function(self, xpGained, name, rested)
         if self:IsDungeonInProgress() then
-            sData.player.dungeonList[1].totalXP = sData.player.dungeonList[1].totalXP + xpGained
-            sData.player.dungeonList[1].killCount = sData.player.dungeonList[1].killCount + 1
-            sData.player.dungeonList[1].killTotal = sData.player.dungeonList[1].killTotal + xpGained
+            XToLevel.db.char.data.dungeonList[1].totalXP = XToLevel.db.char.data.dungeonList[1].totalXP + xpGained
+            XToLevel.db.char.data.dungeonList[1].killCount = XToLevel.db.char.data.dungeonList[1].killCount + 1
+            XToLevel.db.char.data.dungeonList[1].killTotal = XToLevel.db.char.data.dungeonList[1].killTotal + xpGained
             if type(rested) == "number" and rested > 0 then
-            	sData.player.dungeonList[1].rested = sData.player.dungeonList[1].rested + rested
+            	XToLevel.db.char.data.dungeonList[1].rested = XToLevel.db.char.data.dungeonList[1].rested + rested
         	end
-            sData.player.total.dungeonKills = (sData.player.total.dungeonKills or 0) + 1
+            XToLevel.db.char.data.total.dungeonKills = (XToLevel.db.char.data.total.dungeonKills or 0) + 1
             self:UpdateDungeonName()
             return true
         else
@@ -944,7 +944,7 @@ XToLevel.Player = {
     
     ---
     -- Get the average XP per kill. The number of kills used is limited by the
-    -- sConfig.averageDisplay.playerKillListLength configuration directive. 
+    -- XToLevel.db.profile.averageDisplay.playerKillListLength configuration directive. 
     -- The value returned is stored in the killAverage member, so calling this 
     -- function twice only calculates the value once. If no data is avaiable, a 
     -- level based estimate  is used.
@@ -955,13 +955,13 @@ XToLevel.Player = {
     ---
 	GetAverageKillXP = function (self)
 		if self.killAverage == nil then
-			if(# sData.player.killList > 0) then
+			if(# XToLevel.db.char.data.killList > 0) then
 				local total = 0
-				local maxUsed = # sData.player.killList
-				if maxUsed > sConfig.averageDisplay.playerKillListLength then
-					maxUsed = sConfig.averageDisplay.playerKillListLength
+				local maxUsed = # XToLevel.db.char.data.killList
+				if maxUsed > XToLevel.db.profile.averageDisplay.playerKillListLength then
+					maxUsed = XToLevel.db.profile.averageDisplay.playerKillListLength
 				end
-				for index, value in ipairs(sData.player.killList) do
+				for index, value in ipairs(XToLevel.db.char.data.killList) do
 					if index > maxUsed then
 						break;
 					end
@@ -985,7 +985,7 @@ XToLevel.Player = {
 	---
 	-- Calculates the average, highest and lowest XP values recorded for kills.
 	-- The range of data used is limited by the 
-	-- sConfig.averageDisplay.playerKillListLength config directive. If no data 
+	-- XToLevel.db.profile.averageDisplay.playerKillListLength config directive. If no data 
 	-- is available, a level based estimate is used. Note that the function 
     -- applies the Recruit-A-Friend bonus when applicable but that does not 
     -- affect the actual value stored. It is applied only when the value is 
@@ -993,16 +993,16 @@ XToLevel.Player = {
     -- @return A table as : { 'average', 'high', 'low' }
 	---
 	GetKillXpRange = function (self)
-        if(# sData.player.killList > 0) then
+        if(# XToLevel.db.char.data.killList > 0) then
             self.killRange.high = 0
             self.killRange.low = 0
             self.killRange.average = 0
             local total = 0
-            local maxUsed = # sData.player.killList
-            if maxUsed > sConfig.averageDisplay.playerKillListLength then
-                maxUsed = sConfig.averageDisplay.playerKillListLength
+            local maxUsed = # XToLevel.db.char.data.killList
+            if maxUsed > XToLevel.db.profile.averageDisplay.playerKillListLength then
+                maxUsed = XToLevel.db.profile.averageDisplay.playerKillListLength
             end
-            for index, value in ipairs(sData.player.killList) do
+            for index, value in ipairs(XToLevel.db.char.data.killList) do
                 if index > maxUsed then
                     break;
                 end
@@ -1049,7 +1049,7 @@ XToLevel.Player = {
 	
 	---
     -- Get the average XP per quest. The number of quests used is limited by the
-    -- sConfig.averageDisplay.playerQuestListLength configuration directive. - 
+    -- XToLevel.db.profile.averageDisplay.playerQuestListLength configuration directive. - 
     -- The value returned is stored in the questAverage member, so calling this 
     -- function twice only calculates the value once. If no data is avaiable, 
     -- a level based estimate is used.
@@ -1060,13 +1060,13 @@ XToLevel.Player = {
     ---
 	GetAverageQuestXP = function (self)
 		if self.questAverage == nil then
-			if(# sData.player.questList > 0) then
+			if(# XToLevel.db.char.data.questList > 0) then
 				local total = 0
-				local maxUsed = # sData.player.questList
-				if maxUsed > sConfig.averageDisplay.playerQuestListLength then
-					maxUsed = sConfig.averageDisplay.playerQuestListLength
+				local maxUsed = # XToLevel.db.char.data.questList
+				if maxUsed > XToLevel.db.profile.averageDisplay.playerQuestListLength then
+					maxUsed = XToLevel.db.profile.averageDisplay.playerQuestListLength
 				end
-				for index, value in ipairs(sData.player.questList) do
+				for index, value in ipairs(XToLevel.db.char.data.questList) do
 					if index > maxUsed then
 						break;
 					end
@@ -1091,7 +1091,7 @@ XToLevel.Player = {
 	---
     -- Calculates the average, highest and lowest XP values recorded for quests.
     -- The range of data used is limited by the 
-    -- sConfig.averageDisplay.playerQuestListLength config directive. If no data 
+    -- XToLevel.db.profile.averageDisplay.playerQuestListLength config directive. If no data 
     -- is available, a level based estimate is used. Note that the function 
     -- applies the Recruit-A-Friend bonus when applicable but that does not 
     -- affect the actual value stored. It is applied only whenthe value is about 
@@ -1099,16 +1099,16 @@ XToLevel.Player = {
     -- @return A table as : { 'average', 'high', 'low' }
     ---
 	GetQuestXpRange = function (self)
-        if(# sData.player.questList > 0) then
+        if(# XToLevel.db.char.data.questList > 0) then
             self.questRange.high = 0
             self.questRange.low = 0
             self.questRange.average = 0
             local total = 0
-            local maxUsed = # sData.player.questList
-            if maxUsed > sConfig.averageDisplay.playerQuestListLength then
-                maxUsed = sConfig.averageDisplay.playerQuestListLength
+            local maxUsed = # XToLevel.db.char.data.questList
+            if maxUsed > XToLevel.db.profile.averageDisplay.playerQuestListLength then
+                maxUsed = XToLevel.db.profile.averageDisplay.playerQuestListLength
             end
-            for index, value in ipairs(sData.player.questList) do
+            for index, value in ipairs(XToLevel.db.char.data.questList) do
                 if index > maxUsed then
                     break;
                 end
@@ -1162,12 +1162,12 @@ XToLevel.Player = {
 	-- @return boolean
 	---
     HasBattlegroundData = function(self)
-        return (# sData.player.bgList > 0)
+        return (# XToLevel.db.char.data.bgList > 0)
     end,
     
     ---
     -- Get the average XP per BG. The number of BGs used is limited by the
-    -- sConfig.averageDisplay.playerBGListLength configuration directive.
+    -- XToLevel.db.profile.averageDisplay.playerBGListLength configuration directive.
     -- The value returned is stored in the bgAverage member, so calling this 
     -- function twice only calculates the value once. If no data is avaiable, 
     -- a rough level based estimate is used.
@@ -1175,20 +1175,20 @@ XToLevel.Player = {
     ---
 	GetAverageBGXP = function (self)
 		if self.bgAverage == nil then
-			if(# sData.player.bgList > 0) then
+			if(# XToLevel.db.char.data.bgList > 0) then
 				local total = 0
-				local maxUsed = # sData.player.bgList
-				if maxUsed > sConfig.averageDisplay.playerBGListLength then
-					maxUsed = sConfig.averageDisplay.playerBGListLength
+				local maxUsed = # XToLevel.db.char.data.bgList
+				if maxUsed > XToLevel.db.profile.averageDisplay.playerBGListLength then
+					maxUsed = XToLevel.db.profile.averageDisplay.playerBGListLength
 				end
 				local usedCounter = 0
-				for index, value in ipairs(sData.player.bgList) do
+				for index, value in ipairs(XToLevel.db.char.data.bgList) do
 					if usedCounter >= maxUsed then
 						break;
 					end
 					-- To compensate for the fact that levels were not recorded before 3.3.3_12r.
 					if value.level == nil then
-					   sData.player.bgList[index].level = self.level
+					   XToLevel.db.char.data.bgList[index].level = self.level
 					   value.level = self.level
 					end
 					if self.level - value.level < 5 then
@@ -1225,7 +1225,7 @@ XToLevel.Player = {
 	
 	---
     -- Get the average XP per BG objective. The number of BG objectives used is 
-    -- limited by the sConfig.averageDisplay.playerBGOListLength config directive. 
+    -- limited by the XToLevel.db.profile.averageDisplay.playerBGOListLength config directive. 
     -- The value returned is stored in the bgObjAverage member, so calling this 
     -- function twice only calculates the value once. If no data is avaiable, 
     -- a rough level based estimate is used.
@@ -1233,16 +1233,16 @@ XToLevel.Player = {
     ---
 	GetAverageBGObjectiveXP = function (self)
 		if self.bgObjAverage == nil then
-			if(# sData.player.bgList > 0) then
+			if(# XToLevel.db.char.data.bgList > 0) then
 				local total = 0
 				local count = 0
-                local maxcount = sConfig.averageDisplay.playerBGOListLength
-				for index, value in ipairs(sData.player.bgList) do
+                local maxcount = XToLevel.db.profile.averageDisplay.playerBGOListLength
+				for index, value in ipairs(XToLevel.db.char.data.bgList) do
                     if count >= maxcount then
                         break
                     end
                     if value.level == nil then
-                        sData.player.bgList[index].level = self.level
+                        XToLevel.db.char.data.bgList[index].level = self.level
                         value.level = self.level
                     end
 					if (value.objTotal > 0) and (value.objCount > 0) and (self.level - value.level < 5) then
@@ -1282,12 +1282,12 @@ XToLevel.Player = {
 	-- @return A { 'name' = count, ... } table on success or nil if no data exists.
 	---
 	GetBattlegroundsListed = function (self)
-        if(# sData.player.bgList > 0) then
+        if(# XToLevel.db.char.data.bgList > 0) then
             local count = 0
-            for index, value in ipairs(sData.player.bgList) do
+            for index, value in ipairs(XToLevel.db.char.data.bgList) do
                 if value.level == nil then
                     value.level = self.level
-                    sData.player.bgList[index].level = self.level
+                    XToLevel.db.char.data.bgList[index].level = self.level
                 end
                 if self.level - value.level < 5 and value.totalXP > 0 and not value.inProgress then
                     self.bgList[value.name] = (self.bgList[value.name] or 0) + 1
@@ -1306,22 +1306,22 @@ XToLevel.Player = {
 	
 	---
 	-- Returns the average XP for the given battleground. The data is limited by
-	-- the sConfig.averageDisplay.playerBGListLength config directive. Note that
+	-- the XToLevel.db.profile.averageDisplay.playerBGListLength config directive. Note that
 	-- battlegrounds currently in progress will not be counted.
 	-- @param name The name of the battleground to be used.
 	-- @return A number. If the database has no entries, it returns 0.
 	---
 	GetBattlegroundAverage = function(self, name)
-		if(# sData.player.bgList > 0) then
+		if(# XToLevel.db.char.data.bgList > 0) then
 			local total = 0
 			local count = 0
-            local maxcount = sConfig.averageDisplay.playerBGListLength
-			for index, value in ipairs(sData.player.bgList) do
+            local maxcount = XToLevel.db.profile.averageDisplay.playerBGListLength
+			for index, value in ipairs(XToLevel.db.char.data.bgList) do
                 if count >= maxcount then
                     break
                 end
                 if value.level == nil then
-                    sData.player.bgList[index].level = self.level
+                    XToLevel.db.char.data.bgList[index].level = self.level
                     value.level = self.level
                 end
 				if value.name == name and not value.inProgress and (self.level - value.level < 5) then
@@ -1345,11 +1345,11 @@ XToLevel.Player = {
 	--         battlegrounds have been recorded yet.
 	---
 	GetLatestBattlegroundDetails = function(self)
-		if # sData.player.bgList > 0 then
+		if # XToLevel.db.char.data.bgList > 0 then
 			-- Make sure to get the latest BG in a 5 level range.
 			local bgIndex = nil
-			for index, value in ipairs(sData.player.bgList[1]) do
-				if XToLevel.Player.level - sData.player.bgList[index].level < 5 then
+			for index, value in ipairs(XToLevel.db.char.data.bgList[1]) do
+				if XToLevel.Player.level - XToLevel.db.char.data.bgList[index].level < 5 then
 					bgIndex = index
 					break
 				end
@@ -1357,18 +1357,18 @@ XToLevel.Player = {
 			if not bgIndex then
 				return nil
 			else
-	            self.latestBgData.totalXP = sData.player.bgList[1].totalXP
-	            self.latestBgData.objCount = sData.player.bgList[1].objCount
-	            self.latestBgData.killCount = sData.player.bgList[1].killCount
+	            self.latestBgData.totalXP = XToLevel.db.char.data.bgList[1].totalXP
+	            self.latestBgData.objCount = XToLevel.db.char.data.bgList[1].objCount
+	            self.latestBgData.killCount = XToLevel.db.char.data.bgList[1].killCount
 	            self.latestBgData.xpPerObj = 0
 	            self.latestBgData.xpPerKill = 0
-	            self.latestBgData.otherXP = sData.player.bgList[1].totalXP - (sData.player.bgList[1].objTotal + sData.player.bgList[1].killTotal)
+	            self.latestBgData.otherXP = XToLevel.db.char.data.bgList[1].totalXP - (XToLevel.db.char.data.bgList[1].objTotal + XToLevel.db.char.data.bgList[1].killTotal)
 				
 				if self.latestBgData.objCount > 0 then
-					self.latestBgData.xpPerObj = XToLevel.Lib:round(sData.player.bgList[1].objTotal / self.latestBgData.objCount, 0)
+					self.latestBgData.xpPerObj = XToLevel.Lib:round(XToLevel.db.char.data.bgList[1].objTotal / self.latestBgData.objCount, 0)
 				end
 				if self.latestBgData.killCount > 0 then
-					self.latestBgData.xpPerKill = XToLevel.Lib:round(sData.player.bgList[1].killTotal / self.latestBgData.killCount, 0)
+					self.latestBgData.xpPerKill = XToLevel.Lib:round(XToLevel.db.char.data.bgList[1].killTotal / self.latestBgData.killCount, 0)
 				end
 				
 				return self.latestBgData
@@ -1383,12 +1383,12 @@ XToLevel.Player = {
     -- @return boolean
     ---
 	HasDungeonData = function(self)
-        return (# sData.player.dungeonList > 0)
+        return (# XToLevel.db.char.data.dungeonList > 0)
     end,
     
     ---
     -- Get the average XP per dungeon. The number of dungeons used is limited by
-    -- the sConfig.averageDisplay.playerDungeonListLength configuration directive.
+    -- the XToLevel.db.profile.averageDisplay.playerDungeonListLength configuration directive.
     -- The value returned is stored in the dungeonAverage member, so calling  
     -- this function twice only calculates the value once. If no data is, 
     -- avaiable a rough level based estimate is used.
@@ -1396,20 +1396,20 @@ XToLevel.Player = {
     ---
 	GetAverageDungeonXP = function (self)
         if self.dungeonAverage == nil then
-            if(# sData.player.dungeonList > 0) and not ((# sData.player.dungeonList == 1) and sData.player.dungeonList[1].inProgress) then
+            if(# XToLevel.db.char.data.dungeonList > 0) and not ((# XToLevel.db.char.data.dungeonList == 1) and XToLevel.db.char.data.dungeonList[1].inProgress) then
                 local total = 0
-                local maxUsed = # sData.player.dungeonList
-                if maxUsed > sConfig.averageDisplay.playerDungeonListLength then
-                    maxUsed = sConfig.averageDisplay.playerDungeonListLength
+                local maxUsed = # XToLevel.db.char.data.dungeonList
+                if maxUsed > XToLevel.db.profile.averageDisplay.playerDungeonListLength then
+                    maxUsed = XToLevel.db.profile.averageDisplay.playerDungeonListLength
                 end
                 local usedCounter = 0
-                for index, value in ipairs(sData.player.dungeonList) do
+                for index, value in ipairs(XToLevel.db.char.data.dungeonList) do
                     if usedCounter >= maxUsed then
                         break;
                     end
                     -- To compensate for the fact that levels were not recorded before 3.3.3_12r.
                     if value.level == nil then
-                        sData.player.dungeonList[index].level = self.level
+                        XToLevel.db.char.data.dungeonList[index].level = self.level
                         value.level = self.level
                     end
                     if self.level - value.level < 5 then
@@ -1448,15 +1448,15 @@ XToLevel.Player = {
     -- @return A { 'name' = count, ... } table on success or nil if no data exists.
     ---
     GetDungeonsListed = function (self)
-        if # sData.player.dungeonList > 0 then
+        if # XToLevel.db.char.data.dungeonList > 0 then
             -- Clear list in a memory efficient way.
             for index, value in pairs(self.dungeonList) do
                 self.dungeonList[index] = 0
             end
             local count = 0
-            for index, value in ipairs(sData.player.dungeonList) do
+            for index, value in ipairs(XToLevel.db.char.data.dungeonList) do
                 if value.level == nil then
-                    sData.player.dungeonList[index].level = self.level
+                    XToLevel.db.char.data.dungeonList[index].level = self.level
                     value.level = self.level
                 end
                 if self.level - value.level < 5 and value.totalXP > 0 and not value.inProgress then
@@ -1476,22 +1476,22 @@ XToLevel.Player = {
     
     ---
     -- Returns the average XP for the given dungeon. The data is limited by
-    -- the sConfig.averageDisplay.playerDungeonListLength config directive. Note
+    -- the XToLevel.db.profile.averageDisplay.playerDungeonListLength config directive. Note
     -- that dungeons currently in progress will not be counted.
     -- @param name The name of the dungeon to be used.
     -- @return A number. If the database has no entries, it returns 0.
     ---
     GetDungeonAverage = function(self, name)
-        if(# sData.player.dungeonList > 0) then
+        if(# XToLevel.db.char.data.dungeonList > 0) then
             local total = 0
             local count = 0
-            local maxcount = sConfig.averageDisplay.playerDungeonListLength
-            for index, value in ipairs(sData.player.dungeonList) do
+            local maxcount = XToLevel.db.profile.averageDisplay.playerDungeonListLength
+            for index, value in ipairs(XToLevel.db.char.data.dungeonList) do
                 if count >= maxcount then
                     break
                 end
                 if value.level == nil then
-                    sData.player.dungeonList[index].level = self.level
+                    XToLevel.db.char.data.dungeonList[index].level = self.level
                     value.level = self.level
                 end
                 if value.name == name and not value.inProgress and (self.level - value.level < 5) then
@@ -1515,14 +1515,14 @@ XToLevel.Player = {
     --         no battlegrounds have been recorded yet.
     ---
     GetLatestDungeonDetails = function(self)
-        if # sData.player.dungeonList > 0 then
-            self.latestDungeonData.totalXP = sData.player.dungeonList[1].totalXP
-            self.latestDungeonData.killCount = sData.player.dungeonList[1].killCount
+        if # XToLevel.db.char.data.dungeonList > 0 then
+            self.latestDungeonData.totalXP = XToLevel.db.char.data.dungeonList[1].totalXP
+            self.latestDungeonData.killCount = XToLevel.db.char.data.dungeonList[1].killCount
             self.latestDungeonData.xpPerKill = 0
-            self.latestDungeonData.rested = sData.player.dungeonList[1].rested
-            self.latestDungeonData.otherXP = sData.player.dungeonList[1].totalXP - sData.player.dungeonList[1].killTotal          
+            self.latestDungeonData.rested = XToLevel.db.char.data.dungeonList[1].rested
+            self.latestDungeonData.otherXP = XToLevel.db.char.data.dungeonList[1].totalXP - XToLevel.db.char.data.dungeonList[1].killTotal          
             if self.latestDungeonData.killCount > 0 then
-                self.latestDungeonData.xpPerKill = XToLevel.Lib:round(sData.player.dungeonList[1].killTotal / self.latestDungeonData.killCount, 0)
+                self.latestDungeonData.xpPerKill = XToLevel.Lib:round(XToLevel.db.char.data.dungeonList[1].killTotal / self.latestDungeonData.killCount, 0)
             end
             
             return self.latestDungeonData
@@ -1536,10 +1536,10 @@ XToLevel.Player = {
 	-- entry with that value is added.
 	-- @param initalValue The inital value for the list. [optional]
 	ClearKills = function (self, initialValue)
-		sData.player.killList = { }
+		XToLevel.db.char.data.killList = { }
         self.killAverage = nil;
         if initialValue ~= nil and tonumber(initialValue) > 0 then
-            table.insert(sData.player.killList, {mob='Initial', xp=tonumber(initialValue)})
+            table.insert(XToLevel.db.char.data.killList, {mob='Initial', xp=tonumber(initialValue)})
         end
 	end,
 	
@@ -1548,10 +1548,10 @@ XToLevel.Player = {
     -- entry with that value is added.
     -- @param initalValue The inital value for the list. [optional]
 	ClearQuests = function (self, initialValue)
-		sData.player.questList = { }
+		XToLevel.db.char.data.questList = { }
         self.questAverage = nil;
         if initialValue ~= nil and tonumber(initialValue) > 0 then
-            table.insert(sData.player.questList, tonumber(initialValue))
+            table.insert(XToLevel.db.char.data.questList, tonumber(initialValue))
 		end
 	end,
 	
@@ -1560,11 +1560,11 @@ XToLevel.Player = {
     -- entry with that value is added.
     -- @param initalValue The inital value for the list. [optional]
 	ClearBattlegrounds = function(self, initialValue)
-		sData.player.bgList = { }
+		XToLevel.db.char.data.bgList = { }
         self.bgAverage = nil;
         self.bgObjAverage = nil;
         if initialValue ~= nil and tonumber(initialValue) > 0 then
-            table.insert(sData.player.bgList, tonumber(initialValue))
+            table.insert(XToLevel.db.char.data.bgList, tonumber(initialValue))
 		end
 	end,
 	
@@ -1572,7 +1572,7 @@ XToLevel.Player = {
     -- Clears the dungeon list. If the initialValue parameter is passed, a 
     -- single entry with that value is added.
 	ClearDungeonList = function(self, initialValue)
-        sData.player.dungeonList = { }
+        XToLevel.db.char.data.dungeonList = { }
         self.dungeonAverage = nil;
         
         local inInstance, type = IsInInstance()
@@ -1597,7 +1597,7 @@ XToLevel.Player = {
     ---
     -- Sets the number of kills used for average calculations
     SetKillAverageLength = function(self, newValue)
-    	sConfig.averageDisplay.playerKillListLength = newValue
+    	XToLevel.db.profile.averageDisplay.playerKillListLength = newValue
     	self.killAverage = nil
     	XToLevel.Average:Update()
     	XToLevel.LDB:BuildPattern()
@@ -1607,7 +1607,7 @@ XToLevel.Player = {
     ---
     -- Sets the number of kills used for average calculations
     SetQuestAverageLength = function(self, newValue)
-    	sConfig.averageDisplay.playerQuestListLength = newValue
+    	XToLevel.db.profile.averageDisplay.playerQuestListLength = newValue
     	self.questAverage = nil
     	XToLevel.Average:Update()
     	XToLevel.LDB:BuildPattern()
@@ -1617,7 +1617,7 @@ XToLevel.Player = {
     ---
     -- Sets the number of kills used for average calculations
     SetBattleAverageLength = function(self, newValue)
-    	sConfig.averageDisplay.playerBGListLength = newValue
+    	XToLevel.db.profile.averageDisplay.playerBGListLength = newValue
     	self.bgAverage = nil
     	XToLevel.Average:Update()
     	XToLevel.LDB:BuildPattern()
@@ -1627,7 +1627,7 @@ XToLevel.Player = {
     ---
     -- Sets the number of kills used for average calculations
     SetObjectiveAverageLength = function(self, newValue)
-    	sConfig.averageDisplay.playerBGOListLength = newValue
+    	XToLevel.db.profile.averageDisplay.playerBGOListLength = newValue
     	self.bgObjAverage = nil
     	XToLevel.Average:Update()
     	XToLevel.LDB:BuildPattern()
@@ -1637,7 +1637,7 @@ XToLevel.Player = {
     ---
     -- Sets the number of kills used for average calculations
     SetDungeonAverageLength = function(self, newValue)
-    	sConfig.averageDisplay.playerDungeonListLength = newValue
+    	XToLevel.db.profile.averageDisplay.playerDungeonListLength = newValue
     	self.dungeonAverage = nil
     	XToLevel.Average:Update()
     	XToLevel.LDB:BuildPattern()

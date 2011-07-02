@@ -215,15 +215,20 @@ function XToLevel:OnPlayerLogin()
         XToLevel:Unload()
         return false;
     end
+    
+    self.db = LibStub("AceDB-3.0"):New("XToLevelDB", self.Config:GetDefault(), true)
+    self.db:SetProfile("Default")
+    XToLevel.Config:Verify()
+
+    print("#" .. tostring(# self.db.char.data.killList))
 
     self:RegisterEvents()
-    XToLevel.Config:Verify()
     
-    L = LOCALE[sConfig.general.displayLocale]
+    L = LOCALE[XToLevel.db.profile.general.displayLocale]
     if L == nil then
-        console:log("Attempted to load unknow locale '" .. tostring(sConfig.general.displayLocale) .."'. Falling back on 'enUS'.")
+        console:log("Attempted to load unknow locale '" .. tostring(XToLevel.db.profile.general.displayLocale) .."'. Falling back on 'enUS'.")
         L = LOCALE["enUS"]
-        sConfig.general.displayLocale = "enUS"
+        XToLevel.db.profile.general.displayLocale = "enUS"
         if L == nil then
             XToLevel.Messages:Print("|cFFaaaaaaXToLevel - |r|cFFFF5533Fatal error:|r Locale files not found. (Try re-installing the addon.)")
             return;
@@ -231,7 +236,7 @@ function XToLevel:OnPlayerLogin()
     end
     LOCALE = nil -- Removing the extra locale tables. They'r just a waste of memory.
     
-    XToLevel.Player:Initialize(sData.player.killAverage, sData.player.questAverage)
+    XToLevel.Player:Initialize(XToLevel.db.char.data.killAverage, XToLevel.db.char.data.questAverage)
     XToLevel.Config:Initialize()
     
     self.timer:ScheduleTimer(XToLevel.TimePlayedTriggerCallback, 2)
@@ -343,23 +348,23 @@ function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassifi
     end
     
     -- Make sure the tables exist
-    if type(sData.player.npcXP) ~= "table" then
-        sData.player.npcXP = { }
+    if type(XToLevel.db.char.data.npcXP) ~= "table" then
+        XToLevel.db.char.data.npcXP = { }
     end
-    if sData.player.npcXP[playerLevel] == nil then
-        sData.player.npcXP[playerLevel] = { }
+    if XToLevel.db.char.data.npcXP[playerLevel] == nil then
+        XToLevel.db.char.data.npcXP[playerLevel] = { }
     end
-    if sData.player.npcXP[playerLevel][mobLevel] == nil then
-        sData.player.npcXP[playerLevel][mobLevel] = { }
+    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel] == nil then
+        XToLevel.db.char.data.npcXP[playerLevel][mobLevel] = { }
     end
-    if sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] == nil then
-        sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] = { }
+    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] == nil then
+        XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] = { }
     end
     
     -- Add the data
     local alreadyRecorded = false
-    if # sData.player.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
-        for i, v in ipairs(sData.player.npcXP[playerLevel][mobLevel][mobClassIndex]) do
+    if # XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
+        for i, v in ipairs(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex]) do
             if v == xp then
                 alreadyRecorded = true
             end
@@ -367,7 +372,7 @@ function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassifi
     end
     
     if not alreadyRecorded then
-        table.insert(sData.player.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
+        table.insert(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
     end
 end
 
@@ -428,10 +433,10 @@ function XToLevel:OnChatXPGain(message)
 	end
 	
 	-- Update the timer total
-	if sConfig.timer.enabled then
+	if XToLevel.db.profile.timer.enabled then
 		-- TODO: Figure out a way to work rested kills into the timer without breaking everything!
 		--local unrestedXP = XToLevel.Player:GetUnrestedXP(xp)
-		sData.player.timer.total = sData.player.timer.total + xp
+		XToLevel.db.char.data.timer.total = XToLevel.db.char.data.timer.total + xp
 	end
     
     -- See if it is a kill or a quest (no mob name means it is a quest or BG objective.)
@@ -455,8 +460,8 @@ function XToLevel:OnChatXPGain(message)
                 targetUpdatePending = unrestedXP;
             end
             
-			-- sConfig.messages.bgObjectives ???
-			if sConfig.messages.playerFloating or sConfig.messages.playerChat then
+			-- XToLevel.db.profile.messages.bgObjectives ???
+			if XToLevel.db.profile.messages.playerFloating or XToLevel.db.profile.messages.playerChat then
 				local killsRequired = XToLevel.Player:GetKillsRequired(unrestedXP)
 				if killsRequired > 0 then
 					XToLevel.Messages.Floating:PrintKill(mobName, ceil(killsRequired / ( (XToLevel.Lib:IsRafApplied() and 3) or 1 )))
@@ -486,7 +491,7 @@ function XToLevel:OnChatXPGain(message)
             --  events, so there *may* be a problem in high latency situations.)
             if isQuest then
                 XToLevel.Player:AddQuest(xp)
-                if sConfig.messages.playerFloating or sConfig.messages.playerChat then
+                if XToLevel.db.profile.messages.playerFloating or XToLevel.db.profile.messages.playerChat then
                     local questsRequired = XToLevel.Player:GetQuestsRequired(xp)
                     if questsRequired > 0 then
                         XToLevel.Messages.Floating:PrintQuest( ceil(questsRequired / ( (XToLevel.Lib:IsRafApplied() and 3) or 1 )) )
@@ -542,8 +547,8 @@ function XToLevel:OnPlayerXPUpdate()
     XToLevel.LDB:BuildPattern();
 	XToLevel.LDB:Update()
     
-    sData.player.killAverage = XToLevel.Player:GetAverageKillXP()
-    sData.player.questAverage = XToLevel.Player:GetAverageQuestXP()
+    XToLevel.db.char.data.killAverage = XToLevel.Player:GetAverageKillXP()
+    XToLevel.db.char.data.questAverage = XToLevel.Player:GetAverageQuestXP()
 end
 
 --------------------------------------------------------------------------------
@@ -590,11 +595,11 @@ function XToLevel:PlayerLeavingInstance(force)
         
         if success and XToLevel.Player.isActive then
             local remaining = XToLevel.Player.maxXP - XToLevel.Player.currentXP;
-            local lastTotalXP = sData.player.dungeonList[1].totalXP
+            local lastTotalXP = XToLevel.db.char.data.dungeonList[1].totalXP
             local dungeonsRemaning = XToLevel.Player:GetKillsRequired(lastTotalXP)
             
             if dungeonsRemaning > 0 then
-                local name = sData.player.dungeonList[1].name
+                local name = XToLevel.db.char.data.dungeonList[1].name
                 XToLevel.Messages.Floating:PrintDungeon(dungeonsRemaning)
 	            XToLevel.Messages.Chat:PrintDungeon(dungeonsRemaning)
 	            XToLevel.Average:Update()
@@ -626,7 +631,7 @@ function XToLevel:OnPlayerEnteringWorld()
 	    -- making IsInBattleground return a false negative when actually in bg.
 		if XToLevel.Player:IsBattlegroundInProgress() and not XToLevel.Lib:IsInBattleground() then
 			if XToLevel.Player.isActive then
-				local bgsRequired = XToLevel.Player:GetQuestsRequired(sData.player.bgList[1].totalXP)
+				local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
 				XToLevel.Player:BattlegroundEnd()
 				XToLevel.Average:Update()
 		        XToLevel.LDB:BuildPattern();
@@ -692,15 +697,15 @@ end
 -- left the BG are and the BG in progress is stopped.
 function XToLevel:OnAreaChanged()
 	if XToLevel.Player:IsBattlegroundInProgress() and XToLevel.Player.isActive then
-		local oldZone = sData.player.bgList[1].name
+		local oldZone = XToLevel.db.char.data.bgList[1].name
 		local newZone = GetRealZoneText()
 		if oldZone == false then
-			sData.player.bgList[1].name = newZone
+			XToLevel.db.char.data.bgList[1].name = newZone
 			console:log(" - BG name set. ")
 		else
             if oldZone ~= newZone then
 			    console:log(" - BG names don't match (" .. oldZone .." vs " .. newZone ..").")
-                local bgsRequired = XToLevel.Player:GetQuestsRequired(sData.player.bgList[1].totalXP)
+                local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
                 XToLevel.Player:BattlegroundEnd()
                 XToLevel.Average:Update()
                 XToLevel.LDB:BuildPattern();
@@ -784,7 +789,7 @@ function XToLevel:OnSlashCommand(arg1)
         XToLevel.LDB:Update()
 	elseif arg1 == "dlist" then
         console:log("-- Dungeon list--")
-        for index, data in ipairs(sData.player.dungeonList) do
+        for index, data in ipairs(XToLevel.db.char.data.dungeonList) do
             console:log("#" .. tostring(index))
             console:log("  inProgress: ".. tostring(data.inProgress))
             console:log("  name: ".. tostring(data.name))
@@ -796,7 +801,7 @@ function XToLevel:OnSlashCommand(arg1)
         end
     elseif arg1 == "blist" then
         console:log("-- BG list--")
-        for index, data in ipairs(sData.player.bgList) do
+        for index, data in ipairs(XToLevel.db.char.data.bgList) do
             console:log("#" .. tostring(index))
             console:log("  inProgress: ".. tostring(data.inProgress))
             console:log("  name: ".. tostring(data.name))
@@ -806,15 +811,15 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("  killTotal: ".. tostring(data.killTotal))
         end
     elseif arg1 == "glist" then
-		for action, actionTable in pairs(sData.player.gathering) do
+		for action, actionTable in pairs(XToLevel.db.char.data.gathering) do
             console:log("-- " .. tostring(action) .. " -- ")
             for i, row in pairs(actionTable) do
                 console:log(" " .. tostring(row["target"]) .. ", l:" .. tostring(row["level"]) .. ", xp:" .. tostring(row["xp"]) .. ", z:" .. tostring(row["zoneID"]) .. ", x" .. tostring(row["count"]));
             end
         end
     elseif arg1 == "debug" then
-        if type(sData.player.npcXP) == "table" then
-            for playerLevel, playerData in pairs(sData.player.npcXP) do
+        if type(XToLevel.db.char.data.npcXP) == "table" then
+            for playerLevel, playerData in pairs(XToLevel.db.char.data.npcXP) do
                 console:log(playerLevel .. ": ");
                 for mobLevel, mobData in pairs(playerData) do
                     console:log("  " .. mobLevel .. ": ")

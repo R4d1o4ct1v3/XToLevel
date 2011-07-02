@@ -215,7 +215,7 @@ end
 -- Determines whether the Recruit A Friend bonus should be applied.
 ---
 function XToLevel.Lib:IsRafApplied()
-    return sConfig.general.rafEnabled and self:IsPlayerRafEligable();
+    return XToLevel.db.profile.general.rafEnabled and self:IsPlayerRafEligable();
 end
 
 ---
@@ -244,12 +244,12 @@ function XToLevel.Lib:IsInBattleground()
 end
 
 function XToLevel.Lib:ShowBattlegroundData()
-	return ((sConfig.ldb.tooltip.showBGInfo and XToLevel.Player.level >= 10) and (XToLevel.Player.level < XToLevel.Player.maxLevel or (# sData.player.bgList) > 0))
+	return ((XToLevel.db.profile.ldb.tooltip.showBGInfo and XToLevel.Player.level >= 10) and (XToLevel.Player.level < XToLevel.Player.maxLevel or (# XToLevel.db.char.data.bgList) > 0))
 
 end
 
 function XToLevel.Lib:ShowDungeonData()
-    return ((sConfig.ldb.tooltip.showDungeonInfo) and (XToLevel.Player.level < XToLevel.Player.maxLevel or (# sData.player.dungeonList) > 0))
+    return ((XToLevel.db.profile.ldb.tooltip.showDungeonInfo) and (XToLevel.Player.level < XToLevel.Player.maxLevel or (# XToLevel.db.char.data.dungeonList) > 0))
 end
 
 ---
@@ -269,9 +269,9 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
     if type(charLevel) ~= "number" then charLevel = UnitLevel("player") end
     if type(mobLevel) ~= "number" then mobLevel = charLevel end
     
-    if type(sData.player.npcXP[charLevel]) == "table" and type(sData.player.npcXP[charLevel][mobLevel]) == "table" and type(sData.player.npcXP[charLevel][mobLevel][mobClassIndex]) == "table" and # sData.player.npcXP[charLevel][mobLevel][mobClassIndex] > 0 then
+    if type(XToLevel.db.char.data.npcXP[charLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) == "table" and # XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex] > 0 then
         local high = 0
-        for i, v in ipairs(sData.player.npcXP[charLevel][mobLevel][mobClassIndex]) do
+        for i, v in ipairs(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) do
             if v > high then high = v end
         end
         return high;

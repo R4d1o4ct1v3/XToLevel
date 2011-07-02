@@ -61,14 +61,14 @@ XToLevel.AverageFrameAPI["Classic"] =
     
     --- Displays the tooltip next to the window.
     ShowTooltip = function(self, mode)
-        if not self.isMoving and sConfig.averageDisplay.tooltip then
-	        local footer = (sConfig.general.allowSettingsClick and L['Right Click To Configure']) or nil
+        if not self.isMoving and XToLevel.db.profile.averageDisplay.tooltip then
+	        local footer = (XToLevel.db.profile.general.allowSettingsClick and L['Right Click To Configure']) or nil
 	        local childPoint, parentFrame, parentPoint = XToLevel.Lib:FindAnchor(self.window);
 	        
             if parentPoint ~= "TOP" and parentPoint ~= "BOTTOM" then
 				parentPoint = XToLevel.Lib:ReverseAnchor(parentPoint)
 	        end
-	        if sConfig.averageDisplay.combineTooltip then
+	        if XToLevel.db.profile.averageDisplay.combineTooltip then
 	            XToLevel.Tooltip:Show(self.window, childPoint, parentFrame, parentPoint, footer);
             else
                 XToLevel.Tooltip:Show(self.window, childPoint, parentFrame, parentPoint, footer, mode);
@@ -88,7 +88,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     
     --- Starts moving the frame
     StartDrag = function(self)
-        if not self.isMoving and sConfig.general.allowDrag then
+        if not self.isMoving and XToLevel.db.profile.general.allowDrag then
             self.window:StartMoving();
             self:HideTooltip()
             self.isMoving = true
@@ -109,12 +109,12 @@ XToLevel.AverageFrameAPI["Classic"] =
     -- Updates the LAYOUT of the frame.
     -- NOTE! This does NOT updated the values of the frames, only the positions.
     Update = function(self)
-        if sConfig.averageDisplay.mode == 2 then
+        if XToLevel.db.profile.averageDisplay.mode == 2 then
             XToLevel_AverageFrame_Classic:Show()
-            XToLevel_AverageFrame_Classic:SetScale(sConfig.averageDisplay.scale)
+            XToLevel_AverageFrame_Classic:SetScale(XToLevel.db.profile.averageDisplay.scale)
             
             -- Show or hide the backrop
-            if sConfig.averageDisplay.backdrop then
+            if XToLevel.db.profile.averageDisplay.backdrop then
                 self.window:SetBackdrop(self.backdrop);
                 self.window:SetBackdropColor("0.0", "0.75", "0.5", "0.75");
                 self.window:SetBackdropBorderColor("0.0", "0.0", "0.0", "1.0");
@@ -133,7 +133,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     ---
     -- Updates which lines should be visible.
     UpdateLineVisibility = function(self)
-        if sConfig.averageDisplay.header then
+        if XToLevel.db.profile.averageDisplay.header then
             self.lines.header:Show()
         end
         
@@ -160,7 +160,7 @@ XToLevel.AverageFrameAPI["Classic"] =
             self.lines.playerBGOs:Show()
         end
         
-        if XToLevel.Player.isActive and sConfig.averageDisplay.progress then
+        if XToLevel.Player.isActive and XToLevel.db.profile.averageDisplay.progress then
             self.lines.playerProgress:Show()
         else
             self.lines.playerProgress:Hide()
@@ -187,7 +187,7 @@ XToLevel.AverageFrameAPI["Classic"] =
             local elem = value.elem
             
             elem:ClearAllPoints()
-            if sConfig.averageDisplay[name] and elem:IsShown() then
+            if XToLevel.db.profile.averageDisplay[name] and elem:IsShown() then
                 -- Clear text indent if the previous element was in the same group
                 if nextAnchor.group == elem.group then
                     nextMarginH = 0
@@ -254,7 +254,7 @@ XToLevel.AverageFrameAPI["Classic"] =
         self.lines[lineName]:SetScript("OnMouseDown", function() self:StartDrag() end)
         self.lines[lineName]:SetScript("OnMouseUp", function(_, button) 
             self:StopDrag()
-            if button == "RightButton" and sConfig.general.allowSettingsClick then
+            if button == "RightButton" and XToLevel.db.profile.general.allowSettingsClick then
                 XToLevel.Config:Open("window")
             end
         end)
@@ -279,9 +279,9 @@ XToLevel.AverageFrameAPI["Classic"] =
             
             if color ~= nil then
                 local playerProgressColor = XToLevel.Lib:GetProgressColor(XToLevel.Player:GetProgressAsPercentage())
-                self.lines[lineName].text:SetText("|cFF".. self.labelColor .. tostring((sConfig.averageDisplay.verbose and L[labelName]) or L[labelName .. " Short"]) .. ':|r |cFF'.. color .. tostring(value) .."|r")
+                self.lines[lineName].text:SetText("|cFF".. self.labelColor .. tostring((XToLevel.db.profile.averageDisplay.verbose and L[labelName]) or L[labelName .. " Short"]) .. ':|r |cFF'.. color .. tostring(value) .."|r")
             else
-                self.lines[lineName].text:SetText(((sConfig.averageDisplay.verbose and L[labelName]) or L[labelName .. " Short"]) .. ': ' .. tostring(value))
+                self.lines[lineName].text:SetText(((XToLevel.db.profile.averageDisplay.verbose and L[labelName]) or L[labelName .. " Short"]) .. ': ' .. tostring(value))
             end
             self.lines[lineName]:SetHeight(self.lines[lineName].text:GetHeight())
             self.lines[lineName]:SetWidth(self.lines[lineName].text:GetWidth())
@@ -298,7 +298,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     ---
     -- function description
     GetTextColor = function(self, type)
-        if sConfig.averageDisplay.colorText then
+        if XToLevel.db.profile.averageDisplay.colorText then
             if type == "player" then
                 return XToLevel.Lib:GetProgressColor(XToLevel.Player:GetProgressAsPercentage());
             else
@@ -338,7 +338,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     --- Sets the value for the progress bar.
     -- Changes both the progress bar and the text.
     SetProgress = function(self, percent)
-        if sConfig.averageDisplay.progressAsBars then
+        if XToLevel.db.profile.averageDisplay.progressAsBars then
             local barsRemaining = XToLevel.Player:GetProgressAsBars()
             self:WriteToLine("playerProgress", "XP Bars", barsRemaining .. " " .. L["Bars"], self:GetTextColor("player")) 
         else 

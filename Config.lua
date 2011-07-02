@@ -8,134 +8,6 @@
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
 
 -- ----------------------------------------------------------------------------
--- Permanent config and data storage setup.
--- ----------------------------------------------------------------------------
-
----
--- Per-char configuration table.
--- @class table
-sConfig = {
-    general = {
-		allowDrag = true,
-		allowSettingsClick = true,
-		displayLocale = nil,
-		showDebug = false,
-	    rafEnabled = false,
-		showNpcTooltipData = true,
-	},
-    messages = {
-		playerFloating = true,
-		playerChat = false,
-		bgObjectives = true,
-		colors = {
-			playerKill = {0.72, 1, 0.71, 1},
-			playerQuest = {0.5, 1, 0.7, 1},
-			playerBattleground = {1, 0.5, 0.5, 1},
-			playerDungeon = {1, 0.75, 0.35, 1},
-			playerLevel = {0.35, 1, 0.35, 1},
-		},
-	},
-    averageDisplay = {
-		visible = true,
-		mode = 1, -- 1 = Blocky, 2 = Classic
-        scale = 1.0,
-		backdrop = true,
-		verbose = true,
-		colorText = true,
-        header = true,
-		tooltip = true,
-		combineTooltip = false,
-		orientation = 'v',
-		playerKills = true,
-		playerQuests = true,
-		playerDungeons = true,
-		playerBGs = true,
-		playerBGOs = false,
-        playerGathering = true,
-		playerProgress = true,
-		playerTimer = true,
-		progress = true, -- Duplicate?
-		progressAsBars = false,
-		playerKillListLength = 10,
-		playerQuestListLength = 10,
-		playerBGListLength = 15,
-		playerBGOListLength = 15,
-		playerDungeonListLength = 15,
-        guildProgress = true,
-        guildProgressType = 1, -- 1 = Level, 2 = Daily, (3 = Overall... maybe later)
-	},
-	ldb = {
-        enabled = true,
-		allowTextColor = true,
-		showIcon = true,
-		showLabel = false,
-		showText = true,
-		textPattern = "default",
-		text = {
-			kills = true,
-			quests = true,
-			dungeons = true,
-			bgs = true,
-			bgo = false,
-			xp = true,
-			xpnum = true,
-			xpnumFormat = true,
-			xpAsBars = false,
-			xpCountdown = false,
-			timer = true,
-            guildxp = true,
-            guilddaily = true,
-			colorValues = true,
-			verbose = true,
-			rested = true,
-			restedp = true,
-		},
-		tooltip = {
-			showDetails = true,
-			showExperience = true,
-			showBGInfo = true,
-			showDungeonInfo = true,
-			showTimerInfo = true,
-            showGatheringInfo = true,
-            showGuildInfo = true,
-		}
-	},
-	timer = {
-		enabled = true,
-		mode = 1, -- 1 = session, 2 = level, 3 = kill range (3 is not implemented yet!)
-		allowLevelFallback = true,
-        -- The time the session data will remain after the UI is unloaded, in minutes.
-        sessionDataTimeout = 5.0, 
-	}
-}
-sData = {
-	player = {
-        total = {
-            startedRecording = time(),
-            mobKills = 0,
-            dungeonKills = 0,
-            pvpKills = 0,
-            quests = 0,
-            objectives = 0
-        },
-		killAverage = 0,
-		questAverage = 0,
-		killList = {},
-		questList = {},
-		bgList = {},
-		dungeonList = {},
-		timer = {
-			start = nil,
-			total = nil,
-			xpPerSec = nil,
-		},
-        gathering = {},
-        npcXP = { },
-	},
-	customPattern = nil,
-}
-
--- ----------------------------------------------------------------------------
 -- Config GUI Initialization
 -- ----------------------------------------------------------------------------
 XToLevel.Config = { }
@@ -205,8 +77,8 @@ function XToLevel.Config:Initialize()
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
-	        sData.player.timer.start = GetTime()
-			sData.player.timer.total = 0
+	        XToLevel.db.char.data.timer.start = GetTime()
+			XToLevel.db.char.data.timer.total = 0
 			XToLevel.Average:UpdateTimer()
 			XToLevel.LDB:UpdateTimer()
 	    end,
@@ -219,7 +91,7 @@ function XToLevel.Config:Initialize()
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
-	        sData.player.gathering = { }
+	        XToLevel.db.char.data.gathering = { }
 			XToLevel.Average:Update()
             XToLevel.LDB:BuildPattern();
 			XToLevel.LDB:Update()
@@ -340,16 +212,16 @@ args = {
                 type = "toggle",
                 name = L["Show Debug Info"],
                 desc = "If enabled, shows details used during development. Not in any way useful for typical users.",
-                get = function(info) return sConfig.general.showDebug end,
-                set = function(info, value) sConfig.general.showDebug = value end,
+                get = function(info) return XToLevel.db.profile.general.showDebug end,
+                set = function(info, value) XToLevel.db.profile.general.showDebug = value end,
             },
             rafEnabled = {
                 order = 4,
                 type = "toggle",
                 name = L['Recruit A Friend'],
                 desc = L["RAF Description"],
-                get = function(info) return sConfig.general.rafEnabled end,
-                set = function(info, value) sConfig.general.rafEnabled = value end,
+                get = function(info) return XToLevel.db.profile.general.rafEnabled end,
+                set = function(info, value) XToLevel.db.profile.general.rafEnabled = value end,
             },
         }
     },
@@ -366,22 +238,22 @@ args = {
                 order = 1,
                 type = "toggle",
                 name = L['Show Floating'],
-                get = function(info) return sConfig.messages.playerFloating end,
-                set = function(info, value) sConfig.messages.playerFloating = value end,
+                get = function(info) return XToLevel.db.profile.messages.playerFloating end,
+                set = function(info, value) XToLevel.db.profile.messages.playerFloating = value end,
             },
             playerChat = {
                 order = 2,
                 type = "toggle",
                 name = L['Show In Chat'],
-                get = function(info) return sConfig.messages.playerChat end,
-                set = function(info, value) sConfig.messages.playerChat = value end,
+                get = function(info) return XToLevel.db.profile.messages.playerChat end,
+                set = function(info, value) XToLevel.db.profile.messages.playerChat = value end,
             },
             playerBG = {
                 order = 3,
                 type = "toggle",
                 name =L['Show BG Objectives'],
-                get = function(info) return sConfig.messages.bgObjectives end,
-                set = function(info, value) sConfig.messages.bgObjectives = value end,
+                get = function(info) return XToLevel.db.profile.messages.bgObjectives end,
+                set = function(info, value) XToLevel.db.profile.messages.bgObjectives = value end,
             },
             colorsHeader = {
                 order = 4,
@@ -393,40 +265,40 @@ args = {
                 type = "color",
                 name = L['Player Kills'],
                 hasAlpha = true,
-                get = function(info) return unpack(sConfig.messages.colors.playerKill) end,
-                set = function(info, r, g, b, a) sConfig.messages.colors.playerKill = {r, g, b, a} end,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerKill) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerKill = {r, g, b, a} end,
             },
             colorQuests = {
                 order = 6,
                 type = "color",
                 name = L['Player Quests'],
                 hasAlpha = true,
-                get = function(info) return unpack(sConfig.messages.colors.playerQuest) end,
-                set = function(info, r, g, b, a) sConfig.messages.colors.playerQuest = {r, g, b, a} end,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerQuest) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerQuest = {r, g, b, a} end,
             },
             colorDungeons = {
                 order = 7,
                 type = "color",
                 name = L['Player Dungeons'],
                 hasAlpha = true,
-                get = function(info) return unpack(sConfig.messages.colors.playerDungeon) end,
-                set = function(info, r, g, b, a) sConfig.messages.colors.playerDungeon = {r, g, b, a} end,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerDungeon) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerDungeon = {r, g, b, a} end,
             },
             colorBattles = {
                 order = 8,
                 type = "color",
                 name = L['Player Battles'],
                 hasAlpha = true,
-                get = function(info) return unpack(sConfig.messages.colors.playerBattleground) end,
-                set = function(info, r, g, b, a) sConfig.messages.colors.playerBattleground = {r, g, b, a} end,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerBattleground) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerBattleground = {r, g, b, a} end,
             },
             colorLevelup = {
                 order = 9,
                 type = "color",
                 name = L['Player Levelup'],
                 hasAlpha = true,
-                get = function(info) return unpack(sConfig.messages.colors.playerLevel) end,
-                set = function(info, r, g, b, a) sConfig.messages.colors.playerLevel = {r, g, b, a} end,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerLevel) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerLevel = {r, g, b, a} end,
             },
             colorResetHeader = {
                 order = 10,
@@ -464,9 +336,9 @@ args = {
                 step = 0.05,
                 isPercent = true,
                 width = "full",
-                get = function(info) return sConfig.averageDisplay.scale end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.scale end,
                 set = function(info, value)
-                    sConfig.averageDisplay.scale = value
+                    XToLevel.db.profile.averageDisplay.scale = value
                     XToLevel.Average:Update()
                 end,
             },
@@ -479,9 +351,9 @@ args = {
                 order = 3,
                 type = "toggle",
                 name = L["Show Window Frame"],
-                get = function(info) return sConfig.averageDisplay.backdrop end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.backdrop end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.backdrop = value 
+                    XToLevel.db.profile.averageDisplay.backdrop = value 
                     XToLevel.Average:Update()
                 end,
             },
@@ -489,9 +361,9 @@ args = {
                 order = 4,
                 type = "toggle",
                 name = L["Show XToLevel Header"],
-                get = function(info) return sConfig.averageDisplay.header end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.header end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.header = value 
+                    XToLevel.db.profile.averageDisplay.header = value 
                     XToLevel.Average:Update()
                 end,
             },
@@ -499,9 +371,9 @@ args = {
                 order = 5,
                 type = "toggle",
                 name = L["Show Verbose Text"],
-                get = function(info) return sConfig.averageDisplay.verbose end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.verbose end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.verbose = value 
+                    XToLevel.db.profile.averageDisplay.verbose = value 
                     XToLevel.Average:Update()
                 end,
             },
@@ -509,9 +381,9 @@ args = {
                 order = 6,
                 type = "toggle",
                 name = L["Show Colored Text"],
-                get = function(info) return sConfig.averageDisplay.colorText end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.colorText end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.colorText = value 
+                    XToLevel.db.profile.averageDisplay.colorText = value 
                     XToLevel.Average:Update()
                 end,
             },
@@ -524,9 +396,9 @@ args = {
                 order = 8,
                 type = "toggle",
                 name = L["Vertical Align"],
-                get = function(info) return sConfig.averageDisplay.orientation == "v" end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.orientation == "v" end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.orientation = value and "v" or "h"
+                    XToLevel.db.profile.averageDisplay.orientation = value and "v" or "h"
                     XToLevel.Average:Update()
                 end,
             },
@@ -539,45 +411,45 @@ args = {
                 order = 10,
                 type = "toggle",
                 name = L["Lock Avarage Display"],
-                get = function(info) return not sConfig.general.allowDrag end,
+                get = function(info) return not XToLevel.db.profile.general.allowDrag end,
                 set = function(info, value) 
-                    sConfig.general.allowDrag = not value 
+                    XToLevel.db.profile.general.allowDrag = not value 
                 end,
             },
             behaviorAllowClick = {
                 order = 11,
                 type = "toggle",
                 name = L["Allow Average Click"],
-                get = function(info) return sConfig.general.allowSettingsClick end,
+                get = function(info) return XToLevel.db.profile.general.allowSettingsClick end,
                 set = function(info, value) 
-                    sConfig.general.allowSettingsClick = value 
+                    XToLevel.db.profile.general.allowSettingsClick = value 
                 end,
             },
             behaviorShowTooltip = {
                 order = 12,
                 type = "toggle",
                 name = L["Show Tooltip"],
-                get = function(info) return sConfig.averageDisplay.tooltip end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.tooltip end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.tooltip = value 
+                    XToLevel.db.profile.averageDisplay.tooltip = value 
                 end,
             },
             behaviorCombineTooltip = {
                 order = 13,
                 type = "toggle",
                 name = L["Combine Tooltip Data"],
-                get = function(info) return sConfig.averageDisplay.combineTooltip end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.combineTooltip end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.combineTooltip = value 
+                    XToLevel.db.profile.averageDisplay.combineTooltip = value 
                 end,
             },
             behaviorProgressAsBars = {
                 order = 14,
                 type = "toggle",
                 name = L["Progress As Bars"],
-                get = function(info) return sConfig.averageDisplay.progressAsBars end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.progressAsBars end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.progressAsBars = value 
+                    XToLevel.db.profile.averageDisplay.progressAsBars = value 
                     XToLevel.Average:Update()
                 end,
             },
@@ -590,9 +462,9 @@ args = {
                 order = 16,
                 type = "toggle",
                 name = L["Kills"],
-                get = function(info) return sConfig.averageDisplay.playerKills end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerKills end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerKills = value 
+                    XToLevel.db.profile.averageDisplay.playerKills = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -600,9 +472,9 @@ args = {
                 order = 17,
                 type = "toggle",
                 name = L["Player Quests"],
-                get = function(info) return sConfig.averageDisplay.playerQuests end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerQuests end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerQuests = value 
+                    XToLevel.db.profile.averageDisplay.playerQuests = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -610,9 +482,9 @@ args = {
                 order = 18,
                 type = "toggle",
                 name = L["Player Dungeons"],
-                get = function(info) return sConfig.averageDisplay.playerDungeons end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerDungeons end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerDungeons = value 
+                    XToLevel.db.profile.averageDisplay.playerDungeons = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -620,9 +492,9 @@ args = {
                 order = 19,
                 type = "toggle",
                 name = L["Player Battles"],
-                get = function(info) return sConfig.averageDisplay.playerBGs end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerBGs end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerBGs = value 
+                    XToLevel.db.profile.averageDisplay.playerBGs = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -630,9 +502,9 @@ args = {
                 order = 20,
                 type = "toggle",
                 name = L["Player Objectives"],
-                get = function(info) return sConfig.averageDisplay.playerBGOs end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerBGOs end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerBGOs = value 
+                    XToLevel.db.profile.averageDisplay.playerBGOs = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -640,9 +512,9 @@ args = {
                 order = 21,
                 type = "toggle",
                 name = L["Player Progress"],
-                get = function(info) return sConfig.averageDisplay.playerProgress end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerProgress end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerProgress = value 
+                    XToLevel.db.profile.averageDisplay.playerProgress = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -650,9 +522,9 @@ args = {
                 order = 22,
                 type = "toggle",
                 name = L["Player Timer"] or "Timer",
-                get = function(info) return sConfig.averageDisplay.playerTimer end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerTimer end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerTimer = value 
+                    XToLevel.db.profile.averageDisplay.playerTimer = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -660,9 +532,9 @@ args = {
                 order = 23,
                 type = "toggle",
                 name = L["Gathering"] or "Gathering",
-                get = function(info) return sConfig.averageDisplay.playerGathering end,
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerGathering end,
                 set = function(info, value) 
-                    sConfig.averageDisplay.playerGathering = value 
+                    XToLevel.db.profile.averageDisplay.playerGathering = value 
                     XToLevel.Average:Update()   
                 end,
             },
@@ -677,9 +549,9 @@ args = {
                 type = "toggle",
                 name = L["LDB Enabled"],
                 desc = L['LDB Enabled Description'],
-                get = function(i) return sConfig.ldb.enabled end,
+                get = function(i) return XToLevel.db.profile.ldb.enabled end,
                 set = function(i, v) 
-                    sConfig.ldb.enabled = v
+                    XToLevel.db.profile.ldb.enabled = v
                     StaticPopup_Show("XToLevelConfig_LdbReload")
                 end
             },
@@ -705,9 +577,9 @@ args = {
                 desc = "See the 'customPatterns.txt' file for more details. Requires that the 'Custom' preset is selected.",
                 width = "full",
                 multiline = true,
-                get = function(i) return sData.customPattern end,
+                get = function(i) return XToLevel.db.char.customPattern end,
                 set = function(i,v) 
-                    sData.customPattern = v 
+                    XToLevel.db.char.customPattern = v 
                     XToLevel.LDB:BuildPattern()
                     XToLevel.LDB:Update()
                 end,
@@ -722,64 +594,64 @@ args = {
                 order = 5,
                 type = "toggle",
                 name = L["Show Text"],
-                get = function(i) return sConfig.ldb.showText end,
-                set = function(i,v) sConfig.ldb.showText = v end,
+                get = function(i) return XToLevel.db.profile.ldb.showText end,
+                set = function(i,v) XToLevel.db.profile.ldb.showText = v end,
             },
             ldbShowLabel = {
                 order = 6,
                 type = "toggle",
                 name = L["Show Label"],
-                get = function(i) return sConfig.ldb.showLabel end,
-                set = function(i,v) sConfig.ldb.showLabel = v end,
+                get = function(i) return XToLevel.db.profile.ldb.showLabel end,
+                set = function(i,v) XToLevel.db.profile.ldb.showLabel = v end,
             },
             ldbShowIcon = {
                 order = 7,
                 type = "toggle",
                 name = L["Show Icon"],
-                get = function(i) return sConfig.ldb.showIcon end,
-                set = function(i,v) sConfig.ldb.showIcon = v end,
+                get = function(i) return XToLevel.db.profile.ldb.showIcon end,
+                set = function(i,v) XToLevel.db.profile.ldb.showIcon = v end,
             },
             ldbColoredText = {
                 order = 8,
                 type = "toggle",
                 name = L["Allow Colored Text"],
-                get = function(i) return sConfig.ldb.allowTextColor end,
-                set = function(i,v) sConfig.ldb.allowTextColor = v end,
+                get = function(i) return XToLevel.db.profile.ldb.allowTextColor end,
+                set = function(i,v) XToLevel.db.profile.ldb.allowTextColor = v end,
             },
             ldbColorByXp = {
                 order = 9,
                 type = "toggle",
                 name = L["Color By XP"],
-                get = function(i) return sConfig.ldb.text.colorValues end,
-                set = function(i,v) sConfig.ldb.text.colorValues = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.colorValues end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.colorValues = v end,
             },
             ldbProgressAsBars = {
                 order = 10,
                 type = "toggle",
                 name = L["Show Progress As Bars"],
-                get = function(i) return sConfig.ldb.text.xpAsBars end,
-                set = function(i,v) sConfig.ldb.text.xpAsBars = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.xpAsBars end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.xpAsBars = v end,
             },
             ldbShowVerbose = {
                 order = 11,
                 type = "toggle",
                 name = L["Show Verbose"],
-                get = function(i) return sConfig.ldb.text.verbose end,
-                set = function(i,v) sConfig.ldb.text.verbose = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.verbose end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.verbose = v end,
             },
             ldbShowXpRemaining = {
                 order = 12,
                 type = "toggle",
                 name = L["Show XP remaining"],
-                get = function(i) return sConfig.ldb.text.xpCountdown end,
-                set = function(i,v) sConfig.ldb.text.xpCountdown = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.xpCountdown end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.xpCountdown = v end,
             },
             ldbShortenXP = {
                 order = 13,
                 type = "toggle",
                 name = L["Shorten XP values"],
-                get = function(i) return sConfig.ldb.text.xpnumFormat end,
-                set = function(i,v) sConfig.ldb.text.xpnumFormat = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.xpnumFormat end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.xpnumFormat = v end,
             },
 
             ldbDataHeader = {
@@ -791,50 +663,50 @@ args = {
                 order = 16,
                 type = "toggle",
                 name = L["Player Kills"],
-                get = function(i) return sConfig.ldb.text.kills end,
-                set = function(i,v) sConfig.ldb.text.kills = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.kills end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.kills = v end,
             },
             ldbDataQuests = {
                 order = 17,
                 type = "toggle",
                 name = L["Player Quests"],
-                get = function(i) return sConfig.ldb.text.quests end,
-                set = function(i,v) sConfig.ldb.text.quests = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.quests end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.quests = v end,
             },
             ldbDataDungeons = {
                 order = 18,
                 type = "toggle",
                 name = L["Player Dungeons"],
-                get = function(i) return sConfig.ldb.text.dungeons end,
-                set = function(i,v) sConfig.ldb.text.dungeons = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.dungeons end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.dungeons = v end,
             },
             ldbDataBattles = {
                 order = 19,
                 type = "toggle",
                 name = L["Player Battles"],
-                get = function(i) return sConfig.ldb.text.bgs end,
-                set = function(i,v) sConfig.ldb.text.bgs = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.bgs end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.bgs = v end,
             },
             ldbDataObjectives = {
                 order = 20,
                 type = "toggle",
                 name = L["Player Objectives"],
-                get = function(i) return sConfig.ldb.text.bgo end,
-                set = function(i,v) sConfig.ldb.text.bgo = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.bgo end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.bgo = v end,
             },
             ldbDataProgress = {
                 order = 21,
                 type = "toggle",
                 name = L["Player Progress"],
-                get = function(i) return sConfig.ldb.text.xp end,
-                set = function(i,v) sConfig.ldb.text.xp = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.xp end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.xp = v end,
             },
             ldbDataExperience = {
                 order = 22,
                 type = "toggle",
                 name = L["Player Experience"],
-                get = function(i) return sConfig.ldb.text.xpnum end,
-                set = function(i,v) sConfig.ldb.text.xpnum = v end,
+                get = function(i) return XToLevel.db.profile.ldb.text.xpnum end,
+                set = function(i,v) XToLevel.db.profile.ldb.text.xpnum = v end,
             },
         }
     },
@@ -859,8 +731,8 @@ args = {
                 min = 1,
                 max = 100,
                 step = 1,
-                get = function() return sConfig.averageDisplay.playerKillListLength end,
-                set = function(i,v) sConfig.averageDisplay.playerKillListLength = v end,
+                get = function() return XToLevel.db.profile.averageDisplay.playerKillListLength end,
+                set = function(i,v) XToLevel.Player:SetKillAverageLength(v) end,
             },
             dataRangeQuests = {
                 order = 3,
@@ -869,8 +741,8 @@ args = {
                 min = 1,
                 max = 100,
                 step = 1,
-                get = function() return sConfig.averageDisplay.playerQuestListLength end,
-                set = function(i,v) sConfig.averageDisplay.playerQuestListLength = v end,
+                get = function() return XToLevel.db.profile.averageDisplay.playerQuestListLength end,
+                set = function(i,v) XToLevel.Player:SetQuestAverageLength(v) end,
             },
             dataRangeBattles = {
                 order = 4,
@@ -879,8 +751,8 @@ args = {
                 min = 1,
                 max = 100,
                 step = 1,
-                get = function() return sConfig.averageDisplay.playerBGListLength end,
-                set = function(i,v) sConfig.averageDisplay.playerBGListLength = v end,
+                get = function() return XToLevel.db.profile.averageDisplay.playerBGListLength end,
+                set = function(i,v) XToLevel.Player:SetBattleAverageLength(v) end,
             },
             dataRangeObjectives = {
                 order = 5,
@@ -889,8 +761,8 @@ args = {
                 min = 1,
                 max = 100,
                 step = 1,
-                get = function() return sConfig.averageDisplay.playerBGOListLength end,
-                set = function(i,v) sConfig.averageDisplay.playerBGOListLength = v end,
+                get = function() return XToLevel.db.profile.averageDisplay.playerBGOListLength end,
+                set = function(i,v) XToLevel.Player:SetObjectiveAverageLength(v) end,
             },
             dataRangeDungeons = {
                 order = 6,
@@ -899,8 +771,8 @@ args = {
                 min = 1,
                 max = 100,
                 step = 1,
-                get = function() return sConfig.averageDisplay.playerDungeonListLength end,
-                set = function(i,v) sConfig.averageDisplay.playerDungeonListLength = v end,
+                get = function() return XToLevel.db.profile.averageDisplay.playerDungeonListLength end,
+                set = function(i,v) XToLevel.Player:SetDungeonAverageLength(v) end,
             },
             dataClearHeader = {
                 order = 7,
@@ -957,43 +829,43 @@ args = {
                 order = 2,
                 type = "toggle",
                 name = L["Show Player Details"],
-                get = function(i) return sConfig.ldb.tooltip.showDetails end,
-                set = function(i,v) sConfig.ldb.tooltip.showDetails = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showDetails end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showDetails = v end,
             },
             playerExperience = {
                 order = 3,
                 type = "toggle",
                 name = L["Show Player Experience"],
-                get = function(i) return sConfig.ldb.tooltip.showExperience end,
-                set = function(i,v) sConfig.ldb.tooltip.showExperience = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showExperience end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showExperience = v end,
             },
             battleInfo = {
                 order = 4,
                 type = "toggle",
                 name = L["Show Battleground Info"],
-                get = function(i) return sConfig.ldb.tooltip.showBGInfo end,
-                set = function(i,v) sConfig.ldb.tooltip.showBGInfo = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showBGInfo end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showBGInfo = v end,
             },
             dungeonInfo = {
                 order = 5,
                 type = "toggle",
                 name = L["Show Dungeon Info"],
-                get = function(i) return sConfig.ldb.tooltip.showDungeonInfo end,
-                set = function(i,v) sConfig.ldb.tooltip.showDungeonInfo = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showDungeonInfo end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showDungeonInfo = v end,
             },
             gatheringInfo = {
                 order = 6,
                 type = "toggle",
                 name = L["Show Gathering Info"],
-                get = function(i) return sConfig.ldb.tooltip.showGatheringInfo end,
-                set = function(i,v) sConfig.ldb.tooltip.showGatheringInfo = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showGatheringInfo end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showGatheringInfo = v end,
             },
             timerDetails = {
                 order = 7,
                 type = "toggle",
                 name = L["Show Timer Details"],
-                get = function(i) return sConfig.ldb.tooltip.showTimerInfo end,
-                set = function(i,v) sConfig.ldb.tooltip.showTimerInfo = v end,
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showTimerInfo end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showTimerInfo = v end,
             },
             miscHeader = {
                 order = 8,
@@ -1004,8 +876,8 @@ args = {
                 order = 9,
                 type = "toggle",
                 name = "Show kills needed in NPC tooltips.",
-                get = function(i) return sConfig.general.showNpcTooltipData end,
-                set = function(i,v) sConfig.general.showNpcTooltipData = v end,
+                get = function(i) return XToLevel.db.profile.general.showNpcTooltipData end,
+                set = function(i,v) XToLevel.db.profile.general.showNpcTooltipData = v end,
             },
         }
     },
@@ -1017,7 +889,7 @@ args = {
                 order = 0,
                 type = "toggle",
                 name = L["Enable timer"] or "Timer enabled",
-                get = function() return sConfig.timer.enabled end,
+                get = function() return XToLevel.db.profile.timer.enabled end,
                 set = "SetTimerEnabled",
             },
             modeHeader = {
@@ -1032,8 +904,8 @@ args = {
                 values = XToLevel.TIMER_MODES,
                 name = L["Mode"],
                 desc = "The source of the data used for the timer. - \"Session\" uses only the XP gained since the UI was loaded. Ideal as a \"real-time\" estimate while farming. - \"Level\" uses the total time and XP this level. Gives a better long-term estimate for quest and dungeon runners. (Note that the Level mode may be fairly inaccurate during the first few % of a new level.)",
-                get = function() return sConfig.timer.mode end,
-                set = function(i,v) sConfig.timer.mode = v end,
+                get = function() return XToLevel.db.profile.timer.mode end,
+                set = function(i,v) XToLevel.db.profile.timer.mode = v end,
             },
             timerReset = {
                 order = 3,
@@ -1055,8 +927,8 @@ args = {
                 min = 0,
                 max = 60,
                 step = 1,
-                get = function() return sConfig.timer.sessionDataTimeout end,
-                set = function(i,v) sConfig.timer.sessionDataTimeout = v end,
+                get = function() return XToLevel.db.profile.timer.sessionDataTimeout end,
+                set = function(i,v) XToLevel.db.profile.timer.sessionDataTimeout = v end,
             },
         }
     },
@@ -1074,7 +946,7 @@ function XToLevel.Config:SetLocale(info, value)
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function() 
-            sConfig.general.displayLocale = value
+            XToLevel.db.profile.general.displayLocale = value
             ReloadUI()
         end,
 		timeout = 30,
@@ -1084,15 +956,15 @@ function XToLevel.Config:SetLocale(info, value)
 	StaticPopup_Show("XToLevelConfig_LocaleReload");
 end
 function XToLevel.Config:GetLocale(info)
-    return sConfig.general.displayLocale
+    return XToLevel.db.profile.general.displayLocale
 end
 
 function XToLevel.Config:SetActiveWindow(info, value)
-    sConfig.averageDisplay.mode = value
+    XToLevel.db.profile.averageDisplay.mode = value
     XToLevel.Average:Update()
 end
 function XToLevel.Config:GetActiveWindow(info)
-    return sConfig.averageDisplay.mode
+    return XToLevel.db.profile.averageDisplay.mode
 end
 
 function XToLevel.Config:SetLdbPattern(info, value)
@@ -1103,7 +975,7 @@ function XToLevel.Config:SetLdbPattern(info, value)
         end
     end
     if thestr then
-        sConfig.ldb.textPattern = thestr
+        XToLevel.db.profile.ldb.textPattern = thestr
         XToLevel.LDB:BuildPattern()
         XToLevel.LDB:Update()
     else
@@ -1112,15 +984,15 @@ function XToLevel.Config:SetLdbPattern(info, value)
 end
 function XToLevel.Config:GetLdbPattern(info)
     for i, v in ipairs(XToLevel.LDB_PATTERNS) do
-        if sConfig.ldb.textPattern == v then
+        if XToLevel.db.profile.ldb.textPattern == v then
             return i
         end
     end
 end
 
 function SetTimerEnabled(info, value)
-    sConfig.timer.enabled = value
-    if sConfig.timer.enabled then
+    XToLevel.db.profile.timer.enabled = value
+    if XToLevel.db.profile.timer.enabled then
 		XToLevel.Player.timerHandler = XToLevel.timer:ScheduleRepeatingTimer(XToLevel.Player.TriggerTimerUpdate, XToLevel.Player.xpPerSecTimeout)
 	else
 		XToLevel.timer:CancelTimer(XToLevel.Player.timerHandler)
@@ -1129,160 +1001,163 @@ function SetTimerEnabled(info, value)
 	XToLevel.LDB:UpdateTimer()
 end
 -- ----------------------------------------------------------------------------
--- Config table verification
+-- Default config values.
 -- ----------------------------------------------------------------------------
+
+function XToLevel.Config:GetDefault()
+    return {
+        profile = {
+            general = {
+		        allowDrag = true,
+		        allowSettingsClick = true,
+		        displayLocale = nil,
+		        showDebug = false,
+	            rafEnabled = false,
+		        showNpcTooltipData = true,
+	        },
+            messages = {
+		        playerFloating = true,
+		        playerChat = false,
+		        bgObjectives = true,
+		        colors = {
+			        playerKill = {0.72, 1, 0.71, 1},
+			        playerQuest = {0.5, 1, 0.7, 1},
+			        playerBattleground = {1, 0.5, 0.5, 1},
+			        playerDungeon = {1, 0.75, 0.35, 1},
+			        playerLevel = {0.35, 1, 0.35, 1},
+		        },
+	        },
+            averageDisplay = {
+		        visible = true,
+		        mode = 1, -- 1 = Blocky, 2 = Classic
+                scale = 1.0,
+		        backdrop = true,
+		        verbose = true,
+		        colorText = true,
+                header = true,
+		        tooltip = true,
+		        combineTooltip = false,
+		        orientation = 'v',
+		        playerKills = true,
+		        playerQuests = true,
+		        playerDungeons = true,
+		        playerBGs = true,
+		        playerBGOs = false,
+                playerGathering = true,
+		        playerProgress = true,
+		        playerTimer = true,
+		        progress = true, -- Duplicate?
+		        progressAsBars = false,
+		        playerKillListLength = 10,
+		        playerQuestListLength = 10,
+		        playerBGListLength = 15,
+		        playerBGOListLength = 15,
+		        playerDungeonListLength = 15,
+                guildProgress = true,
+                guildProgressType = 1, -- 1 = Level, 2 = Daily, (3 = Overall... maybe later)
+	        },
+	        ldb = {
+                enabled = true,
+		        allowTextColor = true,
+		        showIcon = true,
+		        showLabel = false,
+		        showText = true,
+		        textPattern = "default",
+		        text = {
+			        kills = true,
+			        quests = true,
+			        dungeons = true,
+			        bgs = true,
+			        bgo = false,
+			        xp = true,
+			        xpnum = true,
+			        xpnumFormat = true,
+			        xpAsBars = false,
+			        xpCountdown = false,
+			        timer = true,
+                    guildxp = true,
+                    guilddaily = true,
+			        colorValues = true,
+			        verbose = true,
+			        rested = true,
+			        restedp = true,
+		        },
+		        tooltip = {
+			        showDetails = true,
+			        showExperience = true,
+			        showBGInfo = true,
+			        showDungeonInfo = true,
+			        showTimerInfo = true,
+                    showGatheringInfo = true,
+                    showGuildInfo = true,
+		        }
+	        },
+	        timer = {
+		        enabled = true,
+		        mode = 1, -- 1 = session, 2 = level, 3 = kill range (3 is not implemented yet!)
+		        allowLevelFallback = true,
+                -- The time the session data will remain after the UI is unloaded, in minutes.
+                sessionDataTimeout = 5.0, 
+	        },
+        },
+        char = {
+            data = {
+                total = {
+                    startedRecording = time(),
+                    mobKills = 0,
+                    dungeonKills = 0,
+                    pvpKills = 0,
+                    quests = 0,
+                    objectives = 0
+                },
+		        killAverage = 0,
+		        questAverage = 0,
+		        killList = {},
+		        questList = {},
+		        bgList = {},
+		        dungeonList = {},
+		        timer = {
+			        start = nil,
+			        total = nil,
+			        xpPerSec = nil,
+		        },
+                gathering = {},
+                npcXP = { },
+	        },
+	        customPattern = nil,
+        }
+    }
+end
 
 ---
 -- Verifies that all config values have a default value
 -- (New values are sometimes not initialized if older versions of saved values exist)
 function XToLevel.Config:Verify()
-    -- General
-    if sConfig.general == nil then sConfig.general = {  } end
-    if sConfig.general.allowDrag == nil then sConfig.general.allowDrag = true end
-    if sConfig.general.showDebug == nil then sConfig.general.showDebug = false end
-    if sConfig.general.allowSettingsClick == nil then sConfig.general.allowSettingsClick = true end
-    if sConfig.general.displayLocale == nil then sConfig.general.displayLocale = GetLocale() end
-    if sConfig.general.rafEnabled == nil then sConfig.general.rafEnabled = false end
-	if sConfig.general.showNpcTooltipData == nil then sConfig.general.showNpcTooltipData = true end
-    
-    -- Messages
-    if sConfig.messages == nil then sConfig.messages = {  } end
-    if sConfig.messages.playerFloating == nil then sConfig.messages.playerFloating = true end
-    if sConfig.messages.playerChat == nil then sConfig.messages.playerChat = false end
-    if sConfig.messages.bgObjectives == nil then sConfig.messages.bgObjectives = true end
-    
-    -- Message Colors
-    if sConfig.messages.colors == nil then sConfig.messages.colors = {} end
-    if sConfig.messages.colors.playerKill == nil then sConfig.messages.colors.playerKill = {0.72, 1, 0.71, nil} end
-    if sConfig.messages.colors.playerQuest == nil then sConfig.messages.colors.playerQuest = {0.5, 1, 0.7, nil} end
-    if sConfig.messages.colors.playerBattleground == nil then sConfig.messages.colors.playerBattleground = {1, 0.5, 0.5, nil} end
-    if sConfig.messages.colors.playerDungeon == nil then sConfig.messages.colors.playerDungeon = {1, 0.75, 0.35, nil} end
-    if sConfig.messages.colors.playerLevel == nil then sConfig.messages.colors.playerLevel = {0.35, 1, 0.35, nil} end
 
-    if sConfig.messages.colors.playerKill[4] ~= nil then sConfig.messages.colors.playerKill[4] = nil end
-    if sConfig.messages.colors.playerQuest[4] ~= nil then sConfig.messages.colors.playerQuest[4] = nil end
-    if sConfig.messages.colors.playerBattleground[4] ~= nil then sConfig.messages.colors.playerBattleground[4] = nil end
-    if sConfig.messages.colors.playerDungeon[4] ~= nil then sConfig.messages.colors.playerDungeon[4] = nil end
-    if sConfig.messages.colors.playerLevel[4] ~= nil then sConfig.messages.colors.playerLevel[4] = nil end
-
-    -- averageDisplay
-    if sConfig.averageDisplay == nil then sConfig.averageDisplay = {  } end
-    if sConfig.averageDisplay.visible == nil then sConfig.averageDisplay.visible = true end
-    if sConfig.averageDisplay.mode == nil then sConfig.averageDisplay.mode = 1 end
-    if sConfig.averageDisplay.scale == nil then sConfig.averageDisplay.scale = 1.0 end
-    if sConfig.averageDisplay.backdrop == nil then sConfig.averageDisplay.backdrop = true end
-    if sConfig.averageDisplay.verbose == nil then sConfig.averageDisplay.verbose = true end
-    if sConfig.averageDisplay.tooltip == nil then sConfig.averageDisplay.tooltip = true end
-    if sConfig.averageDisplay.combineTooltip == nil then sConfig.averageDisplay.combineTooltip = false end
-    if sConfig.averageDisplay.orientation == nil then sConfig.averageDisplay.orientation = 'v' end
-    if sConfig.averageDisplay.colorText == nil then sConfig.averageDisplay.colorText = true end
-    if sConfig.averageDisplay.header == nil then sConfig.averageDisplay.header = true end
-    if sConfig.averageDisplay.playerKills == nil then sConfig.averageDisplay.playerKills = true end
-    if sConfig.averageDisplay.playerQuests == nil then sConfig.averageDisplay.playerQuests = true end
-    if sConfig.averageDisplay.playerDungeons == nil then sConfig.averageDisplay.playerDungeons = true end
-    if sConfig.averageDisplay.playerBGs == nil then sConfig.averageDisplay.playerBGs = true end
-    if sConfig.averageDisplay.playerBGOs == nil then sConfig.averageDisplay.playerBGOs = false end
-    if sConfig.averageDisplay.playerGathering == nil then sConfig.averageDisplay.playerGathering = true end
-    if sConfig.averageDisplay.playerProgress == nil then sConfig.averageDisplay.playerProgress = true end
-	if sConfig.averageDisplay.playerTimer == nil then sConfig.averageDisplay.playerTimer = true end
-    if sConfig.averageDisplay.progress == nil then sConfig.averageDisplay.progress = true end
-    if sConfig.averageDisplay.progressAsBars == nil then sConfig.averageDisplay.progressAsBars = false end
-    if sConfig.averageDisplay.playerKillListLength == nil then sConfig.averageDisplay.playerKillListLength = 10 end
-    if sConfig.averageDisplay.playerQuestListLength == nil then sConfig.averageDisplay.playerQuestListLength = 10 end
-    if sConfig.averageDisplay.playerBGListLength == nil then sConfig.averageDisplay.playerBGListLength = 15 end
-    if sConfig.averageDisplay.playerBGOListLength == nil then sConfig.averageDisplay.playerBGOListLength = 15 end
-    if sConfig.averageDisplay.playerDungeonListLength == nil then sConfig.averageDisplay.playerDungeonListLength = 15 end
-    if sConfig.averageDisplay.guildProgress == nil then sConfig.averageDisplay.guildProgress = true end
-    if sConfig.averageDisplay.guildProgressType == nil then sConfig.averageDisplay.guildProgressType = 1 end
-
-    -- LDB
-    if sConfig.ldb == nil then sConfig.ldb = {  } end
-    if sConfig.ldb.text == nil then sConfig.ldb.text = {  } end
-    
-    if sConfig.ldb.tooltip == nil then sConfig.ldb.tooltip = {  } end
-    if sConfig.ldb.allowTextColor == nil then sConfig.ldb.allowTextColor = true end
-    if sConfig.ldb.enabled == nil then sConfig.ldb.enabled = true end
-    if sConfig.ldb.showIcon == nil then sConfig.ldb.showIcon = true end
-    if sConfig.ldb.showLabel == nil then sConfig.ldb.showLabel = false end
-    if sConfig.ldb.showText == nil then sConfig.ldb.showText = true end
-    if sConfig.ldb.textPattern == nil then sConfig.ldb.textPattern = "default" end
-    if sConfig.ldb.text.kills == nil then sConfig.ldb.text.kills = true end
-    if sConfig.ldb.text.quests == nil then sConfig.ldb.text.quests = true end
-    if sConfig.ldb.text.dungeons == nil then sConfig.ldb.text.dungeons = true end
-    if sConfig.ldb.text.bgs == nil then sConfig.ldb.text.bgs = true end
-    if sConfig.ldb.text.bgo == nil then sConfig.ldb.text.bgo = false end
-    if sConfig.ldb.text.xp == nil then sConfig.ldb.text.xp = true end
-    if sConfig.ldb.text.xpAsBars == nil then sConfig.ldb.text.xpAsBars = false end
-	if sConfig.ldb.text.timer == nil then sConfig.ldb.text.timer = true end
-    if sConfig.ldb.text.guildxp == nil then sConfig.ldb.text.guildxp = true end
-    if sConfig.ldb.text.guilddaily == nil then sConfig.ldb.text.guilddaily = true end
-    if sConfig.ldb.text.verbose == nil then sConfig.ldb.text.verbose = true end
-    if sConfig.ldb.text.colorValues == nil then sConfig.ldb.text.colorValues = true end
-	
-	if sConfig.ldb.text.xpCountdown == nil then sConfig.ldb.text.xpCountdown = false end
-	if sConfig.ldb.text.rested == nil then sConfig.ldb.text.rested = true end
-	if sConfig.ldb.text.restedp == nil then sConfig.ldb.text.restedp = true end
-	
-	if sConfig.ldb.text.xpnum == nil then sConfig.ldb.text.xpnum = true end
-	if sConfig.ldb.text.xpnumFormat == nil then sConfig.ldb.text.xpnumFormat = true end
-	
-    if sConfig.ldb.tooltip.showDetails == nil then sConfig.ldb.tooltip.showDetails = true end
-    if sConfig.ldb.tooltip.showExperience == nil then sConfig.ldb.tooltip.showExperience = true end
-    if sConfig.ldb.tooltip.showBGInfo == nil then sConfig.ldb.tooltip.showBGInfo = true end
-    if sConfig.ldb.tooltip.showDungeonInfo == nil then sConfig.ldb.tooltip.showDungeonInfo = true end
-    if sConfig.ldb.tooltip.showTimerInfo == nil then sConfig.ldb.tooltip.showTimerInfo = true end
-    if sConfig.ldb.tooltip.showGuildInfo ~= false then sConfig.ldb.tooltip.showGuildInfo = false end -- TODO: Fix this when the guild stuff actually works.
-    if sConfig.ldb.tooltip.showGatheringInfo == nil then sConfig.ldb.tooltip.showGatheringInfo = true end
-	
-	if sConfig.timer == nil then sConfig.timer = { } end
-	if sConfig.timer.enabled == nil then sConfig.timer.enabled = true end
-	if sConfig.timer.mode == nil then sConfig.timer.mode = 1 end
-	if sConfig.timer.allowLevelFallback == nil then sConfig.timer.allowLevelFallback = 1 end
-    if sConfig.timer.sessionDataTimeout == nil then sConfig.timer.sessionDataTimeout = 5.0 end
-    
-    
-    if sData == nil then sData = {} end
-    if sData.player == nil then sData.player = {} end
-    
-    if sData.player.total == nil then sData.player.total = { } end
-    if sData.player.total.startedRecording == nil then sData.player.total.startedRecording = time() end
-    if sData.player.total.mobKills == nil then sData.player.total.mobKills = 0 end
-    if sData.player.total.dungeonKills == nil then sData.player.total.dungeonKills = 0 end
-    if sData.player.total.pvpKills == nil then sData.player.total.pvpKills = 0 end
-    if sData.player.total.quests == nil then sData.player.total.quests = 0 end
-    if sData.player.total.objectives == nil then sData.player.total.objectives = 0 end
-    
-    if sData.player.killAverage == nil then sData.player.killAverage = 0 end
-    if sData.player.questAverage == nil then sData.player.questAverage = 0 end
-    if sData.player.killList == nil then sData.player.killList = {} end
-    if sData.player.questList == nil then sData.player.questList = {} end
-    if sData.player.bgList == nil then sData.player.bgList = {} end
-    if sData.player.dungeonList == nil then sData.player.dungeonList = {} end
-    if sData.player.gathering == nil then sData.player.gathering = {} end
-    if sData.player.npcXP == nil then sData.player.npcXP = {} end
-	
-    if sData.customPattern == nil then sData.customPattern = 0 end
-	
-	-- Timer data.
-    if sData.player.timer == nil then sData.player.timer = {} end
-    if sData.player.timer.start == nil then sData.player.timer.start = GetTime() end
-    if sData.player.timer.total == nil then sData.player.timer.total = 0 end
-    if sData.player.timer.xpPerSec == nil then sData.player.timer.xpPerSec = 0 end
-    -- if sData.player.timer.lastUpdated == nil then sData.player.timer.lastUpdated = 0 end
-    
-    if type(sData.player.timer.lastUpdated) ~= "number" or GetTime() - sData.player.timer.lastUpdated > (sConfig.timer.sessionDataTimeout * 60) or GetTime() - sData.player.timer.start <= 0 then
-        sData.player.timer.start = GetTime();
-        sData.player.timer.total = 0;
-        sData.player.timer.lastUpdated = GetTime();
+    if type(XToLevel.db.char.data.timer.lastUpdated) ~= "number" or GetTime() - XToLevel.db.char.data.timer.lastUpdated > (XToLevel.db.profile.timer.sessionDataTimeout * 60) or GetTime() - XToLevel.db.char.data.timer.start <= 0 then
+        XToLevel.db.char.data.timer.start = GetTime();
+        XToLevel.db.char.data.timer.total = 0;
+        XToLevel.db.char.data.timer.lastUpdated = GetTime();
     end
-	
     
     -- Dungeon data
-    --for index, value in ipairs(sData.player.dungeonList) do
-    for index = 1, # sData.player.dungeonList, 1 do
-    	if not sData.player.dungeonList[index].rested then
-    		sData.player.dungeonList[index].rested = 0
+    --for index, value in ipairs(XToLevel.db.char.data.dungeonList) do
+    for index = 1, # XToLevel.db.char.data.dungeonList, 1 do
+    	if not XToLevel.db.char.data.dungeonList[index].rested then
+    		XToLevel.db.char.data.dungeonList[index].rested = 0
     	end
+    end
+
+    -- Attempt to transfer custom LDB patterns from the old permanent storage
+    -- to the new Ace3 DB tables.
+    if sData then
+        if sData.customPattern and sData.customPattern ~= "" and sData.customPattern ~= 0 then
+            XToLevel.db.char.customPattern = sData.customPattern
+            sData.customPattern = nil
+            console:log("XToLevel: Custom LDB pattern migrated from sData to XToLevel.db")
+        end
+        sData = nil
+        console:log("XToLevel: old sData table cleared.")
     end
     
 end

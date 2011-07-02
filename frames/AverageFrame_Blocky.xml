@@ -125,7 +125,7 @@
 	        XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
 	    </OnDragStop>
 	    <OnMouseUp>
-            if sConfig.general.allowSettingsClick and button == "RightButton" then
+            if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
                 XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
@@ -203,7 +203,7 @@
             XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
         </OnDragStop>
         <OnMouseUp>
-            if sConfig.general.allowSettingsClick and button == "RightButton" then
+            if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
                 XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
@@ -281,7 +281,7 @@
             XToLevel.AverageFrameAPI["Blocky"]:StopDrag()
         </OnDragStop>
         <OnMouseUp>
-            if sConfig.general.allowSettingsClick and button == "RightButton" then
+            if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
                 XToLevel.Config:Open("Window")
             end
         </OnMouseUp>
@@ -479,7 +479,7 @@
                             XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('timer');
                         </OnEnter>
 						<OnMouseUp>
-							if sConfig.general.allowSettingsClick and button == "RightButton" then
+							if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
 								XToLevel.Config:Open("Timer")
 							end
 						</OnMouseUp>
