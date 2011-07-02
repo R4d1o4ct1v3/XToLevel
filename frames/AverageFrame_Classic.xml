@@ -32,7 +32,7 @@
 		</OnLoad>
         <OnMouseUp>
 			if XToLevel.db.profile.general.allowSettingsClick and button == "RightButton" then
-				XToLevel.Config:Open("window")
+				XToLevel.Config:Open("Window")
 			end
 		</OnMouseUp>
 		<OnEvent>
