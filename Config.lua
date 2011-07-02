@@ -595,63 +595,99 @@ args = {
                 type = "toggle",
                 name = L["Show Text"],
                 get = function(i) return XToLevel.db.profile.ldb.showText end,
-                set = function(i,v) XToLevel.db.profile.ldb.showText = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.showText = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbShowLabel = {
                 order = 6,
                 type = "toggle",
                 name = L["Show Label"],
                 get = function(i) return XToLevel.db.profile.ldb.showLabel end,
-                set = function(i,v) XToLevel.db.profile.ldb.showLabel = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.showLabel = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbShowIcon = {
                 order = 7,
                 type = "toggle",
                 name = L["Show Icon"],
                 get = function(i) return XToLevel.db.profile.ldb.showIcon end,
-                set = function(i,v) XToLevel.db.profile.ldb.showIcon = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.showIcon = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbColoredText = {
                 order = 8,
                 type = "toggle",
                 name = L["Allow Colored Text"],
                 get = function(i) return XToLevel.db.profile.ldb.allowTextColor end,
-                set = function(i,v) XToLevel.db.profile.ldb.allowTextColor = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.allowTextColor = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbColorByXp = {
                 order = 9,
                 type = "toggle",
                 name = L["Color By XP"],
                 get = function(i) return XToLevel.db.profile.ldb.text.colorValues end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.colorValues = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.colorValues = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbProgressAsBars = {
                 order = 10,
                 type = "toggle",
                 name = L["Show Progress As Bars"],
                 get = function(i) return XToLevel.db.profile.ldb.text.xpAsBars end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.xpAsBars = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.xpAsBars = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbShowVerbose = {
                 order = 11,
                 type = "toggle",
                 name = L["Show Verbose"],
                 get = function(i) return XToLevel.db.profile.ldb.text.verbose end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.verbose = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.verbose = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbShowXpRemaining = {
                 order = 12,
                 type = "toggle",
                 name = L["Show XP remaining"],
                 get = function(i) return XToLevel.db.profile.ldb.text.xpCountdown end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.xpCountdown = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.xpCountdown = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbShortenXP = {
                 order = 13,
                 type = "toggle",
                 name = L["Shorten XP values"],
                 get = function(i) return XToLevel.db.profile.ldb.text.xpnumFormat end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.xpnumFormat = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.xpnumFormat = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
 
             ldbDataHeader = {
@@ -990,7 +1026,7 @@ function XToLevel.Config:GetLdbPattern(info)
     end
 end
 
-function SetTimerEnabled(info, value)
+function XToLevel.Config:SetTimerEnabled(info, value)
     XToLevel.db.profile.timer.enabled = value
     if XToLevel.db.profile.timer.enabled then
 		XToLevel.Player.timerHandler = XToLevel.timer:ScheduleRepeatingTimer(XToLevel.Player.TriggerTimerUpdate, XToLevel.Player.xpPerSecTimeout)
@@ -1148,16 +1184,17 @@ function XToLevel.Config:Verify()
     	end
     end
 
-    -- Attempt to transfer custom LDB patterns from the old permanent storage
-    -- to the new Ace3 DB tables.
-    if sData then
-        if sData.customPattern and sData.customPattern ~= "" and sData.customPattern ~= 0 then
-            XToLevel.db.char.customPattern = sData.customPattern
-            sData.customPattern = nil
-            console:log("XToLevel: Custom LDB pattern migrated from sData to XToLevel.db")
-        end
+    -- If the old sData and sConfig tables are set, overwrite the current Ace3
+    -- DB tables with them, then clear them out.
+    if sData and type(sData) == "table" then
+        XToLevel.db.char.customPattern = sData.customPattern
+        XToLevel.db.char.data = sData.player
         sData = nil
-        console:log("XToLevel: old sData table cleared.")
+        print("XToLevel: Old sData values migrated over to AceDB-3.0")
     end
-    
+    if sConfig and type(sConfig) == "table" then
+        XToLevel.db.profile = sConfig
+        sConfig = nil
+        print("XToLevel: Old sConfig values migrated over to AceDB-3.0")
+    end
 end
