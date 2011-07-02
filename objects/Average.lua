@@ -8,8 +8,8 @@ XToLevel.Average =
 {
     activeAPI = "Blocky",
     knownAPIs = {
-        "Blocky",
-        "Classic"
+        [1] = "Blocky",
+        [2] = "Classic"
     }
 }
 
