@@ -719,49 +719,77 @@ args = {
                 type = "toggle",
                 name = L["Player Kills"],
                 get = function(i) return XToLevel.db.profile.ldb.text.kills end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.kills = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.kills = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataQuests = {
                 order = 17,
                 type = "toggle",
                 name = L["Player Quests"],
                 get = function(i) return XToLevel.db.profile.ldb.text.quests end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.quests = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.quests = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataDungeons = {
                 order = 18,
                 type = "toggle",
                 name = L["Player Dungeons"],
                 get = function(i) return XToLevel.db.profile.ldb.text.dungeons end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.dungeons = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.dungeons = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataBattles = {
                 order = 19,
                 type = "toggle",
                 name = L["Player Battles"],
                 get = function(i) return XToLevel.db.profile.ldb.text.bgs end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.bgs = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.bgs = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataObjectives = {
                 order = 20,
                 type = "toggle",
                 name = L["Player Objectives"],
                 get = function(i) return XToLevel.db.profile.ldb.text.bgo end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.bgo = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.bgo = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataProgress = {
                 order = 21,
                 type = "toggle",
                 name = L["Player Progress"],
                 get = function(i) return XToLevel.db.profile.ldb.text.xp end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.xp = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.xp = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
             ldbDataExperience = {
                 order = 22,
                 type = "toggle",
                 name = L["Player Experience"],
                 get = function(i) return XToLevel.db.profile.ldb.text.xpnum end,
-                set = function(i,v) XToLevel.db.profile.ldb.text.xpnum = v end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.xpnum = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
             },
         }
     },
