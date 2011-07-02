@@ -1,5 +1,7 @@
 Version 4.2.0_29
- - CHANGED: The config window has been remade using the Ace3 GUI and Config libraries. It looks a little different, but should work exactly the same.
+ - CHANGED: The config window has been remade using the AceGUI and AceConfig libraries. It looks a little different, but it offers all the same options.
+ - CHANGED: The way the AddOn stores player data has changed. It *should* not affect your existing data, but in some cases it may wipe it clean.
+ - FIX: The new Config window fixes an issue where the drop-down boxes in the config were not functional.
 
 Version 4.2.0_28
  - FIX: Added the ability to enable/disable the background for the Classic window mode again. Was removed with the pet code.
