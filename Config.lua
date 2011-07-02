@@ -1224,7 +1224,7 @@ function XToLevel.Config:Verify()
         XToLevel.db.char.customPattern = sData.customPattern
         XToLevel.db.char.data = sData.player
         sData = nil
-        print("|cFF00FFAAXToLevel:|r Character database saved.")
+        -- print("|cFF00FFAAXToLevel:|r Character database saved.")
     end
     if sConfig and type(sConfig) == "table" then
         -- NOTE! Simply overwriting the db.profile table doesn't seem to
@@ -1235,7 +1235,7 @@ function XToLevel.Config:Verify()
         XToLevel.db.profile.ldb = sConfig.ldb
         XToLevel.db.profile.timer = sConfig.timer
         sConfig = nil
-        print("|cFF00FFAAXToLevel:|r Profile settings saved.")
+        -- print("|cFF00FFAAXToLevel:|r Profile settings saved.")
     end
 
     if type(XToLevel.db.char.data.timer.lastUpdated) ~= "number" or GetTime() - XToLevel.db.char.data.timer.lastUpdated > (XToLevel.db.profile.timer.sessionDataTimeout * 60) or GetTime() - XToLevel.db.char.data.timer.start <= 0 then
