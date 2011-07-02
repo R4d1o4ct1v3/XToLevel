@@ -16,6 +16,25 @@ XToLevel.Config.frames = { }
 function XToLevel.Config:Initialize()
     LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("XToLevel", XToLevel.Config.GetOptions)
 
+    StaticPopupDialogs['XToLevelConfig_MessageColorsReset'] = {
+		text = L['Color Reset Dialog'],
+		button1 = L["Yes"],
+		button2 = L["No"],
+		OnAccept = function()
+			XToLevel.db.profile.messages.colors = {
+				playerKill = {0.72, 1, 0.71, 1},
+				playerQuest = {0.5, 1, 0.7, 1},
+				playerBattleground = {1, 0.5, 0.5, 1},
+				playerDungeon = {1, 0.75, 0.35, 1},
+				playerLevel = {0.35, 1, 0.35, 1},
+			};
+			XToLevel.Config:Open("Messages")
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+	}
+
     StaticPopupDialogs['XToLevelConfig_ResetPlayerKills'] = {
 		text = L['Reset Player Kill Dialog'],
 		button1 = L["Yes"],
