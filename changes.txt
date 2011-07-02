@@ -1,7 +1,7 @@
 Version 4.2.0_29
- - CHANGED: The config window has been remade using the AceGUI and AceConfig libraries. It looks a little different, but it offers all the same options.
- - CHANGED: The way the AddOn stores player data has changed. It *should* not affect your existing data, but in some cases it may wipe it clean.
- - FIX: The new Config window fixes an issue where the drop-down boxes in the config were not functional.
+ - CHANGED: The Config frame has been remade using the AceGUI and AceConfig libraries. It looks a little different, but it offers all the same options.
+ - FIX: The new Config frame fixes an issue where the drop-down boxes were not functional.
+ - NOTE: The way the addon stores your data internally has changed. Your old data will be moved over to the new system, so this shouldn't have any noticeable effect, but it's a rather major change so if you lose your data after the update this is likely the reason.
 
 Version 4.2.0_28
  - FIX: Added the ability to enable/disable the background for the Classic window mode again. Was removed with the pet code.
