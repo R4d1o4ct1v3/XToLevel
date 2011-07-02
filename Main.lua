@@ -216,7 +216,7 @@ function XToLevel:OnPlayerLogin()
         return false;
     end
     
-    self.db = LibStub("AceDB-3.0"):New("XToLevelDB", self.Config:GetDefaults(), true)
+    self.db = LibStub("AceDB-3.0"):New("XToLevelDB", self.Config:GetDefaults())
     XToLevel.Config:Verify()
 
     self:RegisterEvents()
