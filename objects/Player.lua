@@ -76,7 +76,7 @@ XToLevel.Player = {
 	dungeonList = {},
 	latestDungeonData = { totalXP = nil, killCount = nil, xpPerKill = nil, otherXP = nil },
 	bgList = { },
-	latestBgData = { totalXP = nil, objCount = nil, killCount = nil, xpPerObj = nil, xpPerKill = nil, otherXP = nil, },
+	latestBgData = { totalXP = nil, objCount = nil, killCount = nil, xpPerObj = nil, xpPerKill = nil, otherXP = nil, inProgress = nil, name = nil,},
 	
 	lastSync = time(),
 	lastXpPerHourUpdate = time() - 60,
@@ -1347,35 +1347,27 @@ XToLevel.Player = {
 	GetLatestBattlegroundDetails = function(self)
 		if # XToLevel.db.char.data.bgList > 0 then
 			-- Make sure to get the latest BG in a 5 level range.
-			local bgIndex = nil
-			for index, value in ipairs(XToLevel.db.char.data.bgList[1]) do
-				if XToLevel.Player.level - XToLevel.db.char.data.bgList[index].level < 5 then
-					bgIndex = index
-					break
+			for index, value in ipairs(XToLevel.db.char.data.bgList) do
+				if XToLevel.Player.level - tonumber(value.level) < 5 then
+                    self.latestBgData.name = value.name
+                    self.latestBgData.totalXP = value.totalXP
+                    self.latestBgData.objCount = value.objCount
+                    self.latestBgData.killCount = value.killCount
+                    self.latestBgData.xpPerObj = 0
+                    self.latestBgData.xpPerKill = 0
+                    self.latestBgData.inProgress = value.inProgress
+                    self.latestBgData.otherXP = value.totalXP - (value.objTotal + value.killTotal)
+                    if self.latestBgData.objCount > 0 then
+                        self.latestBgData.xpPerObj = XToLevel.Lib:round(value.objTotal / self.latestBgData.objCount, 0)
+                    end
+                    if self.latestBgData.killCount > 0 then
+                        self.latestBgData.xpPerKill = XToLevel.Lib:round(value.killTotal / self.latestBgData.killCount, 0)
+                    end
+                    return self.latestBgData
 				end
 			end
-			if not bgIndex then
-				return nil
-			else
-	            self.latestBgData.totalXP = XToLevel.db.char.data.bgList[1].totalXP
-	            self.latestBgData.objCount = XToLevel.db.char.data.bgList[1].objCount
-	            self.latestBgData.killCount = XToLevel.db.char.data.bgList[1].killCount
-	            self.latestBgData.xpPerObj = 0
-	            self.latestBgData.xpPerKill = 0
-	            self.latestBgData.otherXP = XToLevel.db.char.data.bgList[1].totalXP - (XToLevel.db.char.data.bgList[1].objTotal + XToLevel.db.char.data.bgList[1].killTotal)
-				
-				if self.latestBgData.objCount > 0 then
-					self.latestBgData.xpPerObj = XToLevel.Lib:round(XToLevel.db.char.data.bgList[1].objTotal / self.latestBgData.objCount, 0)
-				end
-				if self.latestBgData.killCount > 0 then
-					self.latestBgData.xpPerKill = XToLevel.Lib:round(XToLevel.db.char.data.bgList[1].killTotal / self.latestBgData.killCount, 0)
-				end
-				
-				return self.latestBgData
-			end
-		else
-			return nil
-		end
+        end
+        return nil
 	end,
 	
 	---

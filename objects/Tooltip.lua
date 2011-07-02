@@ -464,15 +464,16 @@ XToLevel.Tooltip =
             GameTooltip:AddLine(" ")
             
            	if latestData ~= nil then
-	            if XToLevel.db.char.data.bgList[1].inProgress then
+	            if latestData.inProgress then
 	                GameTooltip:AddLine(L['Current Battleground'] .. ":")
 	            else
 	                GameTooltip:AddLine(L['Last Battleground'] .. ":")
-	                if XToLevel.db.char.data.bgList[1].name ~= false then
-	                    GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , XToLevel.db.char.data.bgList[1].name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-	                end
 	            end
-	            
+	            if type(latestData.name) ~= "string" then
+                    lastData.name = "Unknown"
+                end
+                    
+                GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , latestData.name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 	            GameTooltip:AddDoubleLine(" ".. L['Total XP'] ..": " , XToLevel.Lib:NumberFormat(latestData.totalXP), self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 	            GameTooltip:AddDoubleLine(" ".. L['Objectives'] ..": " , XToLevel.Lib:NumberFormat(latestData.objCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerObj) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 	            GameTooltip:AddDoubleLine(" ".. L['NPC Kills'] ..": " , XToLevel.Lib:NumberFormat(latestData.killCount) .." @ ".. XToLevel.Lib:NumberFormat(latestData.xpPerKill) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
