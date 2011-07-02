@@ -74,7 +74,7 @@ XToLevel.LDB =
             XToLevel.Tooltip:Hide()
         end
         function self.dataObject:OnClick(button)
-			XToLevel.Config:Open("ldb")
+			XToLevel.Config:Open("LDB")
         end
         
         self:BuildPattern();-- /run XToLevel.LDB:BuildPattern(); XToLevel.LDB:Update();
@@ -111,7 +111,7 @@ XToLevel.LDB =
             XToLevel.Tooltip:Hide()
         end
         function self.timerObject:OnClick(button)
-			XToLevel.Config:Open("timer")
+			XToLevel.Config:Open("Timer")
         end
 		
 		self:UpdateTimer()
