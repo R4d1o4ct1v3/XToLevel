@@ -1190,11 +1190,11 @@ function XToLevel.Config:Verify()
         XToLevel.db.char.customPattern = sData.customPattern
         XToLevel.db.char.data = sData.player
         sData = nil
-        print("XToLevel: Old sData values migrated over to AceDB-3.0")
+        print("|cFF00FFAAXToLevel:|r Character database saved.")
     end
     if sConfig and type(sConfig) == "table" then
         XToLevel.db.profile = sConfig
         sConfig = nil
-        print("XToLevel: Old sConfig values migrated over to AceDB-3.0")
+        print("|cFF00FFAAXToLevel:|r Profile settings saved.")
     end
 end
