@@ -1,5 +1,6 @@
 ﻿XToLevel.AVERAGE_WINDOWS =
 {
+    [0] = "None",
     [1] = "Blocky",
     [2] = "Classic"
 }
