@@ -1040,7 +1040,7 @@ end
 -- Default config values.
 -- ----------------------------------------------------------------------------
 
-function XToLevel.Config:GetDefault()
+function XToLevel.Config:GetDefaults()
     return {
         profile = {
             general = {
@@ -1166,9 +1166,30 @@ function XToLevel.Config:GetDefault()
 end
 
 ---
--- Verifies that all config values have a default value
--- (New values are sometimes not initialized if older versions of saved values exist)
+-- Verifies that the config and data values are in order.
+-- This is mostly used to make sure changes to the permanent storage
+-- don't cause regression bugs.
 function XToLevel.Config:Verify()
+
+    -- If the old sData and sConfig tables are set, overwrite the current Ace3
+    -- DB tables with them, then clear them out.
+    if sData and type(sData) == "table" then
+        XToLevel.db.char.customPattern = sData.customPattern
+        XToLevel.db.char.data = sData.player
+        sData = nil
+        print("|cFF00FFAAXToLevel:|r Character database saved.")
+    end
+    if sConfig and type(sConfig) == "table" then
+        -- NOTE! Simply overwriting the db.profile table doesn't seem to
+        -- permanently store the table. The profile keys must be set induvidually.
+        XToLevel.db.profile.general = sConfig.general
+        XToLevel.db.profile.messages = sConfig.messages
+        XToLevel.db.profile.averageDisplay = sConfig.averageDisplay
+        XToLevel.db.profile.ldb = sConfig.ldb
+        XToLevel.db.profile.timer = sConfig.timer
+        sConfig = nil
+        print("|cFF00FFAAXToLevel:|r Profile settings saved.")
+    end
 
     if type(XToLevel.db.char.data.timer.lastUpdated) ~= "number" or GetTime() - XToLevel.db.char.data.timer.lastUpdated > (XToLevel.db.profile.timer.sessionDataTimeout * 60) or GetTime() - XToLevel.db.char.data.timer.start <= 0 then
         XToLevel.db.char.data.timer.start = GetTime();
@@ -1182,19 +1203,5 @@ function XToLevel.Config:Verify()
     	if not XToLevel.db.char.data.dungeonList[index].rested then
     		XToLevel.db.char.data.dungeonList[index].rested = 0
     	end
-    end
-
-    -- If the old sData and sConfig tables are set, overwrite the current Ace3
-    -- DB tables with them, then clear them out.
-    if sData and type(sData) == "table" then
-        XToLevel.db.char.customPattern = sData.customPattern
-        XToLevel.db.char.data = sData.player
-        sData = nil
-        print("|cFF00FFAAXToLevel:|r Character database saved.")
-    end
-    if sConfig and type(sConfig) == "table" then
-        XToLevel.db.profile = sConfig
-        sConfig = nil
-        print("|cFF00FFAAXToLevel:|r Profile settings saved.")
     end
 end
