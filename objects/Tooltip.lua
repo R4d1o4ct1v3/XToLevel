@@ -17,6 +17,8 @@ XToLevel.Tooltip =
     labelColor = {},
     dataColor = {},
     footerColor = {},
+
+    fontMargins = 2,
 }
 
 ---
@@ -30,6 +32,15 @@ function XToLevel.Tooltip:Initialize()
     self.initialized = true
 
     GameTooltip:HookScript("OnShow", self.OnShow_HookCallback);
+end
+
+function XToLevel.Tooltip:ResizeTooltip()
+    local width = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]:GetStringWidth();
+    local height = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]:GetStringHeight();
+    GameTooltip:SetHeight(GameTooltip:GetHeight() + height + self.fontMargins);
+    if (GameTooltip:GetWidth() < width) then
+        GameTooltip:SetWidth(width)
+    end
 end
 
 ---
@@ -77,7 +88,7 @@ function XToLevel.Tooltip:OnShow_HookCallback(...)
                     end
 
                     GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
-                    GameTooltip:Show()
+                    XToLevel.Tooltip:ResizeTooltip()
                 else
                     requiredText = nil
                 end
@@ -109,7 +120,7 @@ function XToLevel.Tooltip:OnShow_HookCallback(...)
                         required = "~" .. tostring(required)
                     end
                     GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. required, (r or 1.0), (g or 1.0), (b or 1.0))
-                    GameTooltip:Show()
+                    XToLevel.Tooltip:ResizeTooltip()
                 end
             end
         end
