@@ -8,10 +8,6 @@
 ## X-Compatible-With: 40200
 ## X-Since-Interface: 40100
 ## X-Category: Quest
-## X-Curse-Packaged-Version: @project-version@
-## X-Curse-Project-Name: XToLevel
-## X-Curse-Project-ID: xto-level
-## X-Curse-Repository-ID: wow/xto-level/mainline
 ## OptionalDeps: LibStub,CallbackHandler-1.0,LibDataBroker-1.1,AceTimer-3.0,AceConfig-3.0,AceGUI-3.0
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
@@ -20,24 +16,19 @@
 
 embeds.xml
 
-Locale.lua
-locale\enUS.lua
-locale\frFR.lua
-locale\deDE.lua
-locale\esES.lua
-locale\dkDK.lua
-locale\ruRU.lua
-locale\zhTW.lua
+locale\locale.xml
 
 Main.lua
 Tables.lua
 Libs.lua
 Config.lua
+
 objects\Messages.lua
 objects\LDB.lua
 objects\Tooltip.lua
 objects\Average.lua
 objects\Player.lua
+
 frames\GlobalTemplates.xml
 frames\AverageFrame_Classic.xml
 frames\AverageFrame_Blocky.xml

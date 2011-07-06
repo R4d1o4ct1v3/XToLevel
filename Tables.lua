@@ -45,7 +45,12 @@ XToLevel.DISPLAY_LOCALES =
     enUS = "English", 
     frFR = "Français", 
     deDE = "Deutsch", 
-    esES = "Español", 
+    esES = "Español (EU)",
+    esMX = "Español (AL)",
+    ruRU = "Русский",
+    koKR = "한국어",
+    zhCN = "简体中文",
+    zhTW = "繁體中文",
     dkDK = "Dansk"
 }
 

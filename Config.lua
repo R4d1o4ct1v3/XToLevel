@@ -1094,7 +1094,7 @@ function XToLevel.Config:GetDefaults()
             general = {
 		        allowDrag = true,
 		        allowSettingsClick = true,
-		        displayLocale = nil,
+		        displayLocale = GetLocale(),
 		        showDebug = false,
 	            rafEnabled = false,
 		        showNpcTooltipData = true,
