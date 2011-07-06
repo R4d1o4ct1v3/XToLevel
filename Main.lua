@@ -7,31 +7,6 @@
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
 
---[[
-Copyright (C) 2008-2010  Atli Þór <atli.j@advefir.com>
-
-Permission is hereby granted, free of charge, to any person
-obtaining a copy of this software and associated documentation
-files (the "Software"), to use, copy, modify and/or merge
-the Software, subject to the following conditions:
-
-1) The Software, or any works derived from the Software, may not 
-be published, distributed, sub-licensed, and/or sold under the original
-title of the Software, or as the work of the Software's authors.
-
-2) The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
---]]
-
 rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
 -- Create the Main XToLevel object and the main frame (used to listen to events.)
@@ -231,7 +206,7 @@ function XToLevel:OnPlayerLogin()
             return;
         end
     end
-    LOCALE = nil -- Removing the extra locale tables. They'r just a waste of memory.
+    wipe(LOCALE) -- Removing the extra locale tables. They'r just a waste of memory.
     
     XToLevel.Player:Initialize(XToLevel.db.char.data.killAverage, XToLevel.db.char.data.questAverage)
     XToLevel.Config:Initialize()
@@ -249,7 +224,7 @@ function XToLevel:Unload()
     for name, ref in pairs(self.AverageFrameAPI) do
         ref:Hide();
     end
-    table.wipe(XToLevel)
+    wipe(XToLevel)
 end
 
 --------------------------------------------------------------------------------
