@@ -540,7 +540,7 @@ args = {
             dataTimer = {
                 order = 22,
                 type = "toggle",
-                name = L["Player Timer"] or "Timer",
+                name = L["Player Timer"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerTimer end,
                 set = function(info, value) 
                     XToLevel.db.profile.averageDisplay.playerTimer = value 
@@ -971,7 +971,7 @@ args = {
             enableTimer = {
                 order = 0,
                 type = "toggle",
-                name = L["Enable timer"] or "Timer enabled",
+                name = L["Enable Timer"],
                 get = function() return XToLevel.db.profile.timer.enabled end,
                 set = "SetTimerEnabled",
             },
