@@ -26,6 +26,8 @@ locale\frFR.lua
 locale\deDE.lua
 locale\esES.lua
 locale\dkDK.lua
+locale\ruRU.lua
+locale\zhTW.lua
 
 Main.lua
 Tables.lua
