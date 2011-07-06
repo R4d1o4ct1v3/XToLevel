@@ -22,12 +22,9 @@ Availble tags:
 * <xpnum> - The XP gained or remaining for the current level.
 * <rested> - The EXTRA experience you will collect for mob kills.
 * <restedp> - The percentage of your current level the rested bonus covers. (150% or 30 bars is the ceiling)
-* <pet> - The amount of kills a hunter pet needs to level.
-* <petxp> - The percentage or the number of bars of your pet's XP gained or remaining for the current level.
-* <petxpnum> - Your pet's XP gained or remaining for the current level.
 * <timer> - The estimated time remaining until you reach your next level, based on your current XP per hour.
-* <guildxp> - The percentage completed of the current level for your guild.
-* <guilddaily> - The percentage completed of the current daily maximum for you guild.
+* <guildxp> - The percentage completed of the current level for your guild. (Experimental!)
+* <guilddaily> - The percentage completed of the current daily maximum for you guild. (Experimental!)
 
 (Note, that the <xp> and <petxp> values inlucde the % char at the end.)
 
@@ -42,11 +39,8 @@ Examples:
 - <kills label="" post="K"><quests label="" post="Q" seperator=" ">
  Output: 100K 20Q
  
-- <pet label="Pet Kills" post="-"> [<petxp label="" post="-">]
- Output: Pet Kills: 100- [25%-]
- 
-- <xpnum label="XP"> [<xp>] <rested label="R"> [<restedp>] <petxpnum label="Pet"> [<petxp>]
- Output: XP: 1,234 [23.4%] R: 3.210 [145%] Pet: 341 [30.4%]
+- <xpnum label="XP"> [<xp>] <rested label="R"> [<restedp>]
+ Output: XP: 1,234 [23.4%] R: 3.210 [145%]
 
  
 -----------------------------
@@ -68,9 +62,6 @@ Available tags are:
 * {bgo} - The amount of battleground objectives a player needs to level.
 * {xp} - The percentage or the number of bars of XP gained or remaining for the current level.
 * {xpnum} The XP gained or remaining for the current level.
-* {pet} - The amount of kills a hunter pet needs to level.
-* {petxp} - The percentage or the number of bars of your pet's XP gained or remaining for the current level.
-* {petxpnum} - Your pet's XP gained or remaining for the current level.
 * {timer} - The estimated time remaining until you reach your next level, based on your current XP per hour.
 
 Inside each of these tags, you can use the following values:
@@ -88,8 +79,8 @@ Example:
  - {kills}{seperator: }{color=FF0000}{$label}:{/color} {progress}{$value}{/progress}{/kills}
  
 These are the built in patterns.
- - Default:  {kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}{pet}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/pet}{petxp}{$seperator: }{progress}[{$value}]{/progress}{/petxp}
- - minimal: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/petxp}
- - minimal_dashed: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}{pet}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/pet}{petxp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/petxp}
- - brackets: {kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}{pet}{$seperator:-}{progress}[{$value}]{/progress}{/pet}{petxp}{progress}[{$value}]{/progress}{/petxp}
- - countdown: {xpnum}{color=cfcfdf}XP:{/color}{$seperator: }{progress}{$value}{/progress}{xp} {color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/xp}{$seperator: }{/xpnum}{rested}{color=cfcfdf}R:{/color}{$seperator: }{progress}{$value}{/progress} {restedp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/restedp}{$seperator: }{/rested}{petxpnum}{$seperator: }{color=cfcfdf}Pet: {/color}{progress}{$value}{/progress} {petxp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/petxp}{/petxpnum}
+ - Default:  {kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}
+ - minimal: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}
+ - minimal_dashed: {kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}
+ - brackets: {kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}
+ - countdown: {xpnum}{color=cfcfdf}XP:{/color}{$seperator: }{progress}{$value}{/progress}{xp} {color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/xp}{$seperator: }{/xpnum}{rested}{color=cfcfdf}R:{/color}{$seperator: }{progress}{$value}{/progress} {restedp}{color=cfcfdf}({/color}{progress}{$value}{/progress}{color=cfcfdf}){/color}{/restedp}{$seperator: }{/rested}
