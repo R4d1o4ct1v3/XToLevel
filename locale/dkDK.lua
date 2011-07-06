@@ -2,15 +2,12 @@
     --[[
       || Messages
     --]]
-    ['Level Reached'] = "Level op! Tillykke!",
-    ['Pet Level Reached'] = " har nå sit næste level! Tillykke!",
 	['Quests Needed'] = " flere quests som den for at level op",
     ['Anonymous Needed'] = " flere som den for at level op",
 	['Battlegrounds Needed'] = " flere kampe som den for at level op",
 	['Battleground Objectives Needed'] = " flere mål som den for at level op",
 	['Dungeons Needed'] = " flere løbe som den for at level op",
 	['Kills Needed'] = " flere for at level op",
-	['Pet Kills Needed'] = " for at ",
 
     --[[
       || Average Window & LDB Text
@@ -22,27 +19,16 @@
     ['Quests Short'] = "Q",
     ['Dungeons'] = "Dungeons",
     ['Dungeons Short'] = "Du",
-	['Pet'] = "Pet",
-    ['Pet Short'] = "P",
     ['Battles'] = "Kampe",
     ['Battles Short'] = "K",
 	['Battlegrounds'] = "Battlegrounds",
-    ['Battlegrounds Short'] = "B",
 	['Objectives'] = "Mål",
 	['Objectives Short'] = "M",
     ['XP Percent'] = "XP",
-	['XP Percent Short'] = "XP",
-	['XP Bars'] = "XP",
-    ['XP Bars Short'] = "XP",
-    ['Pet XP'] = "Pet XP",
-    ['Pet XP Short'] = "XP",
-    ['Pet Bars'] = "Pet XP",
-    ['Pet Bars Short'] = "XP",
     ['Bars'] = "bars",
 	['Rested'] = "Rested",
 	['Rested Short'] = "R",
 	['Timer'] = 'Timer',
-	['Timer Short'] = "T",
 	["TimeToLevel"] = "TimeToLevel",
     
     --[[
@@ -50,7 +36,6 @@
     --]]
     ['XToLevel'] = "XToLevel",
     ['Experience'] = "Erfaring",
-    ['Pet Experience'] = "Pet Erfaring",
 	['XP Progress'] = "fremskridt",
     ['Daily Progress'] = 'daglige fremskridt',
     ['XP Bars Remaining'] = "bars nødvendigt",
@@ -66,7 +51,6 @@
 	['No Dungeons Completed'] = "Ingen Data",
 	['Name'] = "Navn",
 	['Total XP'] = "Alt XP",
-    ['Total Rested'] = "Alt Udhvilet",
 	['NPC Kills'] = "NPC Drab",
 	['No Battles Fought'] = "Ingen Data",
     ['Click To Configure'] = "Klik for at konfigurere",
@@ -76,7 +60,7 @@
 	['Min'] = "Min",
 	['Kills to level'] = "Kills to level",
     ['Guild'] = 'Guild',
-	['Guild Window Chioce Description'] = 'Indstil til at vise, at udviklingen i det aktuelle niveau eller forløbet af den daglige kvote.',
+	['Gathering'] = "Gathering",
 	['Max Level LDB Message'] = "Højeste niveau nået. De LDB datakilder, vil automatisk blive deaktiveret næste gang UI genindlæses.",
     
 	["Updating..."] = "Updating...",
@@ -108,36 +92,24 @@
     ['Category'] = "Kategori",
     ['License'] = "License",
     ['All Rights Reserved'] = "Alle rettigheder forbeholdt.",
-    ["This option becomes available at level 10"] = "Denne mulighed bliver tilgængelig på niveau 10.",
-    ["This option becomes available at level 15"] = "Denne mulighed bliver tilgængelig på niveau 15.",
     
     -- Main panel
-    ['LocaleHeader'] = "Locale",
-    ['Debug'] = "Debug",
 	['Show Debug Info'] = "Vis Debug Info",
-    ['Close'] = "Luk",
     ['Config Language Reload Prompt'] = "Sproget vil ikke blive ændret, før UI genindlæses. Ønsker du at genindlæse nu?",
     ['Yes'] = 'Ja',
     ['No'] = 'Nej',
     
     ['Recruit A Friend'] = "Tilmeld en ven",
-    ['Enable'] = "Aktiver",
     ['RAF Description'] = "Dette tripples XP erfaringer, når TEV er aktiveret, og når TEV bonus anvendes. Jeg kan ikke debug dette selv, fordi jeg ikke bor i en TEV støtteberettiget land, så hvis du kan bekræfte, hvorvidt dette virker det ville være meget værdsat.",
     
     -- Tab buttons & headers
-    ['Messages'] = "Beskeder",
     ['Tooltip'] = "Tooltip",
     ['Data'] = "Data",
     ['Window Tab'] = "Vindue",
     ['LDB Tab'] = "LDB",
-    ['LDB Text'] = "LDB Tekst",
-    ['Average Window'] = "Det nogenlunde Vindue",
-    ['Average Data'] = "Det nogenlunde Data",
-    ['Verbose'] = "Verbose",
 	
 	-- Messages
 	['Player Messages'] = "Spiller Bedskeder",
-	['Pet Messages'] = "Pet Bedskeder",
     ['Message Colors'] = 'Besked Farver',
 	['Show Floating'] = "Vis flydende",
 	['Show In Chat'] = "Vis i Chat",
@@ -162,8 +134,6 @@
     ['Combine Tooltip Data'] = "Kombiner Tooltip Data",
 	
 	['Vertical Align'] = "Juster vertikalt",
-    ['Show Pet Frame'] = "Vis pet Vindue",
-    ['Detach Pet Frame'] = "Løsne pet Vindue",
 	
 	['Lock Avarage Display'] = "Lås Vindue",
 	['Allow Average Click'] = "Vis Redigering med højre-klik",
@@ -174,10 +144,9 @@
 	['Player Battles'] = "Spiller Kampe",
 	['Player Objectives'] = "Spiller Kamp-mål",
 	['Player Progress'] = "Fremskridt",
+	['Player Timer'] = "Timer",
 	['Player Experience'] = "Experience",
     
-    ['Pet Kills'] = "Pet Kills",
-    ['Pet Progress'] = "Pet Fremskridt",
     
 	-- Average Data
     ['Data Range Header'] = "Range",
@@ -188,13 +157,11 @@
     ['Reset Player Quests'] = "Spiller Quests",
     ['Reset Battlegrounds'] = "Battlegrounds",
     ['Reset Dungeons'] = "Dungeons",
-    ['Reset Pet Kills'] = "Pet Drab",
     ['Reset Gathering'] = "Gathering",
     ['Reset Player Kill Dialog'] = "Er du sikker på at du vil slette spillerens drab-optagelser?",
     ['Reset Player Quest Dialog'] = "Er du sikker på at du vil slette spillerens quest-optagelser?",
     ['Reset Battleground Dialog'] = "Er du sikker på at du vil slette battleground-optagelser?",
     ['Reset Dungeon Dialog'] = "Er du sikker på at du vil slette spillerens dungeon-optagelser?",
-    ['Reset Pet Kill Dialog'] = "Er du sikker på at du vil slette dit pets' drab-optagelser?",
     ['Reset Gathering Dialog'] = "Er du sikker på du vil slette indsamling records?",
 	
 	-- LDB Text
@@ -202,10 +169,7 @@
     ['LDB Enabled Description'] = "Aktivere eller deaktivere LDB datakilder. Bemærk at dette påvirker TimeToLevel LDB kilden så godt. (Kræver reload.)",
     ['LDB Reload Dialog'] = "Denne ændring vil først træde i kraft den UI genindlæses. Ønsker du at genindlæse det nu?",
     ['LDB Appearence Header'] = "Appearence",
-	['LDB Pattern Header'] = "Tekst Mønster",
     ['LDB Player Data Header'] = "Spiller Data",
-	['LDB Pet Data Header'] = "Pet Data",
-    ['LDB Tooltip Header'] = "Tooltip",
 	['Show Text'] = "Vis Tekst",
 	['Show Label'] = "Vis Etiket",
 	['Show Icon'] = "Vis Ikon",
@@ -215,8 +179,6 @@
 	['Allow Colored Text'] = "Tillad farvet tekst",
 	['Show Verbose'] = "Verbose",
 	['Color By XP'] = "Farve-data af XP-fremskridt",
-	['XP %'] = "XP %",
-	['Pet XP %'] = "Pet XP %",
 	
 	-- Tooltip
 	['Tooltip Sections Header'] = "Sections",
@@ -225,10 +187,9 @@
 	['Show Battleground Info'] = "Vis Battleground Info",
     ['Show Dungeon Info'] = "Vis Dungeon Info",
     ['Show Gathering Info'] = "Show Gathering Info",
-    ['Show Guild Info'] = "Show Guild Info",
-	['Show Pet Details'] = "Vis Pet Detaljer",
     ['Show Timer Details'] = "Vis Timer Info",
     
     -- Timer
+    ['Enable Timer'] = "Timer enabled",
     ['Reset Timer Dialog'] = 'Are you sure you want to reset the timer?';
 }
