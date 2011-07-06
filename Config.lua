@@ -17,7 +17,7 @@ function XToLevel.Config:Initialize()
     LibStub("AceConfigRegistry-3.0"):RegisterOptionsTable("XToLevel", XToLevel.Config.GetOptions)
 
     StaticPopupDialogs['XToLevelConfig_MessageColorsReset'] = {
-		text = L['Color Reset Dialog'],
+		text = L["Color Reset Dialog"],
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function()
@@ -36,7 +36,7 @@ function XToLevel.Config:Initialize()
 	}
 
     StaticPopupDialogs['XToLevelConfig_ResetPlayerKills'] = {
-		text = L['Reset Player Kill Dialog'],
+		text = L["Reset Player Kill Dialog"],
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function()
@@ -50,7 +50,7 @@ function XToLevel.Config:Initialize()
 		hideOnEscape = true,
 	}
 	StaticPopupDialogs['XToLevelConfig_ResetPlayerQuests'] = {
-		text = L['Reset Player Quest Dialog'],
+		text = L["Reset Player Quest Dialog"],
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function()
@@ -64,7 +64,7 @@ function XToLevel.Config:Initialize()
 		hideOnEscape = true,
 	}
 	StaticPopupDialogs['XToLevelConfig_ResetBattles'] = {
-		text = L['Reset Battleground Dialog'],
+		text = L["Reset Battleground Dialog"],
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function()
@@ -78,7 +78,7 @@ function XToLevel.Config:Initialize()
 		hideOnEscape = true,
 	}
 	StaticPopupDialogs['XToLevelConfig_ResetDungeons'] = {
-	    text = L['Reset Dungeon Dialog'],
+	    text = L["Reset Dungeon Dialog"],
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
@@ -92,7 +92,7 @@ function XToLevel.Config:Initialize()
 	    hideOnEscape = true,
 	}
     StaticPopupDialogs['XToLevelConfig_ResetTimer'] = {
-	    text = L['Reset Timer Dialog'],
+	    text = L["Reset Timer Dialog"],
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
@@ -106,7 +106,7 @@ function XToLevel.Config:Initialize()
 	    hideOnEscape = true,
 	}
     StaticPopupDialogs['XToLevelConfig_ResetGathering'] = {
-	    text = L['Reset Gathering Dialog'],
+	    text = L["Reset Gathering Dialog"],
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
@@ -120,7 +120,7 @@ function XToLevel.Config:Initialize()
 	    hideOnEscape = true,
 	}
     StaticPopupDialogs['XToLevelConfig_LdbReload'] = {
-	    text = L['LDB Reload Dialog'],
+	    text = L["LDB Reload Dialog"],
 	    button1 = L["Yes"],
 	    button2 = L["No"],
 	    OnAccept = function()
@@ -164,7 +164,7 @@ args = {
             addonDescription = {
                 order = 0,
                 type = "description",
-                name = L['MainDescription'],
+                name = L["MainDescription"],
             },
             infoHeader = {
                 order = 1,
@@ -199,7 +199,7 @@ args = {
             infoLicense = {
                 order = 7,
                 type = "description",
-                name = "|cFFFFAA00" .. L["License"] .. ":|r |cFFFFFFFF" .. L['All Rights Reserved'] .. " (See LICENSE.txt)",
+                name = "|cFFFFAA00" .. L["License"] .. ":|r |cFFFFFFFF" .. L["All Rights Reserved"] .. " (See LICENSE.txt)",
             },
         }
     },
@@ -210,12 +210,13 @@ args = {
             localeHeader = {
                 order = 0,
                 type = "header",
-                name = "Locale",
+                name = L["Locale Header"],
             },
             localeSelect = {
                 order = 1,
                 type = "select",
-                name = "Display locale",
+                name = L["Locale Select"],
+                desc = L["Locale Select Description"],
                 style = "dropdown",
                 values = XToLevel.DISPLAY_LOCALES,
                 get = "GetLocale",
@@ -224,20 +225,20 @@ args = {
             debugHeader = {
                 order = 2,
                 type = "header",
-                name = "Misc",
+                name = L["Misc Header"],
             },
             debugEnabled = {
                 order = 3,
                 type = "toggle",
                 name = L["Show Debug Info"],
-                desc = "If enabled, shows details used during development. Not in any way useful for typical users.",
+                desc = L["Debug Info Description"],
                 get = function(info) return XToLevel.db.profile.general.showDebug end,
                 set = function(info, value) XToLevel.db.profile.general.showDebug = value end,
             },
             rafEnabled = {
                 order = 4,
                 type = "toggle",
-                name = L['Recruit A Friend'],
+                name = L["Recruit A Friend"],
                 desc = L["RAF Description"],
                 get = function(info) return XToLevel.db.profile.general.rafEnabled end,
                 set = function(info, value) XToLevel.db.profile.general.rafEnabled = value end,
@@ -251,38 +252,38 @@ args = {
             playerHeader = {
                 order = 0,
                 type = "header",
-                name = L['Player Messages'],
+                name = L["Player Messages"],
             },
             playerFloating = {
                 order = 1,
                 type = "toggle",
-                name = L['Show Floating'],
+                name = L["Show Floating"],
                 get = function(info) return XToLevel.db.profile.messages.playerFloating end,
                 set = function(info, value) XToLevel.db.profile.messages.playerFloating = value end,
             },
             playerChat = {
                 order = 2,
                 type = "toggle",
-                name = L['Show In Chat'],
+                name = L["Show In Chat"],
                 get = function(info) return XToLevel.db.profile.messages.playerChat end,
                 set = function(info, value) XToLevel.db.profile.messages.playerChat = value end,
             },
             playerBG = {
                 order = 3,
                 type = "toggle",
-                name =L['Show BG Objectives'],
+                name =L["Show BG Objectives"],
                 get = function(info) return XToLevel.db.profile.messages.bgObjectives end,
                 set = function(info, value) XToLevel.db.profile.messages.bgObjectives = value end,
             },
             colorsHeader = {
                 order = 4,
                 type = "header",
-                name = L['Message Colors'],
+                name = L["Message Colors"],
             },
             colorKills = {
                 order = 5,
                 type = "color",
-                name = L['Player Kills'],
+                name = L["Player Kills"],
                 hasAlpha = true,
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerKill) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerKill = {r, g, b, a} end,
@@ -290,7 +291,7 @@ args = {
             colorQuests = {
                 order = 6,
                 type = "color",
-                name = L['Player Quests'],
+                name = L["Player Quests"],
                 hasAlpha = true,
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerQuest) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerQuest = {r, g, b, a} end,
@@ -298,7 +299,7 @@ args = {
             colorDungeons = {
                 order = 7,
                 type = "color",
-                name = L['Player Dungeons'],
+                name = L["Player Dungeons"],
                 hasAlpha = true,
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerDungeon) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerDungeon = {r, g, b, a} end,
@@ -306,7 +307,7 @@ args = {
             colorBattles = {
                 order = 8,
                 type = "color",
-                name = L['Player Battles'],
+                name = L["Player Battles"],
                 hasAlpha = true,
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerBattleground) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerBattleground = {r, g, b, a} end,
@@ -314,7 +315,7 @@ args = {
             colorLevelup = {
                 order = 9,
                 type = "color",
-                name = L['Player Levelup'],
+                name = L["Player Levelup"],
                 hasAlpha = true,
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerLevel) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerLevel = {r, g, b, a} end,
@@ -327,7 +328,7 @@ args = {
             colorResetBtn = {
                 order = 11,
                 type = "execute",
-                name = L['Color Reset'],
+                name = L["Color Reset"],
                 func = function() StaticPopup_Show("XToLevelConfig_MessageColorsReset") end,
             },
         },
@@ -341,7 +342,7 @@ args = {
                 type = "select",
                 style = "dropdown",
                 name = L["Active Window Header"],
-                desc = "Sets the style of the addon window.",
+                desc = L["Active Window Description"],
                 values = XToLevel.AVERAGE_WINDOWS,
                 get = "GetActiveWindow",
                 set = "SetActiveWindow",
@@ -567,7 +568,7 @@ args = {
                 order = 0,
                 type = "toggle",
                 name = L["LDB Enabled"],
-                desc = L['LDB Enabled Description'],
+                desc = L["LDB Enabled Description"],
                 get = function(i) return XToLevel.db.profile.ldb.enabled end,
                 set = function(i, v) 
                     XToLevel.db.profile.ldb.enabled = v
@@ -578,13 +579,13 @@ args = {
             ldbPresetHeader = {
                 order = 1,
                 type = "header",
-                name = "LDB Patterns",
+                name = L["LDB Patterns Header"],
             },
             ldbPatternSelect = {
                 order = 2,
                 type = "select",
                 style = "dropdown",
-                name = "Style",
+                name = L["LDB Pattern Select"],
                 values = XToLevel.LDB_PATTERNS,
                 get = "GetLdbPattern",
                 set = "SetLdbPattern",
@@ -592,8 +593,8 @@ args = {
             ldbPatternInput = {
                 order = 3,
                 type = "input",
-                name = "Custom Pattern",
-                desc = "See the 'customPatterns.txt' file for more details. Requires that the 'Custom' preset is selected.",
+                name = L["Custom Pattern Label"],
+                desc = L["Custom Pattern Description"],
                 width = "full",
                 multiline = true,
                 get = function(i) return XToLevel.db.char.customPattern end,
@@ -712,7 +713,7 @@ args = {
             ldbDataHeader = {
                 order = 14,
                 type = "header",
-                name = L['LDB Player Data Header'],
+                name = L["LDB Player Data Header"],
             },
             ldbDataKills = {
                 order = 16,
@@ -800,7 +801,7 @@ args = {
             dataRangeHeader = {
                 order = 0,
                 type = "header",
-                name = L['Data Range Header'],
+                name = L["Data Range Header"],
             },
             dataRangeDescription = {
                 order = 1,
@@ -860,7 +861,7 @@ args = {
             dataClearHeader = {
                 order = 7,
                 type = "header",
-                name = L['Clear Data Header'],
+                name = L["Clear Data Header"],
             },
             dataClearDescription = {
                 order = 8,
@@ -953,12 +954,12 @@ args = {
             miscHeader = {
                 order = 8,
                 type = "header",
-                name = "Misc",
+                name = L["Misc Header"],
             },
             npcTooltipData = {
                 order = 9,
                 type = "toggle",
-                name = "Show kills needed in NPC tooltips.",
+                name = L["Show kills needed in NPC tooltips"],
                 get = function(i) return XToLevel.db.profile.general.showNpcTooltipData end,
                 set = function(i,v) XToLevel.db.profile.general.showNpcTooltipData = v end,
             },
@@ -986,27 +987,27 @@ args = {
                 style = "dropdown",
                 values = XToLevel.TIMER_MODES,
                 name = L["Mode"],
-                desc = "The source of the data used for the timer. - \"Session\" uses only the XP gained since the UI was loaded. Ideal as a \"real-time\" estimate while farming. - \"Level\" uses the total time and XP this level. Gives a better long-term estimate for quest and dungeon runners. (Note that the Level mode may be fairly inaccurate during the first few % of a new level.)",
+                desc = L["Timer mode description"],
                 get = function() return XToLevel.db.profile.timer.mode end,
                 set = function(i,v) XToLevel.db.profile.timer.mode = v end,
             },
             timerReset = {
                 order = 3,
                 type = "execute",
-                name = "Reset",
-                desc = "Resets the session counter.",
+                name = L["Timer Reset"],
+                desc = L["Timer Reset Description"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetTimer") end,
             },
             timeoutHeader = {
                 order = 4,
                 type = "header",
-                name = "Session Timeout",
+                name = L["Session Timeout Header"],
             },
             timoutRange = {
                 order = 5,
                 type = "range",
-                name = "Timeout in minutes",
-                desc = "Sets how long you can stay logged off before the session data is thrown away. Note that when a session is restored, it will behave as if you never logged of; as if you were simply AFK. The accuracy of the data will therefore degrade more and more the longer you stay away.",
+                name = L["Session Timeout Label"],
+                desc = L["Session Timeout Description"],
                 min = 0,
                 max = 60,
                 step = 1,
@@ -1025,7 +1026,7 @@ end
 
 function XToLevel.Config:SetLocale(info, value)
     StaticPopupDialogs['XToLevelConfig_LocaleReload'] = {
-		text = L['Config Language Reload Prompt'],
+		text = L["Config Language Reload Prompt"],
 		button1 = L["Yes"],
 		button2 = L["No"],
 		OnAccept = function() 
