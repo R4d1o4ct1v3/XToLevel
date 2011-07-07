@@ -1,11 +1,9 @@
 Version 4.2.0_30
- - NEW: Added support for the Russian (ruRU) and the Latin-American Spanish (esMX) locales, as well as experimental support
-        for Korean (koKR) and Chinese (both zhCN and zhTW).
- - FIX: An issue with the arrangement of the external libraries, causing the AceConfig and AceGUI libraries to fail to load properly when XToLevel was the first or only addon using them, has been resolved.
+ - NEW: Added support for the Russian (ruRU) and the Latin-American Spanish (esMX) locales, as well as experimental support for Korean (koKR) and Chinese (both zhCN and zhTW).
+ - FIX: An issue with the load order of the external libraries, causing the AceConfig and AceGUI libraries to fail to load properly when XToLevel was the first or only addon using them, has been resolved.
  - FIX: The "Current Battleground" section of the tooltip should now be properly displayed again.
  - FIX: The method used to add details to NPC and gathering node tooltips has been updated. It should now be more compatible with Tooltip addons, such as TipTac.
- - NOTE: A big part of the translations for the new locales were contributed by CurseForge members, but the rest of them
-         are still just automated Google Translate versions. Help with translations is always welcome!
+ - NOTE: A big part of the translations for the new locales were contributed by CurseForge members, but the rest of them are still just automated Google Translate versions. Help with translations is always welcome!
 
 Version 4.2.0_29
  - CHANGED: The Config frame has been remade using the AceGUI and AceConfig libraries. It looks a little different, but it offers all the same options.
