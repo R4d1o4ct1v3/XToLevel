@@ -34,12 +34,20 @@ function XToLevel.Tooltip:Initialize()
     GameTooltip:HookScript("OnShow", self.OnShow_HookCallback);
 end
 
+---
+-- Used to resize the GameTooltip after adding a new line to it.
 function XToLevel.Tooltip:ResizeTooltip()
-    local width = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]:GetStringWidth();
-    local height = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]:GetStringHeight();
-    GameTooltip:SetHeight(GameTooltip:GetHeight() + height + self.fontMargins);
-    if (GameTooltip:GetWidth() < width) then
-        GameTooltip:SetWidth(width)
+    local str = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]
+    if str ~= nil then
+        local width = str:GetStringWidth() + ((str:GetLeft() - GameTooltip:GetLeft()) * 2)
+        GameTooltip:SetHeight(GameTooltip:GetHeight() + str:GetStringHeight() + self.fontMargins);
+        if (GameTooltip:GetWidth() < width) then
+            GameTooltip:SetWidth(width)
+        end
+    else
+        -- Fallback in case the line couldn't be found.
+        GameTooltip:Show()
+        console:log("XToLevel.Tooltip::ResizeTooltip - Primary resize method failed, falling back on GameTooltip::Show")
     end
 end
 
