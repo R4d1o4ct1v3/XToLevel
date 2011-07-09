@@ -1,3 +1,6 @@
+Version 4.2.0_31
+ - FIX: Corrected a problem that sometimes caused the tooltip to double in width on gathering nodes.
+
 Version 4.2.0_30
  - NEW: Added support for the Russian (ruRU) and the Latin-American Spanish (esMX) locales, as well as experimental support for Korean (koKR) and Chinese (both zhCN and zhTW).
  - FIX: An issue with the load order of the external libraries, causing the AceConfig and AceGUI libraries to fail to load properly when XToLevel was the first or only addon using them, has been resolved.
