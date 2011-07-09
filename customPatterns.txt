@@ -76,7 +76,7 @@ Additionally, you can use the following tags to color the output:
 			   Only usable inside one of the tags mentioned above.!
 			   
 Example:
- - {kills}{seperator: }{color=FF0000}{$label}:{/color} {progress}{$value}{/progress}{/kills}
+ - {kills}{$seperator: }{color=FF0000}{$label}:{/color} {progress}{$value}{/progress}{/kills}
  
 These are the built in patterns.
  - Default:  {kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}
