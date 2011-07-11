@@ -18,7 +18,8 @@ XToLevel.Tooltip =
     dataColor = {},
     footerColor = {},
 
-    fontMargins = 2,
+    verticalMargin = 2,
+    horizontalMargin = 20,
 }
 
 ---
@@ -39,8 +40,8 @@ end
 function XToLevel.Tooltip:ResizeTooltip()
     local str = _G[GameTooltip:GetName() .. "TextLeft" .. GameTooltip:NumLines()]
     if str ~= nil then
-        local width = str:GetStringWidth() + 20
-        GameTooltip:SetHeight(GameTooltip:GetHeight() + str:GetStringHeight() + self.fontMargins);
+        local width = str:GetStringWidth() + self.horizontalMargin
+        GameTooltip:SetHeight(GameTooltip:GetHeight() + str:GetStringHeight() + self.verticalMargin);
         if (GameTooltip:GetWidth() < width) then
             GameTooltip:SetWidth(width)
         end
