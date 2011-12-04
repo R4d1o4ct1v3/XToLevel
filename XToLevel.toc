@@ -1,11 +1,11 @@
-## Interface: 40200
+## Interface: 40300
 ## Title: XToLevel
 ## Author: @project-author@
 ## Version: @project-version@
 ## Notes: Shows mobs, quests, dungeons and battles needed until you reach your next level.
 ## eMail: atli.j@advefir.com
 ## URL: http://wow.curseforge.com/addons/xto-level/
-## X-Compatible-With: 40200
+## X-Compatible-With: 40300
 ## X-Since-Interface: 40100
 ## X-Category: Quest
 ## OptionalDeps: LibStub,CallbackHandler-1.0,LibDataBroker-1.1,AceTimer-3.0,AceConfig-3.0,AceGUI-3.0,AceDB-3.0,AceDBOptions-3.0
