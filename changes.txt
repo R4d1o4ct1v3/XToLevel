@@ -1,3 +1,6 @@
+Version 4.3.0_32
+ - FIX: Updated the TOC interface version to make it compatible with 4.3.
+
 Version 4.2.0_31
  - FIX: Corrected a problem that sometimes caused the tooltip to double in width on gathering nodes.
 
