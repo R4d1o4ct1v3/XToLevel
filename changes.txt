@@ -1,3 +1,7 @@
+Version 4.3.0_33
+ - NEW: Added translations for the Portuguese client.
+ - FIX: The config windows will no longer be blank when the Danish language is in use.
+
 Version 4.3.0_32
  - FIX: Updated the TOC interface version to make it compatible with 4.3.
 
