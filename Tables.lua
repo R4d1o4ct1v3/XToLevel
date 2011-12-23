@@ -47,6 +47,7 @@ XToLevel.DISPLAY_LOCALES =
     deDE = "Deutsch", 
     esES = "Español (EU)",
     esMX = "Español (AL)",
+	ptBR = "Português",
     ruRU = "Русский",
     koKR = "한국어",
     zhCN = "简体中文",
