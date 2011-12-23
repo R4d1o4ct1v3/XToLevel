@@ -192,4 +192,24 @@
     -- Timer
     ['Enable Timer'] = "Timer enabled",
     ['Reset Timer Dialog'] = 'Are you sure you want to reset the timer?';
+	
+	-- Missing
+	['Locale Header'] = "Locale",
+	['Locale Select'] = "Display locale",
+	['Locale Select Description'] = "Select which language you want to use. This only affects XToLevel, nothing else.",
+	['Misc Header'] = "Misc",
+	['Debug Info Description'] = "If enabled, shows details used during development. Not in any way useful for typical users.",
+	['Active Window Description'] = "Sets the style of the AddOn window.",
+	['LDB Patterns Header'] = "LDB Patterns",
+	['LDB Pattern Select'] = "Style",
+	['Custom Pattern Label'] = "Custom Pattern",
+	['Custom Pattern Description'] = "See the 'customPatterns.txt' file for more details. Requires that the 'Custom' preset is selected.",
+	['Show kills needed in NPC tooltips'] = "Show kills needed in NPC tooltips",
+	['Timer mode description'] = "he source of the data used for the timer. \"Session\" uses only the XP gained since the UI was loaded. Ideal as a \"real-time\" estimate while farming. \"Level\" uses the total time and XP this level. Gives a better long-term estimate for quest and dungeon runners. - Note that the Level mode may be fairly inaccurate during the first few % of a new level.",
+	['Timer Reset'] = "Reset",
+	['Timer Reset Description'] = "Resets the session counter.",
+	['Session Timeout Header'] = "Session Timeout",
+	['Session Timeout Label'] = "Timeout in minutes",
+	['Session Timeout Description'] = "Sets how long you can stay logged off before the session data is thrown away. Note that when a session is restored, it will behave as if you never logged of; as if you were simply AFK. The accuracy of the data will therefore degrade more and more the longer you stay away."
+	
 }
