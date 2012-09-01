@@ -199,7 +199,7 @@ args = {
             infoLicense = {
                 order = 7,
                 type = "description",
-                name = "|cFFFFAA00" .. L["License"] .. ":|r |cFFFFFFFF" .. L["All Rights Reserved"] .. " (See LICENSE.txt)",
+                name = "|cFFFFAA00" .. L["License"] .. ":|r |cFFFFFFFFMIT License (See LICENSE.txt)",
             },
         }
     },
