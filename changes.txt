@@ -1,3 +1,6 @@
+Version 5.0.4_34
+ - FIX: Bugs caused by the 5.0.4 API changes fixed.
+
 Version 4.3.0_33
  - NEW: Added translations for the Portuguese client.
  - FIX: The config windows will no longer be blank when the Danish language is in use.
