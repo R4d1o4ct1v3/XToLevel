@@ -195,7 +195,7 @@ end
 -- Determines whether the player is eligable for the 3x Recriuit A Friend bonus.
 ---
 function XToLevel.Lib:IsPlayerRafEligable()
-    local numPartyMembers = GetNumPartyMembers();
+    local numPartyMembers = GetNumSubgroupMembers();
     if numPartyMembers > 0 then
         local memberID = 1;
         while memberID <= numPartyMembers do
@@ -316,7 +316,7 @@ end
 
 function XToLevel.Lib:GetChatXPRegexp(isQuest)
 	local inInstance, itype = IsInInstance()
-    local inGroup =  GetNumPartyMembers() > 0
+    local inGroup =  GetNumSubgroupMembers() > 0
 	local apiRegexp = nil
 	local isRested = GetXPExhaustion()
 	if not isQuest then
