@@ -1,4 +1,5 @@
-﻿---
+local _, addonTable = ...
+---
 -- Contains definitions for the Tooltip display.
 -- @file XToLevel.Display.lua
 -- @release @project-version@
@@ -6,6 +7,7 @@
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
 
+local L = addonTable.GetLocale()
 
 XToLevel.Tooltip = 
 {

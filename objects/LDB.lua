@@ -1,10 +1,13 @@
-﻿---
+local _, addonTable = ...
+---
 -- Contains definitions for the LDB data source.
 -- @file XToLevel.Display.lua
 -- @release @project-version@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Tooltip" -- For documentation purposes. Do not uncomment!
+
+local L = addonTable.GetLocale()
 
 XToLevel.LDB = {
     -- Constants

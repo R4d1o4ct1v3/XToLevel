@@ -1,3 +1,4 @@
+local _, addonTable = ...
 ---
 -- Controls all Playe related functionality.
 -- @file XToLevel.Player.lua
@@ -5,6 +6,8 @@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
+
+local L = addonTable.GetLocale()
 
 ---
 -- Control object for player functionality and calculations.

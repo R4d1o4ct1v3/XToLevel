@@ -1,4 +1,6 @@
-﻿---
+local _, addonTable = ...
+
+---
 -- Defines all data and functionality related to the configuration and per-char
 -- data tables.
 -- @file XToLevel.Config.lua
@@ -6,6 +8,9 @@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
+
+
+local L = addonTable.GetLocale()
 
 -- ----------------------------------------------------------------------------
 -- Config GUI Initialization

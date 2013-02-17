@@ -1,4 +1,5 @@
-﻿---
+local _, addonTable = ...
+---
 -- The main application. Contains the event callbacks that control the flow of 
 -- the application.
 -- @file Main.lua
@@ -6,6 +7,8 @@
 -- @copyright Atli Þór (atli.j@advefir.com)
 ---
 --module "XToLevel" -- For documentation purposes. Do not uncomment!
+
+local L = addonTable.GetLocale()
 
 rafMessageDisplayed = false; -- Temporary. Used for the RAF beta message.
 
@@ -196,17 +199,15 @@ function XToLevel:OnPlayerLogin()
 
     self:RegisterEvents()
     
-    L = LOCALE[XToLevel.db.profile.general.displayLocale]
-    if L == nil then
-        console:log("Attempted to load unknow locale '" .. tostring(XToLevel.db.profile.general.displayLocale) .."'. Falling back on 'enUS'.")
-        L = LOCALE["enUS"]
+    if not addonTable.SetLocale(XToLevel.db.profile.general.displayLocale) then
+        console:log("Attempted to load unknown locale '" .. tostring(XToLevel.db.profile.general.displayLocale) .."'. Falling back on 'enUS'.")
         XToLevel.db.profile.general.displayLocale = "enUS"
-        if L == nil then
+        if not addonTable.SetLocale("enUS") then
             XToLevel.Messages:Print("|cFFaaaaaaXToLevel - |r|cFFFF5533Fatal error:|r Locale files not found. (Try re-installing the addon.)")
             return;
         end
     end
-    wipe(LOCALE) -- Removing the extra locale tables. They'r just a waste of memory.
+    addonTable.WipeLocales() -- Removing the extra locale tables. They're just a waste of memory.
     
     XToLevel.Player:Initialize(XToLevel.db.char.data.killAverage, XToLevel.db.char.data.questAverage)
     XToLevel.Config:Initialize()

@@ -1,4 +1,6 @@
-﻿XToLevel.AVERAGE_WINDOWS =
+local _, addonTable = ...
+
+XToLevel.AVERAGE_WINDOWS =
 {
     [0] = "None",
     [1] = "Blocky",
@@ -40,20 +42,7 @@ XToLevel.LDB_PATTERNS =
     [6] = "custom"
 }
 
-XToLevel.DISPLAY_LOCALES =
-{
-    enUS = "English", 
-    frFR = "Français", 
-    deDE = "Deutsch", 
-    esES = "Español (EU)",
-    esMX = "Español (AL)",
-	ptBR = "Português",
-    ruRU = "Русский",
-    koKR = "한국어",
-    zhCN = "简体中文",
-    zhTW = "繁體中文",
-    dkDK = "Dansk"
-}
+XToLevel.DISPLAY_LOCALES = addonTable.GetDisplayLocales()
 
 XToLevel.UNIT_CLASSIFICATIONS = {
     [1] = "normal",

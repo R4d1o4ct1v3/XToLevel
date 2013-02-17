@@ -1,3 +1,7 @@
+local _, addonTable = ...
+
+local L = addonTable.GetLocale()
+
 if XToLevel.AverageFrameAPI == nil then
     XToLevel.AverageFrameAPI = { }
 end
