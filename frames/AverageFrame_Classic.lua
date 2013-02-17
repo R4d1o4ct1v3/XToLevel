@@ -243,7 +243,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     CreateLine = function(self, lineName, group, tabIndex, toolTip, initalValue, fontStringTemplate)
         self.lines[lineName] = CreateFrame("Frame", "XToLevel_AverageFrame_Classic_" .. lineName, self.window)
         self.lines[lineName]:EnableMouse(true)
-        self.lines[lineName]:SetMovable(true)
+        self.lines[lineName]:RegisterForDrag("LeftButton")
         self.lines[lineName].group = group
         self.lines[lineName].tabIndex = tabIndex
         self.lines[lineName].text = self.lines[lineName]:CreateFontString(nil, 'OVERLAY', fontStringTemplate)
@@ -255,11 +255,11 @@ XToLevel.AverageFrameAPI["Classic"] =
             self.lines[lineName]:SetScript("OnEnter", function() self:ShowTooltip(toolTip) end)
             self.lines[lineName]:SetScript("OnLeave", function() self:HideTooltip() end)
         end
-        self.lines[lineName]:SetScript("OnMouseDown", function() self:StartDrag() end)
-        self.lines[lineName]:SetScript("OnMouseUp", function(_, button) 
-            self:StopDrag()
+        self.lines[lineName]:SetScript("OnDragStart", function() self:StartDrag() end)
+        self.lines[lineName]:SetScript("OnDragStop", function() self:StopDrag() end)
+        self.lines[lineName]:SetScript("OnMouseUp", function(_, button)
             if button == "RightButton" and XToLevel.db.profile.general.allowSettingsClick then
-                XToLevel.Config:Open("window")
+                XToLevel.Config:Open("Window")
             end
         end)
     end,
