@@ -53,6 +53,8 @@ function XToLevel.Average:Update()
                 else
                     XToLevel.AverageFrameAPI[self.activeAPI]:SetGuildProgress (XToLevel.Player:GetGuildDailyProgressAsPercentage(1))
                 end
+
+                XToLevel.Player:UpdateTimer()
             end
             XToLevel.AverageFrameAPI[self.activeAPI]:Update()
         end

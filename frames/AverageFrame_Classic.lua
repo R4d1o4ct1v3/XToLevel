@@ -169,6 +169,12 @@ XToLevel.AverageFrameAPI["Classic"] =
         else
             self.lines.playerProgress:Hide()
         end
+
+        if XToLevel.Player.isActive and XToLevel.db.profile.averageDisplay.playerTimer then
+            self.lines.playerTimer:Show()
+        else
+            self.lines.playerTimer:Hide()
+        end
     end,
     
     ---
@@ -274,6 +280,7 @@ XToLevel.AverageFrameAPI["Classic"] =
         self:CreateLine('playerBGs', 'player', 5, 'bg', L["Battles"], 'XToLevel_span')
         self:CreateLine('playerBGOs', 'player', 6, 'bg', L["Objectives"], 'XToLevel_span')
         self:CreateLine('playerProgress', 'player', 7, 'experience', L["XP Percent"], 'XToLevel_span')
+        self:CreateLine('playerTimer', 'player', 8, 'timer', L["Player Timer"], "XToLevel_span")
     end,
     
     ---
@@ -353,7 +360,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     --- Sets the timer value. NOT IMPLEMENTED IN THIS FRAME!
     -- TODO: Implement this feature.
     SetTimer = function(self, value)
-        return true
+        self:WriteToLine("playerTimer", "Timer", value, self:GetTextColor("player"))
     end,
     
     --- Sets the gathering value. NOT IMPLEMENTED IN THIS FRAME!
