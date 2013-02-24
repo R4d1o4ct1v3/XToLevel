@@ -1,3 +1,9 @@
+Version 5.1.0_35b1
+ - FIX: Don't use global variables for the localization system.
+ - FIX: Dragging/right-click on the classic display.
+ - FIX: Updated TOC for 5.1.
+ - NEW: Support timer in the classic display.
+
 Version 5.0.4_34
  - FIX: Bugs caused by the 5.0.4 API changes fixed.
 
