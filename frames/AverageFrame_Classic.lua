@@ -175,6 +175,12 @@ XToLevel.AverageFrameAPI["Classic"] =
         else
             self.lines.playerTimer:Hide()
         end
+
+        if XToLevel.Player.isActive and XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo() then
+            self.lines.playerGathering:Show()
+        else
+            self.lines.playerGathering:Hide()
+        end
     end,
     
     ---
@@ -279,8 +285,9 @@ XToLevel.AverageFrameAPI["Classic"] =
         self:CreateLine('playerDungeons', 'player', 4, 'dungeons', L["Dungeons"], 'XToLevel_span')
         self:CreateLine('playerBGs', 'player', 5, 'bg', L["Battles"], 'XToLevel_span')
         self:CreateLine('playerBGOs', 'player', 6, 'bg', L["Objectives"], 'XToLevel_span')
-        self:CreateLine('playerProgress', 'player', 7, 'experience', L["XP Percent"], 'XToLevel_span')
-        self:CreateLine('playerTimer', 'player', 8, 'timer', L["Player Timer"], "XToLevel_span")
+        self:CreateLine('playerGathering', 'player', 7, 'gathering', L["Gathering"], 'XToLevel_span')
+        self:CreateLine('playerProgress', 'player', 8, 'experience', L["XP Percent"], 'XToLevel_span')
+        self:CreateLine('playerTimer', 'player', 9, 'timer', L["Player Timer"], "XToLevel_span")
     end,
     
     ---
@@ -357,16 +364,14 @@ XToLevel.AverageFrameAPI["Classic"] =
         end
     end,
     
-    --- Sets the timer value. NOT IMPLEMENTED IN THIS FRAME!
-    -- TODO: Implement this feature.
+    --- Sets the timer value.
     SetTimer = function(self, value)
         self:WriteToLine("playerTimer", "Timer", value, self:GetTextColor("player"))
     end,
     
-    --- Sets the gathering value. NOT IMPLEMENTED IN THIS FRAME!
-    -- TODO: Implement this feature.
+    --- Sets the gathering value.
     SetGathering = function(self, value)
-        return true
+        self:WriteToLine("playerGathering", "Gathering", value, self:GetTextColor("player"))
     end,
     
     --- Sets the guild progress value. NOT IMPLEMENTED IN THIS FRAME!
