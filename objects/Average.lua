@@ -63,39 +63,43 @@ function XToLevel.Average:Update()
     end
 end
 
-function XToLevel.Average:UpdateTimer(secondsToLevel)
-    if self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] ~= nil then
-        if type(secondsToLevel) == "number" and secondsToLevel > 0 and tostring(secondsToLevel) ~= "1.#INF" then
-            local formattedTime
-            if secondsToLevel < 60 then
-                formattedTime = string.format("%ds", secondsToLevel)
-            elseif secondsToLevel < 3600 then
-                local m = floor(secondsToLevel / 60)
-                local s = mod(secondsToLevel, 60)
-                if s > 30 then
-                    m = m + 1
-                end
-                formattedTime = string.format("%dm",m)
-            elseif secondsToLevel < 86400 then
-                local h = floor(secondsToLevel / 3600)
-                local m = floor((secondsToLevel - (h * 3600)) / 60)
-                if m > 30 then
-                    h = h + 1
-                end
-                formattedTime = string.format("%dh",h)
-            else
-                local d = floor(secondsToLevel / 86400)
-                local h = floor((secondsToLevel - (d * 86400)) / 3600)
-                if h > 12 then
-                    d = d + 1
-                end
-                formattedTime = string.format("%dd",d)
-            end
-            XToLevel.AverageFrameAPI[self.activeAPI]:SetTimer(formattedTime)
-        else
-            XToLevel.AverageFrameAPI[self.activeAPI]:SetTimer("N/A")
-        end
-    end
+do
+	local function formatSeconds(seconds)
+		return ("%ds"):format(seconds)
+	end
+	local function formatMinutes(seconds)
+		local m = math.floor(seconds / 60 + 0.5)
+		return ("%dm"):format(m)
+	end
+	local function formatHours(seconds)
+		local h = math.floor(seconds / 3600 + 0.5)
+		return ("%dh"):format(h)
+	end
+	local function formatDays(seconds)
+		local d = math.floor(seconds / 86400 + 0.5)
+		return ("%dd"):format(d)
+	end
+	function XToLevel.Average:UpdateTimer(secondsToLevel)
+		if self.knownAPIs[XToLevel.db.profile.averageDisplay.mode] ~= nil then
+			local short, long = "N/A", "N/A"
+			if type(secondsToLevel) == "number" and secondsToLevel > 0 and secondsToLevel ~= math.huge then
+				if secondsToLevel < 60 then
+					short = formatSeconds(secondsToLevel)
+					long = short
+				elseif secondsToLevel < 3600 then
+					short = formatMinutes(secondsToLevel)
+					long = short.." "..formatSeconds(math.fmod(secondsToLevel, 60))
+				elseif secondsToLevel < 86400 then
+					short = formatHours(secondsToLevel)
+					long = short.." "..formatMinutes(math.fmod(secondsToLevel, 3600))
+				else
+					short = formatDays(secondsToLevel)
+					long = short.." "..formatHours(math.fmod(secondsToLevel, 86400))
+				end
+			end
+			XToLevel.AverageFrameAPI[self.activeAPI]:SetTimer(short, long)
+		end
+	end
 end
 
 ---

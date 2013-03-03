@@ -365,8 +365,8 @@ XToLevel.AverageFrameAPI["Classic"] =
     end,
     
     --- Sets the timer value.
-    SetTimer = function(self, value)
-        self:WriteToLine("playerTimer", "Timer", value, self:GetTextColor("player"))
+    SetTimer = function(self, shortValue, longValue)
+        self:WriteToLine("playerTimer", "Timer", longValue, self:GetTextColor("player"))
     end,
     
     --- Sets the gathering value.

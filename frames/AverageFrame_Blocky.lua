@@ -325,9 +325,9 @@ XToLevel.AverageFrameAPI["Blocky"] =
         end
     end,
 	
-	SetTimer = function(self, timeString)
-		if type(timeString) == "string" then
-			XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimerValueText:SetText(timeString)
+	SetTimer = function(self, shortTimeString, longTimeString)
+		if type(shortTimeString) == "string" then
+			XToLevel_AverageFrame_Blocky_PlayerFrameCounterTimerValueText:SetText(shortTimeString)
 		end
 	end,
     
