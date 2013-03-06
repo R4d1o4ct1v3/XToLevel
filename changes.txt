@@ -1,3 +1,7 @@
+Version 5.2.0_35
+ - FIX: Updated TOC for 5.2.
+ - FIX: More verbose timer in classic display.
+
 Version 5.1.0_35b1
  - FIX: Don't use global variables for the localization system.
  - FIX: Dragging/right-click on the classic display.
