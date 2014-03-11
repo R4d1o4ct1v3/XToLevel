@@ -1,3 +1,7 @@
+Version 5.2.0_36
+ - FIX: Fix behavior with characters that have pre-ordered Warlords of Draenor
+ - NOTE: The version is still 5.2.0, but AFAIK this addon works fine with 5.4. I just haven't been able to test everything yet.
+
 Version 5.2.0_35
  - FIX: Updated TOC for 5.2.
  - FIX: More verbose timer in classic display.
