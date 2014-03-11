@@ -13,15 +13,6 @@ XToLevel.TIMER_MODES =
     [2] = "Level"
 }
 
-XToLevel.MAX_PLAYER_LEVELS =
-{
-    [0] = 60, -- Classic
-    [1] = 70, -- Burning Crusade
-    [2] = 80, -- WotLK
-    [3] = 85, -- Cataclysm
-    [4] = 90, -- ???
-}
-
 XToLevel.BG_NAMES =
 {
     [1] = "Alterac Valley",

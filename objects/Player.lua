@@ -122,11 +122,10 @@ end
 ---
 -- Calculates the max level for the player, based on the expansion level
 -- available to the player.
--- This assumes a 10 level increase per expansion, starting at level 60.
 ---
 function XToLevel.Player:GetMaxLevel()
     if self.maxLevel == nil then
-        self.maxLevel = XToLevel.MAX_PLAYER_LEVELS[GetAccountExpansionLevel()]
+        self.maxLevel = MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
     end
     return self.maxLevel
 end
