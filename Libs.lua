@@ -199,13 +199,13 @@ function XToLevel.Lib:IsPlayerRafEligable()
     if numPartyMembers > 0 then
         local memberID = 1;
         while memberID <= numPartyMembers do
-            if GetPartyMember(memberID) == 1 then
-                local member = "party" .. memberID;
+            local member = "party" .. memberID;
+            if UnitInParty(member) then
                 if UnitIsVisible(member) and IsReferAFriendLinked(member) then
                     return true;
                 end
             end
-            memberID = memberID + 1;
+            memberID = memberID + 1;     
         end
     end
     return false;
