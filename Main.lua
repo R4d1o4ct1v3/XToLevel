@@ -562,7 +562,7 @@ end
 
 --- PLAYER_LEAVING_Instance callback.
 function XToLevel:PlayerLeavingInstance(force)
-    if force == true or (XToLevel.Player:IsDungeonInProgress() and (UnitIsDeadOrGhost("player") == nil)) then
+    if force == true or (XToLevel.Player:IsDungeonInProgress() and (not UnitIsDeadOrGhost("player"))) then
         local zoneName = GetRealZoneText()
         local success = XToLevel.Player:DungeonEnd(zoneName)
         
