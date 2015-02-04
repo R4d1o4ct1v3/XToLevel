@@ -34,7 +34,7 @@ function XToLevel.Tooltip:Initialize()
     end
     self.initialized = true
 
-    GameTooltip:HookScript("OnShow", self.OnShow_HookCallback);
+    GameTooltip:HookScript("OnTooltipSetUnit", self.OnTooltipSetUnit_HookCallback);
 end
 
 ---
@@ -57,7 +57,7 @@ end
 ---
 -- Callback for the GameTooltip:OnShow hook
 -- Adds the number of kills needed to unfriendly NPC tooltips.
-function XToLevel.Tooltip:OnShow_HookCallback(...)
+function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
         if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitHealthMax(unit) > -1 then
@@ -65,7 +65,6 @@ function XToLevel.Tooltip:OnShow_HookCallback(...)
             local classification = UnitClassification(unit)
 
             local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, classification);
-            -- console:log("XToLevel.Lib:MobXP(" .. tostring(XToLevel.Player.level) .. ", " .. tostring(level) .. ", " .. tostring(classification) .. ") = " .. tostring(thexp))
 
             local requiredText = ""
             local cl = nil
