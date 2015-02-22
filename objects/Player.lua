@@ -56,11 +56,13 @@ XToLevel.Player = {
     killRange = { low = nil, high = nil, average = nil },
 	questAverage = nil,
 	questRange = { low = nil, high = nil, average = nil },
+    petBattleAverage = nil,
 	bgAverage = nil,
 	bgObjAverage = nil,
     dungeonAverage = nil,
 	killListLength = 100, -- The max allowed value, not the current selection.
 	questListLength = 100,
+    petBattleListLength = 50,
 	bgListLength = 300,
 	dungeonListLength = 100,
 	hasEnteredBG = true,
@@ -395,6 +397,25 @@ function XToLevel.Player:AddQuest (xpGained)
 end
 
 ---
+-- Adds a pet battle to the quest list and updates the recorded XP value.
+-- @param xpGained The XP gained from the pet battle.
+---
+function XToLevel.Player:AddPetBattle (xpGained)
+    self.petBattleAverage = nil
+    self.currentXP = self.currentXP + xpGained
+    
+    if XToLevel.db.char.data.petBattleList == nil then
+        XToLevel.db.char.data.petBattleList = {};
+    end
+    
+    table.insert(XToLevel.db.char.data.petBattleList, 1, xpGained)
+    if(# XToLevel.db.char.data.petBattleList > self.petBattleListLength) then
+        table.remove(XToLevel.db.char.data.petBattleList)
+    end
+    XToLevel.db.char.data.total.petBattles = (XToLevel.db.char.data.total.petBattles or 0) + 1
+end
+
+---
 -- Adds XP gain from a gathering profession. Keeps a detailed list of gathered
 -- items for future reference.
 -- @param action The action taken. (Like: "Mining" or "Herb Gathering")
@@ -603,6 +624,16 @@ function XToLevel.Player:HasGatheringInfo()
             actionCount = actionCount + 1
         end
         return actionCount > 0
+    else
+        return false
+    end
+end
+
+---
+-- Determines whether there is any pet battles info to show.
+function XToLevel.Player:HasPetBattleInfo()
+    if type(XToLevel.db.char.data.petBattleList) == "table" then
+        return (# XToLevel.db.char.data.petBattleList > 0)
     else
         return false
     end
@@ -867,6 +898,49 @@ function XToLevel.Player:GetQuestsRequired(xp)
     else
         return -1
     end
+end
+
+---
+-- Gets the amount of pet battles required to reach the next level, based on the
+-- passed XP value.
+-- @param xp The XP assumed per battle
+-- @return An integer or -1 if the input parameter is invalid.
+---
+function XToLevel.Player:GetPetBattlesRequired(xp)
+    local xpRemaining = self.maxXP - self.currentXP
+    if(xp > 0) then
+        return ceil(xpRemaining / xp)
+    else
+        return -1
+    end
+end
+
+---
+-- Get the average XP value for all gathering items within a specific range.
+-- @param levelRange The number of levels to go back to fetch data.
+--                   Defaults to 2 (that is: this and the last level)
+-- @return Returns the avarge xp as a number on success or nil on failure.
+function XToLevel.Player:GetAveragePetBattleXP(levelRange)
+    if self.petBattleAverage == nil then
+        if(# XToLevel.db.char.data.petBattleList > 0) then
+            local total = 0
+            local maxUsed = # XToLevel.db.char.data.petBattleList
+            if maxUsed > XToLevel.db.profile.averageDisplay.playerPetBattleListLength then
+                maxUsed = XToLevel.db.profile.averageDisplay.playerPetBattleListLength
+            end
+            for index, value in ipairs(XToLevel.db.char.data.petBattleList) do
+                if index > maxUsed then
+                    break;
+                end
+                total = total + value
+            end
+            self.petBattleAverage = (total / maxUsed);
+        else
+            return 100
+        end
+    end
+    
+    return self.petBattleAverage
 end
 
 ---
@@ -1151,6 +1225,51 @@ function XToLevel.Player:GetQuestXpRange ()
 end
 
 ---
+-- Calculates the average, highest and lowest XP values recorded for pet battles.
+-- The range of data used is limited by the 
+-- XToLevel.db.profile.averageDisplay.playerPetBattleListLength config directive. 
+-- @return A table as : { 'average', 'high', 'low' }
+---
+function XToLevel.Player:GetPetBattleXpRange ()   
+    if (# XToLevel.db.char.data.petBattleList > 0) then
+        local range = {
+            average = 0,
+            high = 0,
+            low = 9999999
+        }
+        
+        local maxUsed = # XToLevel.db.char.data.petBattleList
+        if maxUsed > XToLevel.db.profile.averageDisplay.playerPetBattleListLength then
+            maxUsed = XToLevel.db.profile.averageDisplay.playerPetBattleListLength
+        end
+        
+        local total = 0
+        local count = 0
+        for index, value in ipairs(XToLevel.db.char.data.petBattleList) do
+            if index > maxUsed then
+                break;
+            end
+            
+            if value > range.high then
+                range.high = value
+            end
+            if value < range.low then
+                range.low = value
+            end
+            total = total + value
+            count = count + 1
+        end
+        range.average = (total / count)
+        
+        if range.low == 9999999 then
+            range.low = range.high
+        end
+        
+        return range
+    end
+end
+
+---
 -- Gets the average number of quests needed to reache the next level, based
 -- on the XP value returned by the GetAverageQuestXP function.
 -- @return A number. -1 if the function fails.
@@ -1158,6 +1277,19 @@ end
 function XToLevel.Player:GetAverageQuestsRemaining ()
     if(self:GetAverageQuestXP() > 0) then
         return self:GetQuestsRequired(self:GetAverageQuestXP())
+    else
+        return -1
+    end
+end
+
+---
+-- Gets the average number of quests needed to reach the next level, based
+-- on the XP value returned by the GetAverageQuestXP function.
+-- @return A number. -1 if the function fails.
+---
+function XToLevel.Player:GetAveragePetBattlesRemaining ()
+    if(self:GetAveragePetBattleXP() > 0) then
+        return self:GetPetBattlesRequired(self:GetAveragePetBattleXP())
     else
         return -1
     end
@@ -1554,6 +1686,18 @@ function XToLevel.Player:ClearQuests (initialValue)
 end
 
 ---
+-- Clears the pet battle list. If the initialValue parameter is passed, a single
+-- entry with that value is added.
+-- @param initalValue The inital value for the list. [optional]
+function XToLevel.Player:ClearPetBattles (initialValue)
+    XToLevel.db.char.data.petBattleList = { }
+    self.petBattleAverage = nil;
+    if initialValue ~= nil and tonumber(initialValue) > 0 then
+        table.insert(XToLevel.db.char.data.petBattleList, tonumber(initialValue))
+    end
+end
+
+---
 -- Clears the BG list. If the initialValue parameter is passed, a single
 -- entry with that value is added.
 -- @param initalValue The inital value for the list. [optional]
@@ -1603,7 +1747,7 @@ function XToLevel.Player:SetKillAverageLength(newValue)
 end
 
 ---
--- Sets the number of kills used for average calculations
+-- Sets the number of quests used for average calculations
 function XToLevel.Player:SetQuestAverageLength(newValue)
     XToLevel.db.profile.averageDisplay.playerQuestListLength = newValue
     self.questAverage = nil
@@ -1613,7 +1757,17 @@ function XToLevel.Player:SetQuestAverageLength(newValue)
 end
 
 ---
--- Sets the number of kills used for average calculations
+-- Sets the number of pet battles used for average calculations
+function XToLevel.Player:SetPetBattleAverageLength(newValue)
+    XToLevel.db.profile.averageDisplay.playerPetBattleListLength = newValue
+    self.petBattleAverage = nil
+    XToLevel.Average:Update()
+    XToLevel.LDB:BuildPattern()
+    XToLevel.LDB:Update()
+end
+
+---
+-- Sets the number of battleground used for average calculations
 function XToLevel.Player:SetBattleAverageLength(newValue)
     XToLevel.db.profile.averageDisplay.playerBGListLength = newValue
     self.bgAverage = nil
@@ -1623,7 +1777,7 @@ function XToLevel.Player:SetBattleAverageLength(newValue)
 end	
 
 ---
--- Sets the number of kills used for average calculations
+-- Sets the number of quest objectives used for average calculations
 function XToLevel.Player:SetObjectiveAverageLength(newValue)
     XToLevel.db.profile.averageDisplay.playerBGOListLength = newValue
     self.bgObjAverage = nil
@@ -1633,7 +1787,7 @@ function XToLevel.Player:SetObjectiveAverageLength(newValue)
 end
 
 ---
--- Sets the number of kills used for average calculations
+-- Sets the number of dungeon used for average calculations
 function XToLevel.Player:SetDungeonAverageLength(newValue)
     XToLevel.db.profile.averageDisplay.playerDungeonListLength = newValue
     self.dungeonAverage = nil

@@ -82,6 +82,20 @@ function XToLevel.Config:Initialize()
 		whileDead = true,
 		hideOnEscape = true,
 	}
+    StaticPopupDialogs['XToLevelConfig_ResetPetBattles'] = {
+		text = L["Reset Pet Battles Dialog"],
+		button1 = L["Yes"],
+		button2 = L["No"],
+		OnAccept = function()
+			XToLevel.Player:ClearPetBattles();
+			XToLevel.Average:Update();
+	        XToLevel.LDB:BuildPattern();
+	        XToLevel.LDB:Update();
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+	}
 	StaticPopupDialogs['XToLevelConfig_ResetDungeons'] = {
 	    text = L["Reset Dungeon Dialog"],
 	    button1 = L["Yes"],
@@ -150,7 +164,8 @@ end
 
 function XToLevel.Config:Open(frameName)
     if self.frames[frameName] then
-        InterfaceOptionsFrame_OpenToCategory(self.frames[frameName]);
+        InterfaceOptionsFrame_OpenToCategory(self.frames[frameName])
+        InterfaceOptionsFrame_OpenToCategory(self.frames[frameName])
     end
 end
 
@@ -563,6 +578,16 @@ args = {
                     XToLevel.Average:Update()   
                 end,
             },
+            dataPetBattle = {
+                order = 24,
+                type = "toggle",
+                name = L["Pet Battles"] or "Pet Battles",
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerPetBattles end,
+                set = function(info, value) 
+                    XToLevel.db.profile.averageDisplay.playerPetBattles = value 
+                    XToLevel.Average:Update()   
+                end,
+            },
         }
     },
     LDB = {
@@ -833,8 +858,18 @@ args = {
                 get = function() return XToLevel.db.profile.averageDisplay.playerQuestListLength end,
                 set = function(i,v) XToLevel.Player:SetQuestAverageLength(v) end,
             },
-            dataRangeBattles = {
+            dataRangePetBattles = {
                 order = 4,
+                type = "range",
+                name = L["Pet Battles"],
+                min = 1,
+                max = 100,
+                step = 1,
+                get = function() return XToLevel.db.profile.averageDisplay.playerPetBattleListLength end,
+                set = function(i,v) XToLevel.Player:SetPetBattleAverageLength(v) end,
+            },
+            dataRangeBattles = {
+                order = 5,
                 type = "range",
                 name = L["Player Battles"],
                 min = 1,
@@ -844,7 +879,7 @@ args = {
                 set = function(i,v) XToLevel.Player:SetBattleAverageLength(v) end,
             },
             dataRangeObjectives = {
-                order = 5,
+                order = 6,
                 type = "range",
                 name = L["Player Objectives"],
                 min = 1,
@@ -854,7 +889,7 @@ args = {
                 set = function(i,v) XToLevel.Player:SetObjectiveAverageLength(v) end,
             },
             dataRangeDungeons = {
-                order = 6,
+                order = 7,
                 type = "range",
                 name = L["Player Dungeons"],
                 min = 1,
@@ -864,41 +899,47 @@ args = {
                 set = function(i,v) XToLevel.Player:SetDungeonAverageLength(v) end,
             },
             dataClearHeader = {
-                order = 7,
+                order = 8,
                 type = "header",
                 name = L["Clear Data Header"],
             },
             dataClearDescription = {
-                order = 8,
+                order = 9,
                 type = "description",
                 name = L["Clear Data Subheader"],
             },
             dataClearKills = {
-                order = 9,
+                order = 10,
                 type = "execute",
                 name = L["Reset Player Kills"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetPlayerKills")  end,
             },
             dataClearQuests = {
-                order = 10,
+                order = 11,
                 type = "execute",
                 name = L["Reset Player Quests"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetPlayerQuests")  end,
             },
             dataClearDungeons = {
-                order = 11,
+                order = 12,
                 type = "execute",
                 name = L["Reset Dungeons"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetDungeons")  end,
             },
             dataClearBattles = {
-                order = 12,
+                order = 13,
                 type = "execute",
                 name = L["Reset Battlegrounds"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetBattles")  end,
             },
+            dataClearPetBattles = {
+                order = 14,
+                type = "execute",
+                name = L["Reset Pet Battles"],
+                func = function() StaticPopup_Show("XToLevelConfig_ResetPetBattles")  end,
+            },
             dataClearGathering = {
-                order = 13,
+                order = 15,
                 type = "execute",
                 name = L["Reset Gathering"],
                 func = function() StaticPopup_Show("XToLevelConfig_ResetGathering")  end,
@@ -1129,6 +1170,7 @@ function XToLevel.Config:GetDefaults()
 		        orientation = 'v',
 		        playerKills = true,
 		        playerQuests = true,
+                playerPetBattles = true,
 		        playerDungeons = true,
 		        playerBGs = true,
 		        playerBGOs = false,
@@ -1139,6 +1181,7 @@ function XToLevel.Config:GetDefaults()
 		        progressAsBars = false,
 		        playerKillListLength = 10,
 		        playerQuestListLength = 10,
+                playerPetBattleListLength = 10,
 		        playerBGListLength = 15,
 		        playerBGOListLength = 15,
 		        playerDungeonListLength = 15,

@@ -46,6 +46,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectives,
 	            visible = XToLevel.db.profile.averageDisplay.playerBGOs
 	        },
+            {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterPetBattles',
+	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterPetBattles,
+	            visible = XToLevel.db.profile.averageDisplay.playerPetBattles
+	        },
 	        {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering,
 	            visible = XToLevel.db.profile.averageDisplay.playerGathering
@@ -183,10 +187,11 @@ XToLevel.AverageFrameAPI["Blocky"] =
         self.playerBoxes[3]["visible"] = XToLevel.db.profile.averageDisplay.playerDungeons and XToLevel.Player.level >= 15
         self.playerBoxes[4]["visible"] = XToLevel.db.profile.averageDisplay.playerBGs and XToLevel.Player.level >= 10
         self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
-        self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
-        self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
-		self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
-        self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
+        self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerPetBattles and XToLevel.Player:HasPetBattleInfo()
+        self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
+        self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
+		self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
+        self.playerBoxes[10]["visible"] = XToLevel.db.profile.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
     
         local orientation = XToLevel.db.profile.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
@@ -244,6 +249,11 @@ XToLevel.AverageFrameAPI["Blocky"] =
     --- Sets the quest value for the frame
     SetQuests = function(self, value)
         XToLevel_AverageFrame_Blocky_PlayerFrameCounterQuestsValueText:SetText(tonumber(value))
+    end,
+    
+    --- Sets the quest value for the frame
+    SetPetBattles = function(self, value)
+        XToLevel_AverageFrame_Blocky_PlayerFrameCounterPetBattlesValueText:SetText(tonumber(value))
     end,
     
     --- Sets the dungeon value for the frame

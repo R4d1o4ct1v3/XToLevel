@@ -36,6 +36,8 @@ XToLevel.gatheringAction = nil;
 XToLevel.gatheringTarget = nil;
 XToLevel.gatheringTime = nil;
 
+XToLevel.petBattleClosed = nil;
+
 ---
 -- Temporary variables
 local targetList = { }
@@ -91,8 +93,8 @@ function XToLevel:MainOnEvent(event, ...)
         self:OnCombatLogEventUnfiltered(...)
     elseif event == "PLAYER_REGEN_ENABLED" then
         self:OnPlayerRegenEnabled()
-    elseif event == "PLAYER_REGEN_DISABLED" then
-        self:OnPlayerRegenDisabled()
+    elseif event == "PET_BATTLE_OVER" then
+        self:OnPetBattleOver()
     end
 end
 XToLevel.frame:SetScript("OnEvent", function(self, ...) XToLevel:MainOnEvent(...) end);
@@ -142,6 +144,8 @@ function XToLevel:RegisterEvents(level)
         self.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
         self.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
         self.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+        
+        self.frame:RegisterEvent("PET_BATTLE_OVER");
     end
     
     -- Register slash commands
@@ -184,6 +188,8 @@ function XToLevel:UnregisterEvents()
     self.frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     self.frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
     self.frame:UnregisterEvent("PLAYER_REGEN_DISABLED")
+    
+    self.frame:UnregisterEvent("PET_BATTLE_OVER");
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -482,6 +488,14 @@ function XToLevel:OnChatXPGain(message)
                     XToLevel.gatheringTarget = nil;
                     XToLevel.gatheringAction = nil;
                     XToLevel.gatheringTime = nil;
+                elseif XToLevel.petBattleOver ~= nil and GetTime() - XToLevel.petBattleOver < 5 then
+                    local remaining = XToLevel.Player:GetPetBattlesRequired(xp) - 1
+                    if type(remaining) == "number" and remaining > 0 then
+                        XToLevel.Player:AddPetBattle(xp)
+                        XToLevel.Messages.Floating:PrintKill(L["Battles Like That"], remaining)
+                        XToLevel.Messages.Chat:PrintKill(L["Battles Like That"], remaining)
+                    end
+                    XToLevel.petBattleOver = nil
                 else
                     -- This estimate is made before the XP is updated, so -1 to compensate.
                     local remaining = XToLevel.Player:GetQuestsRequired(xp) - 1
@@ -724,6 +738,13 @@ function XToLevel:TimePlayedTriggerCallback()
 end
 
 --------------------------------------------------------------------------------
+-- Pet Battle
+--------------------------------------------------------------------------------  
+function XToLevel:OnPetBattleOver()
+    XToLevel.petBattleOver = GetTime()
+end
+
+--------------------------------------------------------------------------------
 -- SLASH command stuff
 --------------------------------------------------------------------------------
 
@@ -743,6 +764,13 @@ function XToLevel:OnSlashCommand(arg1)
 		XToLevel.Player:ClearQuestList()
 		XToLevel.Player.questAverage = nil
 		XToLevel.Messages:Print("Player quests records cleared.")
+		XToLevel.Average:Update()
+        XToLevel.LDB:BuildPattern();
+		XToLevel.LDB:Update()
+    elseif arg1 == "clear battles" then
+		XToLevel.Player:ClearPetBattles()
+		XToLevel.Player.petBattleAverage = nil
+		XToLevel.Messages:Print("Player pet battles records cleared.")
 		XToLevel.Average:Update()
         XToLevel.LDB:BuildPattern();
 		XToLevel.LDB:Update()
@@ -782,6 +810,11 @@ function XToLevel:OnSlashCommand(arg1)
             console:log("  totalXP: ".. tostring(data.totalXP))
             console:log("  killCount: ".. tostring(data.killCount))
             console:log("  killTotal: ".. tostring(data.killTotal))
+        end
+    elseif arg1 == "pblist" then
+        console:log("-- Pet Battle list--")
+        for index, xpValue in ipairs(XToLevel.db.char.data.petBattleList) do
+            console:log("#" .. tostring(index) .. ": " .. tostring(xpValue))
         end
     elseif arg1 == "glist" then
 		for action, actionTable in pairs(XToLevel.db.char.data.gathering) do

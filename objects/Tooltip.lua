@@ -221,6 +221,10 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
         GameTooltip:AddLine(L['Quests'])
         self:AddQuestRange()
         GameTooltip:AddLine(" ")
+    elseif mode == "petBattles" then
+        GameTooltip:AddLine(L['Pet Battles'])
+        self:AddPetBattleRange()
+        GameTooltip:AddLine(" ")
     elseif mode == "dungeons" then
         GameTooltip:AddLine(L['Dungeons'])
         self:AddDungeonInfo()
@@ -346,6 +350,16 @@ function XToLevel.Tooltip:AddQuestRange()
     GameTooltip:AddDoubleLine(" " .. L["Min"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetQuestsRequired(range.high)) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(range.high, 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
     GameTooltip:AddDoubleLine(" " .. L["Max"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetQuestsRequired(range.low)) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(range.low, 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
 end
+
+---
+-- function description
+function XToLevel.Tooltip:AddPetBattleRange()
+    local range = XToLevel.Player:GetPetBattleXpRange();
+    GameTooltip:AddDoubleLine(" " .. L["Average"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetPetBattlesRequired(range.average)) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(range.average, 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+    GameTooltip:AddDoubleLine(" " .. L["Min"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetPetBattlesRequired(range.high)) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(range.high, 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+    GameTooltip:AddDoubleLine(" " .. L["Max"] .. ":" , XToLevel.Lib:NumberFormat(XToLevel.Player:GetPetBattlesRequired(range.low)) .." @ ".. XToLevel.Lib:NumberFormat(XToLevel.Lib:round(range.low, 0)) .." xp", self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+end
+
 
 ---
 -- function description
