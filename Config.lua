@@ -1248,6 +1248,7 @@ function XToLevel.Config:GetDefaults()
 		        questList = {},
 		        bgList = {},
 		        dungeonList = {},
+                petBattleList = {},
 		        timer = {
 			        start = nil,
 			        total = nil,
