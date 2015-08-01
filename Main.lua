@@ -38,6 +38,8 @@ XToLevel.gatheringTime = nil;
 
 XToLevel.petBattleClosed = nil;
 
+XToLevel.surveyFoundComplete = nil;
+
 ---
 -- Temporary variables
 local targetList = { }
@@ -95,6 +97,8 @@ function XToLevel:MainOnEvent(event, ...)
         self:OnPlayerRegenEnabled()
     elseif event == "PET_BATTLE_OVER" then
         self:OnPetBattleOver()
+    elseif event == "ARCHAEOLOGY_FIND_COMPLETE" then
+        XToLevel.surveyFoundComplete = time()
     end
 end
 XToLevel.frame:SetScript("OnEvent", function(self, ...) XToLevel:MainOnEvent(...) end);
@@ -146,6 +150,8 @@ function XToLevel:RegisterEvents(level)
         self.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
         
         self.frame:RegisterEvent("PET_BATTLE_OVER");
+        
+        self.frame:RegisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
     end
     
     -- Register slash commands
@@ -190,6 +196,8 @@ function XToLevel:UnregisterEvents()
     self.frame:UnregisterEvent("PLAYER_REGEN_DISABLED")
     
     self.frame:UnregisterEvent("PET_BATTLE_OVER");
+    
+    self.frame:UnregisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -282,19 +290,21 @@ end
 -- Look for the combat log event that tells of a NPC death. 
 function XToLevel:OnCombatLogEventUnfiltered(...)
     local cl_event = select(2, ...)
-    local npc_guid = select(8, ...)
-    -- 4.1 backwards compatibility fix.
-    if tonumber(select(4, GetBuildInfo())) < 40200 then
-        npc_guid = select(7, ...)
-    end
-    if cl_event ~= nil and npc_guid ~= nil and cl_event == "UNIT_DIED" then
-        for i, data in ipairs(targetList) do
-            if data.guid == npc_guid then
-                data.dead = true
-                if type(targetUpdatePending) == "number" and targetUpdatePending > 0 then
-                    data.xp = targetUpdatePending;
-                    targetUpdatePending = nil;
-                    XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp, data.classification)
+    if cl_event ~= nil then
+        if cl_event == "UNIT_DIED" then
+            local npc_guid = select(8, ...)
+            -- 4.1 backwards compatibility fix.
+            if tonumber(select(4, GetBuildInfo())) < 40200 then
+                npc_guid = select(7, ...)
+            end
+            for i, data in ipairs(targetList) do
+                if data.guid == npc_guid then
+                    data.dead = true
+                    if type(targetUpdatePending) == "number" and targetUpdatePending > 0 then
+                        data.xp = targetUpdatePending;
+                        targetUpdatePending = nil;
+                        XToLevel:AddMobXpRecord(data.name, data.level, UnitLevel("player"), data.xp, data.classification)
+                    end
                 end
             end
         end
@@ -404,6 +414,7 @@ end
 function XToLevel:OnChatXPGain(message)
     -- If the quest dialog was open in the last 2 seconds, assume this is a quest reward.
     local isQuest = self.questCompleteDialogOpen or (GetTime() - self.questCompleteDialogLastOpen) < 2
+    local isArch = self.surveyFoundComplete ~= nil and self.surveyFoundComplete + 30 >= time();
     local xp, mobName = XToLevel.Lib:ParseChatXPMessage(message, isQuest)
     xp = tonumber(xp)
 	if not xp then
@@ -454,7 +465,7 @@ function XToLevel:OnChatXPGain(message)
             end
 		end
     else
-		if XToLevel.Player:IsBattlegroundInProgress() then
+        if XToLevel.Player:IsBattlegroundInProgress() then
 			console:log("Objective XP gained! : " .. tostring(xp))
 			local isObj = XToLevel.Player:AddBattlegroundObjective(xp)
 			if isObj and XToLevel.Player.isActive then
@@ -475,6 +486,16 @@ function XToLevel:OnChatXPGain(message)
                     if questsRequired > 0 then
                         XToLevel.Messages.Floating:PrintQuest( ceil(questsRequired / ( (XToLevel.Lib:IsRafApplied() and 3) or 1 )) )
                         XToLevel.Messages.Chat:PrintQuest(questsRequired)
+                    end
+                end
+            elseif isArch then
+                XToLevel.surveyFoundComplete = nil
+                XToLevel.Player:AddDig(xp)
+                if XToLevel.db.profile.messages.playerFloating or XToLevel.db.profile.messages.playerChat then
+                    local digsRequired = XToLevel.Player:GetQuestsRequired(xp) -- Exact digs and quests remaining are calculated the same way.
+                    if digsRequired > 0 then
+                        XToLevel.Messages.Floating:PrintDig(digsRequired)
+                        XToLevel.Messages.Chat:PrintDig(digsRequired)
                     end
                 end
             else

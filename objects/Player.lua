@@ -65,6 +65,7 @@ XToLevel.Player = {
     petBattleListLength = 50,
 	bgListLength = 300,
 	dungeonListLength = 100,
+    digListLength = 100,
 	hasEnteredBG = true,
     
     guildLevel = nil,
@@ -461,6 +462,15 @@ function XToLevel.Player:AddGathering(action, target, xp)
     end
 end
 
+function XToLevel.Player:AddDig(xpGained)
+    self.digAverage = nil
+    self.currentXP = self.currentXP + xpGained
+    table.insert(XToLevel.db.char.data.digs, 1, xpGained)
+    if(# XToLevel.db.char.data.digs > self.digListLength) then
+        table.remove(XToLevel.db.char.data.digs)
+    end
+end
+
 ---
 -- Get the total number of the given target to reach then next level.
 -- If the item is invalid, or none of them have been recorded yet, this
@@ -626,6 +636,52 @@ function XToLevel.Player:HasGatheringInfo()
         return actionCount > 0
     else
         return false
+    end
+end
+
+---
+-- Determines whether there is any dig info available yet.
+function XToLevel.Player:HasDigInfo()
+    if type(XToLevel.db.char.data.digs) == "table" then
+        return (# XToLevel.db.char.data.digs > 0)
+    else
+        return nil
+    end
+end
+
+---
+-- Determines the average XP for the current dig-site list.
+function XToLevel.Player:GetAverageDigXP()
+    if type(XToLevel.db.char.data.digs) == "table" then
+        local tXP = 0;
+        local tCount = 0;
+        for i, xp in ipairs(XToLevel.db.char.data.digs) do
+            tXP = tXP + xp
+            tCount = tCount + 1
+        end
+        if tXP > 0 and tCount > 0 then
+            return (tXP / tCount)
+        else
+            return nil
+        end
+    else
+        return nil
+    end
+end
+
+---
+-- Determines the average dig-sites required for next level.
+function XToLevel.Player:GetAverageDigsRequired()
+    local averageXP = self:GetAverageDigXP()
+    if type(averageXP) == "number" and averageXP > 0 then
+        local required = ceil((self.maxXP - self.currentXP) / averageXP);
+        if type(required) == "number" and required > 0 then
+            return required, averageXP
+        else
+            return nil
+        end
+    else
+        return nil
     end
 end
 

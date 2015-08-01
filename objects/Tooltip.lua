@@ -239,6 +239,10 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
             self:AddGatheringDetails()
             GameTooltip:AddLine(" ")
         end
+    elseif mode == "archaeology" then
+        GameTooltip:AddLine(L['Archaeology'] or "Archaeology")
+        self:AddArchaeology()
+        GameTooltip:AddLine(" ")
     elseif mode == "experience" then
         GameTooltip:AddLine(L['Experience'])
         self:AddExperience()
@@ -285,6 +289,10 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
                     self:AddGatheringDetails()
                     GameTooltip:AddLine(" ")
                 end
+            end
+            if XToLevel.db.profile.ldb.tooltip.showArchaeology then
+                self:AddArchaeology()
+                GameTooltip:AddLine(" ")
             end
             if XToLevel.Lib:ShowDungeonData() then
                 self:AddDungeons()
@@ -583,6 +591,17 @@ end
 function XToLevel.Tooltip:AddGathering()
     local linesAdded = 0
     local nodesRequired, xpPerNode = XToLevel.Player:GetAverageGatheringRequired()
+    if nodesRequired ~= nil then
+        xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
+        GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+    else
+        GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
+    end
+end
+
+function XToLevel.Tooltip:AddArchaeology()
+    local linesAdded = 0
+    local nodesRequired, xpPerNode = XToLevel.Player:GetAverageDigsRequired()
     if nodesRequired ~= nil then
         xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
         GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)

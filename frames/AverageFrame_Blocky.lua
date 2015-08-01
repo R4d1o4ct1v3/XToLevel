@@ -54,6 +54,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterGathering,
 	            visible = XToLevel.db.profile.averageDisplay.playerGathering
 	        },
+            {   name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterDigs',
+	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterDigs,
+	            visible = XToLevel.db.profile.averageDisplay.playerDigs
+	        },
 	        {   
 	            name = 'XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress',
 	            ref =   XToLevel_AverageFrame_Blocky_PlayerFrameCounterProgress,
@@ -189,9 +193,10 @@ XToLevel.AverageFrameAPI["Blocky"] =
         self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
         self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerPetBattles and XToLevel.Player:HasPetBattleInfo()
         self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
-        self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
-		self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
-        self.playerBoxes[10]["visible"] = XToLevel.db.profile.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
+        self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerDigs and XToLevel.Player:HasDigInfo()
+        self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
+		self.playerBoxes[10]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
+        self.playerBoxes[11]["visible"] = XToLevel.db.profile.averageDisplay.guildProgress and type(XToLevel.Player.guildXP) == 'number'
     
         local orientation = XToLevel.db.profile.averageDisplay.orientation or 'v'
         self:StackBoxes(orientation, self.playerBoxes, XToLevel_AverageFrame_Blocky_PlayerFrame, 'XToLevel_AverageFrame_Blocky_PlayerFrame');
@@ -270,9 +275,15 @@ XToLevel.AverageFrameAPI["Blocky"] =
     SetObjectives = function(self, value)
         XToLevel_AverageFrame_Blocky_PlayerFrameCounterObjectivesValueText:SetText(tonumber(value))
     end,
+    
     --- Sets the gathering average
     SetGathering = function(self, value)
         XToLevel_AverageFrame_Blocky_PlayerFrameCounterGatheringValueText:SetText(tonumber(value))
+    end,
+    
+    --- Sets the archaeology average
+    SetDigs = function(self, value)
+        XToLevel_AverageFrame_Blocky_PlayerFrameCounterDigsValueText:SetText(tonumber(value))
     end,
 
     --- Sets the value for the progress bar.

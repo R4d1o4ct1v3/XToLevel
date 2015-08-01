@@ -466,6 +466,29 @@
                 </Frame>
                 
                 <!-- 
+                    Arch Dig Counter
+                 -->
+                <Frame name="$parentDigs"  inherits="XToLevel_AverageFrame_Blocky_Counter">
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativePoint="TOPLEFT">
+                            <Offset x="202" y="-2" />
+                        </Anchor>
+                    </Anchors>
+                    <Layers>
+                        <Layer level="ARTWORK">
+                            <Texture name="$parentIcon" inherits="XToLevel_AverageFrame_Blocky_CounterIcon" file="Interface\AddOns\XToLevel\textures\arch_icon.tga">
+                                <Size x="16" y="16"/>
+                            </Texture>
+                        </Layer>
+                    </Layers>
+                    <Scripts>
+                        <OnEnter>
+                            XToLevel.AverageFrameAPI["Blocky"]:ShowTooltip('archaeology');
+                        </OnEnter>
+                    </Scripts> 
+                </Frame>
+                
+                <!-- 
                     Progress Counter
                 -->
                 <Frame name="$parentProgress"  inherits="XToLevel_AverageFrame_Blocky_Progress">

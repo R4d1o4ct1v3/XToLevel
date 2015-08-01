@@ -72,6 +72,15 @@ end
 
 ---
 -- function description
+function XToLevel.Messages.Floating:PrintDig(digsRequired)
+    if XToLevel.db.profile.messages.playerFloating then
+        local message = digsRequired .. L["Digs Needed"]
+        self:Print(message, XToLevel.db.profile.messages.colors.playerQuest, self.questStyle)
+    end
+end
+
+---
+-- function description
 function XToLevel.Messages.Floating:PrintBattleground(bgsRequired)
     if XToLevel.db.profile.messages.playerFloating then
         local message = bgsRequired .. L["Battlegrounds Needed"]
@@ -129,6 +138,15 @@ end
 function XToLevel.Messages.Chat:PrintQuest(questsRequired)
     if XToLevel.db.profile.messages.playerChat then
         local message = questsRequired .. L["Quests Needed"]
+        XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerQuest)
+    end
+end
+
+---
+-- function description
+function XToLevel.Messages.Chat:PrintDig(digsRequired)
+    if XToLevel.db.profile.messages.playerChat then
+        local message = digsRequired .. L["Digs Needed"]
         XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerQuest)
     end
 end

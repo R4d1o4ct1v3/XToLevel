@@ -588,6 +588,16 @@ args = {
                     XToLevel.Average:Update()   
                 end,
             },
+            dataArchaeology = {
+                order = 25,
+                type = "toggle",
+                name = L["Archaeology"] or "Archaeology",
+                get = function(info) return XToLevel.db.profile.averageDisplay.playerDigs end,
+                set = function(info, value) 
+                    XToLevel.db.profile.averageDisplay.playerDigs = value 
+                    XToLevel.Average:Update()   
+                end,
+            },
         }
     },
     LDB = {
@@ -1175,6 +1185,7 @@ function XToLevel.Config:GetDefaults()
 		        playerBGs = true,
 		        playerBGOs = false,
                 playerGathering = true,
+                playerDigs = true,
 		        playerProgress = true,
 		        playerTimer = true,
 		        progress = true, -- Duplicate?
@@ -1221,6 +1232,7 @@ function XToLevel.Config:GetDefaults()
 			        showDungeonInfo = true,
 			        showTimerInfo = true,
                     showGatheringInfo = true,
+                    showArchaeology = true,
                     showGuildInfo = true,
 		        }
 	        },
@@ -1255,6 +1267,7 @@ function XToLevel.Config:GetDefaults()
 			        xpPerSec = nil,
 		        },
                 gathering = {},
+                digs = {},
                 npcXP = { },
 	        },
 	        customPattern = nil,
