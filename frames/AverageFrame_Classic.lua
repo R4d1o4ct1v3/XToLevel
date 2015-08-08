@@ -186,6 +186,12 @@ XToLevel.AverageFrameAPI["Classic"] =
         else
             self.lines.playerGathering:Hide()
         end
+        
+        if XToLevel.Player.isActive and XToLevel.db.profile.averageDisplay.playerDigs and XToLevel.Player:HasDigInfo() then
+            self.lines.playerDigs:Show()
+        else
+            self.lines.playerDigs:Hide()
+        end
     end,
     
     ---
@@ -292,8 +298,9 @@ XToLevel.AverageFrameAPI["Classic"] =
         self:CreateLine('playerBGOs', 'player', 6, 'bg', L["Objectives"], 'XToLevel_span')
         self:CreateLine('playerPetBattles', 'player', 7, 'petBattles', L["Pet Battles"], 'XToLevel_span')
         self:CreateLine('playerGathering', 'player', 8, 'gathering', L["Gathering"], 'XToLevel_span')
-        self:CreateLine('playerProgress', 'player', 9, 'experience', L["XP Percent"], 'XToLevel_span')
-        self:CreateLine('playerTimer', 'player', 10, 'timer', L["Player Timer"], "XToLevel_span")
+        self:CreateLine('playerDigs', 'player', 9, 'archaeology', L["Digs"], 'XToLevel_span')
+        self:CreateLine('playerProgress', 'player', 10, 'experience', L["XP Percent"], 'XToLevel_span')
+        self:CreateLine('playerTimer', 'player', 11, 'timer', L["Player Timer"], "XToLevel_span")
     end,
     
     ---
@@ -383,6 +390,11 @@ XToLevel.AverageFrameAPI["Classic"] =
     --- Sets the gathering value.
     SetGathering = function(self, value)
         self:WriteToLine("playerGathering", "Gathering", value, self:GetTextColor("player"))
+    end,
+    
+    --- Sets the dig value.
+    SetDigs = function(self, value)
+        self:WriteToLine("playerDigs", "Digs", value, self:GetTextColor("player"))
     end,
     
     --- Sets the guild progress value. NOT IMPLEMENTED IN THIS FRAME!

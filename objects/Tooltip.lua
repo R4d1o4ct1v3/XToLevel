@@ -290,7 +290,8 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
                     GameTooltip:AddLine(" ")
                 end
             end
-            if XToLevel.db.profile.ldb.tooltip.showArchaeology then
+            if XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo then
+                GameTooltip:AddLine((L["Archaeology"] or "Archaeology") .. ": ")
                 self:AddArchaeology()
                 GameTooltip:AddLine(" ")
             end

@@ -1000,20 +1000,27 @@ args = {
                 get = function(i) return XToLevel.db.profile.ldb.tooltip.showGatheringInfo end,
                 set = function(i,v) XToLevel.db.profile.ldb.tooltip.showGatheringInfo = v end,
             },
-            timerDetails = {
+            archaeologyDetails = {
                 order = 7,
+                type = "toggle",
+                name = L["Show Archaeology Details"],
+                get = function(i) return XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo end,
+                set = function(i,v) XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo = v end,
+            },
+            timerDetails = {
+                order = 8,
                 type = "toggle",
                 name = L["Show Timer Details"],
                 get = function(i) return XToLevel.db.profile.ldb.tooltip.showTimerInfo end,
                 set = function(i,v) XToLevel.db.profile.ldb.tooltip.showTimerInfo = v end,
             },
             miscHeader = {
-                order = 8,
+                order = 9,
                 type = "header",
                 name = L["Misc Header"],
             },
             npcTooltipData = {
-                order = 9,
+                order = 10,
                 type = "toggle",
                 name = L["Show kills needed in NPC tooltips"],
                 get = function(i) return XToLevel.db.profile.general.showNpcTooltipData end,
@@ -1232,7 +1239,7 @@ function XToLevel.Config:GetDefaults()
 			        showDungeonInfo = true,
 			        showTimerInfo = true,
                     showGatheringInfo = true,
-                    showArchaeology = true,
+                    showArchaeologyInfo = true,
                     showGuildInfo = true,
 		        }
 	        },
