@@ -12,7 +12,7 @@ local L = addonTable.GetLocale()
 XToLevel.LDB = {
     -- Constants
     textPatterns = {
-        default = "{kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{dungeons}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/dungeons}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{bgo}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgo}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}",
+        default = "{kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{dungeons}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/dungeons}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{bgo}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgo}{gather}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/gather}{digs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/digs}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}",
         minimal = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:/}{/color}{progress}{$value}{/progress}{/xp}",
         minimal_dashed = "{kills}{progress}{$value}{/progress}{/kills}{quests}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/quests}{dungeons}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/dungeons}{bgs}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/bgs}{xp}{color=cfcfdf}{$seperator:-}{/color}{progress}{$value}{/progress}{/xp}",
         brackets = "{kills}{progress}[{$value}]{/progress}{/kills}{quests}{progress}[{$value}]{/progress}{/quests}{dungeons}{progress}[{$value}]{/progress}{/dungeons}{bgs}{progress}[{$value}]{/progress}{/bgs}{xp}{progress}[{$value}]{/progress}{/xp}",
@@ -24,12 +24,14 @@ XToLevel.LDB = {
         [3] = { tag = "dungeons", label = 'init', value = '~', color = nil, }, 
         [4] = { tag = "bgs", label = 'init', value = '~', color = nil, }, 
         [5] = { tag = "bgo", label = 'init', value = '~', color = nil, }, 
-        [6] = { tag = "xp", label = 'init', value = '~', color = nil, },
-		[7] = { tag = "restedp", label = 'init', value = '~', color = nil, },
-		[8] = { tag = "rested", label = 'init', value = '~', color = nil, },
-		[9] = { tag = "xpnum", label = 'init', value = '~', color = nil, },
-        [10] = { tag = "guildxp", label = 'init', value = '~', color = nil, },
-        [11] = { tag = "guilddaily", label = 'init', value = '~', color = nil },
+        [6] = { tag = "gather", label = 'init', value = '~', color = nil, }, 
+        [7] = { tag = "digs", label = 'init', value = '~', color = nil, }, 
+        [8] = { tag = "xp", label = 'init', value = '~', color = nil, },
+		[9] = { tag = "restedp", label = 'init', value = '~', color = nil, },
+		[10] = { tag = "rested", label = 'init', value = '~', color = nil, },
+		[11] = { tag = "xpnum", label = 'init', value = '~', color = nil, },
+        [12] = { tag = "guildxp", label = 'init', value = '~', color = nil, },
+        [13] = { tag = "guilddaily", label = 'init', value = '~', color = nil },
     },
 
     -- Members
@@ -77,7 +79,7 @@ function XToLevel.LDB:Initialize()
         XToLevel.Tooltip:Hide()
     end
     function self.dataObject:OnClick(button)
-        XToLevel.Config:Open("LDB")
+        XToLevel.Config:Open("LDB");
     end
 
     self:BuildPattern();-- /run XToLevel.LDB:BuildPattern(); XToLevel.LDB:Update();
@@ -216,36 +218,48 @@ function XToLevel.LDB:BuildPattern()
                 color = (useColors and '$$playercolor$$') or nil,
             }, 
             [6] = { 
+                tag = "gather",
+                label = (XToLevel.db.profile.ldb.text.verbose and L["Gathering"] ) or L["Gathering Short"],
+                value = (showPlayer and '$$gather$$') or nil,
+                color = (useColors and '$$playercolor$$') or nil,
+            }, 
+            [7] = { 
+                tag = "digs",
+                label = (XToLevel.db.profile.ldb.text.verbose and L["Digs"] ) or L["Digs Short"],
+                value = (showPlayer and '$$digs$$') or nil,
+                color = (useColors and '$$playercolor$$') or nil,
+            }, 
+            [8] = { 
                 tag = "xp",
                 label = L["XP"],
                 value = (showPlayer and ('$$xp$$')) or nil,
                 color = (XToLevel.db.profile.ldb.allowTextColor and '$$playercolor$$') or nil,
             },
-            [7] = { 
+            [9] = { 
                 tag = "restedp",
                 label =(XToLevel.db.profile.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                 value = (showPlayer and '$$restedp$$') or nil,
                 color = (XToLevel.db.profile.ldb.allowTextColor and '$$playercolor$$') or nil,
             },
-            [8] = { 
+            [10] = { 
                 tag = "rested",
                 label = (XToLevel.db.profile.ldb.text.verbose and L["Rested"] ) or L["Rested Short"],
                 value = (showPlayer and '$$rested$$') or nil,
                 color = (useColors and '$$playercolor$$') or nil,
             },
-            [9] = { 
+            [11] = { 
                 tag = "xpnum",
                 label = (XToLevel.db.profile.ldb.text.verbose and L["XP"] ) or L["XP"],
                 value = (showPlayer and '$$xpnum$$') or nil,
                 color = (useColors and '$$playercolor$$') or nil,
             },
-            [10] = { 
+            [12] = { 
                 tag = "guildxp",
                 label = (XToLevel.db.profile.ldb.text.verbose and "Guild XP" ) or "GXP",
                 value = (showPlayer and '$$guildxp$$') or nil,
                 color = (useColors and '$$guildcolor$$') or nil,
             },
-            [11] = { 
+            [13] = { 
                 tag = "guilddaily",
                 label = (XToLevel.db.profile.ldb.text.verbose and "Guild Daily" ) or "GDXP",
                 value = (showPlayer and '$$guilddaily$$') or nil,
@@ -355,6 +369,11 @@ function XToLevel.LDB:Update()
 
             pattern = string.gsub(pattern, '%$%$bgs%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageBGsRemaining()) or "~"));
             pattern = string.gsub(pattern, '%$%$bgo%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageBGObjectivesRemaining()) or "~"));
+            
+            local gethering = XToLevel.Player:GetAverageGatheringRequired();
+            local digs = XToLevel.Player:GetAverageDigsRequired();
+            pattern = string.gsub(pattern, '%$%$gather%$%$', (XToLevel.Lib:round(gethering) or "~"));
+            pattern = string.gsub(pattern, '%$%$digs%$%$', (XToLevel.Lib:round(digs) or "~"));
 
             if XToLevel.db.profile.ldb.text.xpnumFormat then
                 pattern = string.gsub(pattern, '%$%$rested%$%$', (XToLevel.Lib:ShrinkNumber(XToLevel.Player.restedXP) or "~"));
@@ -395,6 +414,8 @@ function XToLevel.LDB:Update()
             pattern = string.gsub(pattern, '%$%$xpnum%$%$', '');
             pattern = string.gsub(pattern, '%$%$bgs%$%$', '');
             pattern = string.gsub(pattern, '%$%$bgo%$%$', '');
+            pattern = string.gsub(pattern, '%$%$gather%$%$', '');
+            pattern = string.gsub(pattern, '%$%$digs%$%$', '');
             pattern = string.gsub(pattern, '%$%$rested%$%$', '');
             pattern = string.gsub(pattern, '%$%$restedp%$%$', '');
             pattern = string.gsub(pattern, '%$%$guildxp%$%$', "");

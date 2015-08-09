@@ -832,6 +832,28 @@ args = {
                     XToLevel.LDB:Update()
                 end,
             },
+            ldbDataGathering = {
+                order = 23,
+                type = "toggle",
+                name = L["Gathering"],
+                get = function(i) return XToLevel.db.profile.ldb.text.gather end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.gather = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
+            },
+            ldbDataArchaeology = {
+                order = 24,
+                type = "toggle",
+                name = L["Archaeology"],
+                get = function(i) return XToLevel.db.profile.ldb.text.digs end,
+                set = function(i,v) 
+                    XToLevel.db.profile.ldb.text.digs = v
+                    XToLevel.LDB:BuildPattern()
+                    XToLevel.LDB:Update()
+                end,
+            },
         }
     },
     Data = {
@@ -1219,6 +1241,8 @@ function XToLevel.Config:GetDefaults()
 			        dungeons = true,
 			        bgs = true,
 			        bgo = false,
+                    gather = true,
+                    digs = true,
 			        xp = true,
 			        xpnum = true,
 			        xpnumFormat = true,
