@@ -264,7 +264,14 @@ function XToLevel.Player:UpdateTimer()
     if useMode == 2 then
         if type(self.timePlayedLevel) == "number" and (self.timePlayedLevel + (XToLevel.db.char.data.timer.lastUpdated - self.timePlayedUpdated)) > 0 then
             local xpPerSec = self.currentXP / (self.timePlayedLevel + (XToLevel.db.char.data.timer.lastUpdated - self.timePlayedUpdated))
-            local secondsToLevel = (self.maxXP - self.currentXP) / xpPerSec
+            if xpPerSec > 0 then
+                local secondsToLevel = (self.maxXP - self.currentXP) / xpPerSec
+            else
+                -- There seems to be a rare temporary condition, whereby some of the data used to calculate the
+                -- xpPreSec data is not set correctly and it is set to nil or zero. In those cases, just set
+                -- the time-to-level to an hour, until the player gets some XP and the calculations correct themselves.
+                local secondsToLevel = 3600
+            end
             XToLevel.Average:UpdateTimer(secondsToLevel)
         else
             useMode = false
