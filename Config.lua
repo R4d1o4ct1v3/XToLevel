@@ -199,7 +199,7 @@ args = {
             infoAuthor = {
                 order = 3,
                 type = "description",
-                name = "|cFFFFAA00" .. L["Author"] .. ":|r |cFFE07B02" .. "R4d1o4ct1v3_ (on CurseForge)",
+                name = "|cFFFFAA00" .. L["Author"] .. ":|r |cFFE07B02" .. "R4d1o4ct1v3_ (curseforge.com/members/r4d1o4ct1v3_)",
             },
             infoEmail = {
                 order = 4,
