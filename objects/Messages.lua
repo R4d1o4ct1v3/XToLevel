@@ -3,7 +3,7 @@ local _, addonTable = ...
 -- Contains definitions for Chat and Floating Error window message controls.
 -- @file objects/Messages.lua
 -- @release @project-version@
--- @copyright Atli Þór (atli.j@advefir.com)
+-- @author Atli Þór (r4d1o4ct1v3v3@gmail.com)
 ---
 --module "XToLevel.Messages" -- For documentation purposes. Do not uncomment!
 

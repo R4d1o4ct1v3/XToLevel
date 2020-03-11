@@ -2,7 +2,7 @@
 -- A collection of globally available functions, used througout the addon.
 -- @file Libs.lua
 -- @release 4.1.0_26
--- @copyright Atli Þór (atli.j@advefir.com)
+-- @author Atli Þór (r4d1o4ct1v3v3@gmail.com)
 ---
 --module "XToLevel.Lib" -- For documentation purposes. Do not uncomment!
 
@@ -276,18 +276,21 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
         end
         return high;
     elseif charLevel == mobLevel and mobClassIndex == 1 then
-        -- The old formula still seems to work for mobs of equal level, so...
-        local zoneID = XToLevel.Lib:ZoneID();
-        local addValue = 45 -- Default, for the pre-tbc zones
-        if (zoneID or 0) == 3 then
-            addValue = 235 -- Outlands
-        elseif (zoneID or 0) == 4 then 
-            addValue = 580 -- Northrend
-        elseif (zoneID or 0) == 5 then
-            -- Note that the ZoneID() function returns 1 for the goblin newbie
-            -- zone, even thought it technically belongs to zone 5.
-            addValue = 1770 -- Cataclysm (Should be 1878, but this seems to be more on target.)
-        end
+        -- In the abscence of recorded data to use, attempt to estimate the XP value of the mob.
+		-- Note: Previous versions of this code used zone detection. That has become problematic, so I'm abandonning
+		-- that in favor of level detection. We'll just have to hope people are leveling in areas appropriate to their level.
+		local addValue = 0	
+		if (charLevel < 60) then
+			addValue = 45 -- Vanilla
+        elseif (charLevel < 70) then
+            addValue = 235 -- Outlands (TBC)
+        elseif (charLevel < 80) == 4 then 
+            addValue = 580 -- Northrend (WotLK)
+		else 
+            -- (Should be 1878, but this seems to be more on target.)
+            addValue = 1770 -- Cataclysm
+		end
+		-- TODO: Modify for extensions past Cataclysm. Juts have to level a char that far for testing...
         
         return ((charLevel * 5) + addValue);
     else

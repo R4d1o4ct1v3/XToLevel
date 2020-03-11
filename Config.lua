@@ -5,7 +5,7 @@ local _, addonTable = ...
 -- data tables.
 -- @file XToLevel.Config.lua
 -- @release @project-version@
--- @copyright Atli Þór (atli.j@advefir.com)
+-- @author Atli Þór (r4d1o4ct1v3v3@gmail.com)
 ---
 --module "XToLevel.Config" -- For documentation purposes. Do not uncomment!
 
@@ -199,17 +199,17 @@ args = {
             infoAuthor = {
                 order = 3,
                 type = "description",
-                name = "|cFFFFAA00" .. L["Author"] .. ":|r |cFFE07B02" .. "Atli þór Jónsson",
+                name = "|cFFFFAA00" .. L["Author"] .. ":|r |cFFE07B02" .. "R4d1o4ct1v3_ (on CurseForge)",
             },
             infoEmail = {
                 order = 4,
                 type = "description",
-                name = "|cFFFFAA00" .. L["Email"] .. ":|r |cFFFFFFFF" .. "atli.j@advefir.com",
+                name = "|cFFFFAA00" .. L["Email"] .. ":|r |cFFFFFFFF" .. "r4d1o4ct1v3v3@gmail.com",
             },
             infoWebsite = {
                 order = 5,
                 type = "description",
-                name = "|cFFFFAA00" .. L["Website"] .. ":|r |cFFFFFFFF" .. "http://wow.curseforge.com/addons/xto-level/",
+                name = "|cFFFFAA00" .. L["Website"] .. ":|r |cFFFFFFFF" .. "https://www.curseforge.com/wow/addons/xto-level",
             },
             infoCategory = {
                 order = 6,

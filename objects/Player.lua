@@ -3,7 +3,7 @@ local _, addonTable = ...
 -- Controls all Playe related functionality.
 -- @file XToLevel.Player.lua
 -- @release @project-version@
--- @copyright Atli Þór (atli.j@advefir.com)
+-- @author Atli Þór (r4d1o4ct1v3v3@gmail.com)
 ---
 --module "XToLevel.Player" -- For documentation purposes. Do not uncomment!
 
