@@ -16,6 +16,34 @@ XToLevel.Messages = {
     }
 }
 
+function XToLevel.Messages:PrintTable(table, recursionLevel)
+    if type(table) ~= "table" then
+        return
+    end
+    if not recursionLevel then
+        recursionLevel = 0
+    end
+    local indent = string.rep("  ", recursionLevel)
+    XToLevel.Messages:Debug(indent .. "Table {")
+    for i, row in pairs(table) do
+        local rowType = type(row)
+        if rowType == "table" then
+            XToLevel.Messages:PrintTable(row, recursionLevel + 1)
+        elseif rowType == "boolean" then
+            local stringValue = "True"
+            if not row then
+                stringValue = "False"
+            end
+            XToLevel.Messages:Debug(indent .. "  [" .. i .. "] boolean: " .. stringValue)
+        elseif rowType == "nil" then
+            XToLevel.Messages:Debug(indent .. "  [" .. i .. "] nil")
+        else
+            XToLevel.Messages:Debug(indent .. "  [" .. i .. "] " .. rowType .. ": '" .. row .. "'")
+        end 
+    end
+    XToLevel.Messages:Debug(indent .. "}")
+end
+
 ---
 -- function description
 function XToLevel.Messages:Print(message, style, color)
@@ -30,7 +58,11 @@ end
 -- function description
 function XToLevel.Messages:Debug(message)
     if XToLevel.db.profile.general.showDebug then
-        self:Print(message, self.printStyle.gray, {0.5, 0.5, 0.5})
+        if type(message) ~= "table" then
+            self:Print(message, self.printStyle.gray, {0.5, 0.5, 0.5})
+        else
+            self:PrintTable(message)
+        end
     end
 end
 

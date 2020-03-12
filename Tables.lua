@@ -40,7 +40,9 @@ XToLevel.UNIT_CLASSIFICATIONS = {
     [2] = "rare",
     [3] = "elite",
     [4] = "rareelite",
-    [5] = "worldboss"
+    [5] = "worldboss",
+    [6] = "minus",
+    [7] = "trivial"
 }
 
 XToLevel.CATACLYSM_ZONES = {

@@ -95,6 +95,8 @@ function XToLevel:MainOnEvent(event, ...)
         self:OnCombatLogEventUnfiltered(...)
     elseif event == "PLAYER_REGEN_ENABLED" then
         self:OnPlayerRegenEnabled()
+    elseif event == "PLAYER_REGEN_DISABLED" then
+        self:OnPlayerRegenDisabled()
     elseif event == "PET_BATTLE_OVER" then
         self:OnPetBattleOver()
     elseif event == "ARCHAEOLOGY_FIND_COMPLETE" then
@@ -288,14 +290,14 @@ end
 
 ---
 -- Look for the combat log event that tells of a NPC death. 
-function XToLevel:OnCombatLogEventUnfiltered(...)
-    local cl_event = select(2, ...)
+function XToLevel:OnCombatLogEventUnfiltered()
+    local cl_event = select(2, CombatLogGetCurrentEventInfo())
     if cl_event ~= nil then
         if cl_event == "UNIT_DIED" then
-            local npc_guid = select(8, ...)
+            local npc_guid = select(8, CombatLogGetCurrentEventInfo())
             -- 4.1 backwards compatibility fix.
             if tonumber(select(4, GetBuildInfo())) < 40200 then
-                npc_guid = select(7, ...)
+                npc_guid = select(7, CombatLogGetCurrentEventInfo())
             end
             for i, data in ipairs(targetList) do
                 if data.guid == npc_guid then

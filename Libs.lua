@@ -140,36 +140,21 @@ function XToLevel.Lib:GetRepGainsToTarget(gain, currentRep, targetName)
 end
 
 ---
--- Returns the ID of the zone the player is current in
+-- Returns the ID of the zone the player is currently in.
+-- Borrowed from: https://www.wowinterface.com/forums/showpost.php?p=328804&postcount=4
 ---
 function XToLevel.Lib:ZoneID()
-	local currentZone = GetRealZoneText();
-    
-    for __, cataZone in ipairs(XToLevel.CATACLYSM_ZONES) do
-        if cataZone == currentZone then
-            return 5
-        end
-    end
-    
-    -- Look for the new Cataclysm low-level zones. By default they return 5, but
-    -- we wan't them to return 1 like the rest of the lowbie zones, so the XP
-    -- calculations don't mistake them for 80-85 zones.
-    for __, cataZone in ipairs(XToLevel.CATACLYSM_LOWLEVEL_ZONES) do
-        if cataZone == currentZone then
-            return 1
-        end
-    end
-    
-	local continentNames, key, val = { GetMapContinents() } ;
-	for key, val in pairs(continentNames) do
-		local continentZones = { GetMapZones(key) };
-		for i,zone in ipairs(continentZones) do
-			if zone == currentZone then
-				return key
+	local mapID = C_Map.GetBestMapForUnit("player")
+	if mapID then
+		local info = C_Map.GetMapInfo(mapID)
+		if info then
+			while info['mapType'] and info['mapType'] > 3 do
+				info = C_Map.GetMapInfo(info['parentMapID'])
 			end
+			return info['mapID']
 		end
 	end
-	return nil
+	return 1
 end
 
 ---
@@ -280,15 +265,15 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
 		-- Note: Previous versions of this code used zone detection. That has become problematic, so I'm abandonning
 		-- that in favor of level detection. We'll just have to hope people are leveling in areas appropriate to their level.
 		local addValue = 0	
-		if (charLevel < 60) then
-			addValue = 45 -- Vanilla
+		if (charLevel < 60 or charLevel >= 90) then
+			addValue = 45 -- Vanilla and Legion
         elseif (charLevel < 70) then
             addValue = 235 -- Outlands (TBC)
-        elseif (charLevel < 80) == 4 then 
-            addValue = 580 -- Northrend (WotLK)
-		else 
+        elseif (charLevel < 80) then 
+			addValue = 580 -- Northrend (WotLK)
+		elseif (charLevel < 90) then
             -- (Should be 1878, but this seems to be more on target.)
-            addValue = 1770 -- Cataclysm
+			addValue = 1770 -- Cataclysm
 		end
 		-- TODO: Modify for extensions past Cataclysm. Juts have to level a char that far for testing...
         
