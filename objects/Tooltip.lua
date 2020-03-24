@@ -60,7 +60,7 @@ end
 function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
-        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitHealthMax(unit) > -1 then
+        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
             local classification = UnitClassification(unit)
 
