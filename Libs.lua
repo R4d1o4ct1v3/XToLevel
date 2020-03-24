@@ -40,6 +40,59 @@ function XToLevel.Lib:round(number)
 end
 
 ---
+-- Determines whether item fitted in the given slot is an heirloom.
+-- NOTE that it doesn't check if the item has any XP bonus on it.
+-- @param slotType See https://wow.gamepedia.com/InventorySlotId#Values (Use the string values, e.g: "HEADSLOT")
+function XToLevel.Lib:IsActiveHeirloom(slotType)
+	local itemID = GetInventoryItemID("player", GetInventorySlotInfo(slotType))
+	if not itemID then
+		return false
+	end
+	
+	local heirloomInfo = {C_Heirloom.GetHeirloomInfo(itemID)}
+	if # heirloomInfo == 0 then
+		return false
+	end
+	
+	if heirloomInfo[10] < XToLevel.Player.level then
+		return false
+	end
+	
+	return true
+end
+
+---
+-- Checks for heirlooms, and returns a multiplier value that should be used with any 
+-- XP estimates that are not based on collected data. (As collected data will include this already.)
+function XToLevel.Lib:GetHeirloomMultiplier()
+	-- Slots that always have 10% xp bonuses on them.
+	local checkList = {
+		{slot = "HEADSLOT", modifier = 0.1},
+		{slot = "SHOULDERSLOT", modifier = 0.1},
+		{slot = "CHESTSLOT", modifier = 0.1},
+		{slot = "LEGSSLOT", modifier = 0.1},
+		{slot = "BACKSLOT", modifier = 0.05},
+		{slot = "FINGER0SLOT", modifier = 0.05},
+		{slot = "FINGER1SLOT", modifier = 0.05},
+	}
+
+	local multiplier = 1.0
+	for _, d in pairs(checkList) do
+		if self:IsActiveHeirloom(d.slot) then
+			multiplier = multiplier + d.modifier
+		end
+	end
+	
+	-- Temporarily adding a flat 100% increase here for the "Winds of Wisdom" buff
+	-- added by Blizzard in March 2020. Should be removed after April 20th, 2020.
+	if time() < time({year=2020,month=4,day=21}) then
+		multiplier = multiplier + 1
+	end
+
+	return multiplier
+end
+
+---
 -- Counts the number of times the needle is found in the heystack.
 -- @param needle The needle
 -- @param heystack The heystack
@@ -267,6 +320,7 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
 	elseif mobLevel > charLevel - 5 then
 		-- Standard base formula for all zones now. Previously the addition would vary.
 		local baseXP = (charLevel * 5) + 45
+		local heirloomBonus = XToLevel.Lib:GetHeirloomMultiplier()
 
 		-- Mobs that are higher level than the player seem to always add 5% to the base
 		-- value, even at low level. (Slight variations at the lowest level, but not worth coding around now)
@@ -299,9 +353,9 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
 				end
 			end
 			local multiplier = (modifier * levelDelta) + 1
-			return floor((baseXP * multiplier) + 0.5)
+			return floor((baseXP * multiplier * heirloomBonus) + 0.5)
 		else
-			return baseXP
+			return floor((baseXP * heirloomBonus) + 0.5)
 		end
     else
         return 0; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
