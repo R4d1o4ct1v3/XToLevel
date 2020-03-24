@@ -35,6 +35,10 @@ end
 
 XToLevel.Lib = { }
 
+function XToLevel.Lib:round(number)
+	return floor(number + 0.5)
+end
+
 ---
 -- Counts the number of times the needle is found in the heystack.
 -- @param needle The needle
@@ -260,24 +264,45 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
             if v > high then high = v end
         end
         return high;
-    elseif charLevel == mobLevel and mobClassIndex == 1 then
-        -- In the abscence of recorded data to use, attempt to estimate the XP value of the mob.
-		-- Note: Previous versions of this code used zone detection. That has become problematic, so I'm abandonning
-		-- that in favor of level detection. We'll just have to hope people are leveling in areas appropriate to their level.
-		local addValue = 0	
-		if (charLevel < 60 or charLevel >= 90) then
-			addValue = 45 -- Vanilla and Legion
-        elseif (charLevel < 70) then
-            addValue = 235 -- Outlands (TBC)
-        elseif (charLevel < 80) then 
-			addValue = 580 -- Northrend (WotLK)
-		elseif (charLevel < 90) then
-            -- (Should be 1878, but this seems to be more on target.)
-			addValue = 1770 -- Cataclysm
+	elseif mobLevel > charLevel - 5 then
+		-- Standard base formula for all zones now. Previously the addition would vary.
+		local baseXP = (charLevel * 5) + 45
+
+		-- Mobs that are higher level than the player seem to always add 5% to the base
+		-- value, even at low level. (Slight variations at the lowest level, but not worth coding around now)
+		-- Mobs that are lower level seem to subtract 7% for each level at level 60 or higher. Levels
+		-- prior to that seem to increase that % on a gradient down to around 27% at level 1. 
+		
+		local levelDelta = mobLevel - charLevel
+		if levelDelta ~= 0 then
+			local modifier = 0.05 -- Default for higher levels
+			if levelDelta < 0 then
+				-- TODO: Make this less shit
+				if charLevel <= 3 then
+					modifier = 0.27
+				elseif charLevel <= 7 then
+					modifier = 0.23
+				elseif charLevel <= 11 then
+					modifier = 0.19
+				elseif charLevel <= 15 then
+					modifier = 0.15
+				elseif charLevel <= 25 then
+					modifier = 0.13
+				elseif charLevel <= 32 then
+					modifier = 0.11
+				elseif charLevel <= 45 then
+					modifier = 0.1
+				elseif charLevel <= 60 then
+					modifier = 0.085
+				else -- Assuming everything above 60 is -7% per mob for now. To be updated.
+					modifier = 0.07
+				end
+			end
+			local multiplier = (modifier * levelDelta) + 1
+			return floor((baseXP * multiplier) + 0.5)
+		else
+			return baseXP
 		end
-		-- TODO: Modify for extensions past Cataclysm. Juts have to level a char that far for testing...
-        
-        return ((charLevel * 5) + addValue);
     else
         return 0; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
     end

@@ -1730,6 +1730,7 @@ end
 -- @param initalValue The inital value for the list. [optional]
 function XToLevel.Player:ClearKills (initialValue)
     XToLevel.db.char.data.killList = { }
+    XToLevel.db.char.data.npcXP = { }
     self.killAverage = nil;
     if initialValue ~= nil and tonumber(initialValue) > 0 then
         table.insert(XToLevel.db.char.data.killList, {mob='Initial', xp=tonumber(initialValue)})
