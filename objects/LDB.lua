@@ -371,7 +371,7 @@ function XToLevel.LDB:Update()
             pattern = string.gsub(pattern, '%$%$bgo%$%$', (XToLevel.Lib:round(XToLevel.Player:GetAverageBGObjectivesRemaining()) or "~"));
             
             local gethering = XToLevel.Player:GetAverageGatheringRequired();
-            local digs = XToLevel.Player:GetAverageDigsRequired();
+            local digs = XToLevel.Player:GetDigsRequired();
             pattern = string.gsub(pattern, '%$%$gather%$%$', (XToLevel.Lib:round(gethering) or "~"));
             pattern = string.gsub(pattern, '%$%$digs%$%$', (XToLevel.Lib:round(digs) or "~"));
 

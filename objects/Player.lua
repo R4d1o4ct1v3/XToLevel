@@ -634,11 +634,22 @@ end
 ---
 -- Determines whether there is any gathering info to show.
 -- Similar in many ways to the GetGatheringActions function but cheaper.
-function XToLevel.Player:HasGatheringInfo()
+function XToLevel.Player:HasGatheringInfo(levelRange)
     if type(XToLevel.db.char.data.gathering) == "table" then
+        if type(levelRange) ~= "number" or levelRange <= 0 then
+            levelRange = 2
+        end
         local actionCount = 0
-        for key, __ in pairs(XToLevel.db.char.data.gathering) do
-            actionCount = actionCount + 1
+        for _, dataList in pairs(XToLevel.db.char.data.gathering) do
+            local addAction = false
+            for _, data in pairs(dataList) do
+                if data["level"] > XToLevel.Player.level - levelRange then
+                    addAction = true
+                end
+            end
+            if addAction then
+                actionCount = actionCount + 1
+            end
         end
         return actionCount > 0
     else
@@ -658,16 +669,16 @@ end
 
 ---
 -- Determines the average XP for the current dig-site list.
-function XToLevel.Player:GetAverageDigXP()
+function XToLevel.Player:GetHighestDigXP()
     if type(XToLevel.db.char.data.digs) == "table" then
-        local tXP = 0;
-        local tCount = 0;
+        local maxXP = 0
         for i, xp in ipairs(XToLevel.db.char.data.digs) do
-            tXP = tXP + xp
-            tCount = tCount + 1
+            if xp > maxXP then
+                maxXP = xp
+            end
         end
-        if tXP > 0 and tCount > 0 then
-            return (tXP / tCount)
+        if maxXP > 0 then
+            return maxXP
         else
             return nil
         end
@@ -677,16 +688,44 @@ function XToLevel.Player:GetAverageDigXP()
 end
 
 ---
--- Determines the average dig-sites required for next level.
-function XToLevel.Player:GetAverageDigsRequired()
-    local averageXP = self:GetAverageDigXP()
-    if type(averageXP) == "number" and averageXP > 0 then
-        local required = ceil((self.maxXP - self.currentXP) / averageXP);
+-- Determines the average arhcealogical find required for next level.
+function XToLevel.Player:GetDigsRequired()
+    local maxXP = self:GetHighestDigXP()
+    if type(maxXP) == "number" and maxXP > 0 then
+        local required = ceil((self.maxXP - self.currentXP) / maxXP);
         if type(required) == "number" and required > 0 then
-            return required, averageXP
+            return required, maxXP
         else
             return nil
         end
+    else
+        return nil
+    end
+end
+
+---
+-- Determines the average full digsite required for next level.
+-- @param assumeOneDigIsLeft Set to true if 1 dig (or find) is to be removed from the calculations
+--                           This is needed since the "digsite complete" event fires before the final
+--                           dig is actually performed, so a message fired on that even may become inaccurate
+--                           if that is not accounted for.
+function XToLevel.Player:GetDigsitesRequired(assumeOneDigIsLeft)
+    local findsPerSite = 6
+    local finds, xpPerFind = self:GetDigsRequired()
+
+    if type(finds) == "number" then
+        if type(assumeOneDigIsLeft) == "boolean" and assumeOneDigIsLeft then
+            finds = finds - 1
+        end
+        
+        local sitesRequried = ceil(finds / findsPerSite)
+        local xpRequired = xpPerFind * findsPerSite
+        if CanScanResearchSite() and XToLevel.digsiteProgress ~= nil and XToLevel.digsiteProgress > 0 then
+            -- If the player is in a digsite, calculate the value as it was when the digsite was entered,
+            -- so that the value shown includes the currernt site as well.
+            sitesRequried = ceil((finds + XToLevel.digsiteProgress) / findsPerSite)
+        end
+        return sitesRequried, xpRequired
     else
         return nil
     end

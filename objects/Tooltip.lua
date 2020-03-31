@@ -64,6 +64,10 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
             local level = UnitLevel(unit)
             local classification = UnitClassification(unit)
 
+            if level < XToLevel.Player.level - 4 then
+                return nil
+            end
+
             local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, classification);
 
             local requiredText = ""
@@ -602,10 +606,20 @@ end
 
 function XToLevel.Tooltip:AddArchaeology()
     local linesAdded = 0
-    local nodesRequired, xpPerNode = XToLevel.Player:GetAverageDigsRequired()
+    local nodesRequired, xpPerNode = XToLevel.Player:GetDigsRequired()
     if nodesRequired ~= nil then
+        local digsites, xpPerDigsite = XToLevel.Player:GetDigsitesRequired()
+        local xpPerDigsite = XToLevel.Lib:NumberFormat(xpPerDigsite)
+        if CanScanResearchSite() then
+            digsites = digsites .. "*"
+        end
+
         xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
-        GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        GameTooltip:AddDoubleLine(L["Digs"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        GameTooltip:AddDoubleLine(L["Digsites"] .. ": ", digsites .. " @ " .. xpPerDigsite .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        if CanScanResearchSite() then
+            GameTooltip:AddLine("* Includes the current site", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+        end
     else
         GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
     end

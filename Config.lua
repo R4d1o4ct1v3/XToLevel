@@ -31,7 +31,8 @@ function XToLevel.Config:Initialize()
 				playerQuest = {0.5, 1, 0.7, 1},
 				playerBattleground = {1, 0.5, 0.5, 1},
 				playerDungeon = {1, 0.75, 0.35, 1},
-				playerLevel = {0.35, 1, 0.35, 1},
+                playerLevel = {0.35, 1, 0.35, 1},
+                archaeology = {1.0, 0.5, 0.15, 1},
 			};
 			XToLevel.Config:Open("Messages")
 		end,
@@ -340,13 +341,21 @@ args = {
                 get = function(info) return unpack(XToLevel.db.profile.messages.colors.playerLevel) end,
                 set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.playerLevel = {r, g, b, a} end,
             },
-            colorResetHeader = {
+            colorArchaeology = {
                 order = 10,
+                type = "color",
+                name = L["Archaeology"] or "Archaeology",
+                hasAlpha = true,
+                get = function(info) return unpack(XToLevel.db.profile.messages.colors.archaeology) end,
+                set = function(info, r, g, b, a) XToLevel.db.profile.messages.colors.archaeology = {r, g, b, a} end,
+            },
+            colorResetHeader = {
+                order = 11,
                 type = "header",
                 name = "",
             },
             colorResetBtn = {
-                order = 11,
+                order = 12,
                 type = "execute",
                 name = L["Color Reset"],
                 func = function() StaticPopup_Show("XToLevelConfig_MessageColorsReset") end,
@@ -493,13 +502,23 @@ args = {
                     XToLevel.Average:Update()
                 end,
             },
-            dataHeader = {
+            behaviourArchaeologyDataToggle = {
                 order = 15,
+                type = "toggle",
+                name = L["Archaeology as sites"],
+                get = function(info) return XToLevel.db.profile.averageDisplay.archaeologyAsSites end,
+                set = function(info, value) 
+                    XToLevel.db.profile.averageDisplay.archaeologyAsSites = value 
+                    XToLevel.Average:Update()
+                end,
+            },
+            dataHeader = {
+                order = 16,
                 type = "header",
                 name = L["LDB Player Data Header"],
             },
             dataKills = {
-                order = 16,
+                order = 17,
                 type = "toggle",
                 name = L["Kills"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerKills end,
@@ -509,7 +528,7 @@ args = {
                 end,
             },
             dataQuests = {
-                order = 17,
+                order = 18,
                 type = "toggle",
                 name = L["Player Quests"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerQuests end,
@@ -519,7 +538,7 @@ args = {
                 end,
             },
             dataDungeons = {
-                order = 18,
+                order = 19,
                 type = "toggle",
                 name = L["Player Dungeons"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerDungeons end,
@@ -529,7 +548,7 @@ args = {
                 end,
             },
             dataBattles = {
-                order = 19,
+                order = 20,
                 type = "toggle",
                 name = L["Player Battles"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerBGs end,
@@ -539,7 +558,7 @@ args = {
                 end,
             },
             dataBattleObjectives = {
-                order = 20,
+                order = 21,
                 type = "toggle",
                 name = L["Player Objectives"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerBGOs end,
@@ -549,7 +568,7 @@ args = {
                 end,
             },
             dataProgress = {
-                order = 21,
+                order = 22,
                 type = "toggle",
                 name = L["Player Progress"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerProgress end,
@@ -559,7 +578,7 @@ args = {
                 end,
             },
             dataTimer = {
-                order = 22,
+                order = 23,
                 type = "toggle",
                 name = L["Player Timer"],
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerTimer end,
@@ -569,7 +588,7 @@ args = {
                 end,
             },
             dataGathering = {
-                order = 23,
+                order = 24,
                 type = "toggle",
                 name = L["Gathering"] or "Gathering",
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerGathering end,
@@ -579,7 +598,7 @@ args = {
                 end,
             },
             dataPetBattle = {
-                order = 24,
+                order = 25,
                 type = "toggle",
                 name = L["Pet Battles"] or "Pet Battles",
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerPetBattles end,
@@ -589,7 +608,7 @@ args = {
                 end,
             },
             dataArchaeology = {
-                order = 25,
+                order = 26,
                 type = "toggle",
                 name = L["Archaeology"] or "Archaeology",
                 get = function(info) return XToLevel.db.profile.averageDisplay.playerDigs end,
@@ -1193,7 +1212,8 @@ function XToLevel.Config:GetDefaults()
 			        playerQuest = {0.5, 1, 0.7, 1},
 			        playerBattleground = {1, 0.5, 0.5, 1},
 			        playerDungeon = {1, 0.75, 0.35, 1},
-			        playerLevel = {0.35, 1, 0.35, 1},
+                    playerLevel = {0.35, 1, 0.35, 1},
+                    archaeology = {1.0, 0.5, 0.15, 1}
 		        },
 	        },
             averageDisplay = {
@@ -1218,7 +1238,8 @@ function XToLevel.Config:GetDefaults()
 		        playerProgress = true,
 		        playerTimer = true,
 		        progress = true, -- Duplicate?
-		        progressAsBars = false,
+                progressAsBars = false,
+                archaeologyAsSites = false,
 		        playerKillListLength = 10,
 		        playerQuestListLength = 10,
                 playerPetBattleListLength = 10,

@@ -47,7 +47,7 @@ end
 ---
 -- function description
 function XToLevel.Messages:Print(message, style, color)
-    r, g, b = unpack(color or {1, 1, 1});
+    r, g, b = unpack(color or {style.r, style.g, style.b});
     if style == nil then
         style = self.printStyle.white
     end
@@ -73,6 +73,7 @@ XToLevel.Messages.Floating = {
     killStyle =  { r=0.5, g=1.0, b=0.7, group=56, fade=5 },
     questStyle = { r=0.5, g=1.0, b=0.7, group=56, fade=5 },
     levelStyle = { r=0.35, g=1.0, b=0.35, group=56, fade=6 },
+    archStyle = { r=1.0, g=0.5, b=0.15, group=56, fade=8 },
 }
 
 ---
@@ -107,7 +108,16 @@ end
 function XToLevel.Messages.Floating:PrintDig(digsRequired)
     if XToLevel.db.profile.messages.playerFloating then
         local message = digsRequired .. L["Digs Needed"]
-        self:Print(message, XToLevel.db.profile.messages.colors.playerQuest, self.questStyle)
+        self:Print(message, XToLevel.db.profile.messages.colors.archaeology, self.archStyle)
+    end
+end
+
+---
+-- function description
+function XToLevel.Messages.Floating:PrintDigsites(sitesRequired)
+    if XToLevel.db.profile.messages.playerFloating then
+        local message = sitesRequired .. L["Digsites Needed"]
+        self:Print(message, XToLevel.db.profile.messages.colors.archaeology, self.archStyle)
     end
 end
 
@@ -140,7 +150,7 @@ end
 ---
 -- function description
 function XToLevel.Messages.Floating:Print(text, color, style)
-    local r, g, b = unpack(color or {1, 0.75, 0.35})
+    local r, g, b = unpack(color or {style.r, style.g, style.b})
     if type(style) ~= "table" then
         style = self.questStyle
     end
@@ -154,6 +164,7 @@ XToLevel.Messages.Chat = {
     killStyle =  { r=0.5, g=1.0, b=0.7, group=56, addToStart=false },
     questStyle = { r=0.5, g=1.0, b=0.7, group=56, addToStart=false },
     levelStyle = { r=0.35, g=1.0, b=0.35, group=56, addToStart=false},
+    archStyle = { r=1.0, g=0.5, b=0.15, group=56, addToStart=false}
 }
 
 ---
@@ -179,7 +190,16 @@ end
 function XToLevel.Messages.Chat:PrintDig(digsRequired)
     if XToLevel.db.profile.messages.playerChat then
         local message = digsRequired .. L["Digs Needed"]
-        XToLevel.Messages:Print(message, self.questStyle, XToLevel.db.profile.messages.colors.playerQuest)
+        XToLevel.Messages:Print(message, self.archStyle, XToLevel.db.profile.messages.colors.archaeology)
+    end
+end
+
+---
+-- function description
+function XToLevel.Messages.Chat:PrintDigsites(sitesRequired)
+    if XToLevel.db.profile.messages.playerChat then
+        local message = sitesRequired .. L["Digsites Needed"]
+        XToLevel.Messages:Print(message, self.archStyle, XToLevel.db.profile.messages.colors.archaeology)
     end
 end
 

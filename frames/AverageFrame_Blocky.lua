@@ -278,12 +278,16 @@ XToLevel.AverageFrameAPI["Blocky"] =
     
     --- Sets the gathering average
     SetGathering = function(self, value)
-        XToLevel_AverageFrame_Blocky_PlayerFrameCounterGatheringValueText:SetText(tonumber(value))
+        if value ~= nil then
+			XToLevel_AverageFrame_Blocky_PlayerFrameCounterGatheringValueText:SetText(tonumber(value))
+		else
+			XToLevel_AverageFrame_Blocky_PlayerFrameCounterGatheringValueText:SetText("N/A")
+		end
     end,
     
     --- Sets the archaeology average
     SetDigs = function(self, value)
-        XToLevel_AverageFrame_Blocky_PlayerFrameCounterDigsValueText:SetText(tonumber(value))
+        XToLevel_AverageFrame_Blocky_PlayerFrameCounterDigsValueText:SetText(value)
     end,
 
     --- Sets the value for the progress bar.

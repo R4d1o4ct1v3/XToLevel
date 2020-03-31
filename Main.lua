@@ -38,6 +38,7 @@ XToLevel.gatheringTime = nil;
 
 XToLevel.petBattleClosed = nil;
 
+XToLevel.digsiteProgress = 0;
 XToLevel.surveyFoundComplete = nil;
 
 ---
@@ -100,7 +101,10 @@ function XToLevel:MainOnEvent(event, ...)
     elseif event == "PET_BATTLE_OVER" then
         self:OnPetBattleOver()
     elseif event == "ARCHAEOLOGY_FIND_COMPLETE" then
+        XToLevel.digsiteProgress = tonumber(select(1, ...))
         XToLevel.surveyFoundComplete = time()
+    elseif event == "ARTIFACT_DIGSITE_COMPLETE" then
+        self:OnDigsiteComplete()
     end
 end
 XToLevel.frame:SetScript("OnEvent", function(self, ...) XToLevel:MainOnEvent(...) end);
@@ -154,6 +158,7 @@ function XToLevel:RegisterEvents(level)
         self.frame:RegisterEvent("PET_BATTLE_OVER");
         
         self.frame:RegisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
+        self.frame:RegisterEvent("ARTIFACT_DIGSITE_COMPLETE");
     end
     
     -- Register slash commands
@@ -200,6 +205,7 @@ function XToLevel:UnregisterEvents()
     self.frame:UnregisterEvent("PET_BATTLE_OVER");
     
     self.frame:UnregisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
+    self.frame:UnregisterEvent("ARTIFACT_DIGSITE_COMPLETE");
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -733,6 +739,19 @@ function XToLevel:OnAreaChanged()
 			end
 		end
 	end
+end
+
+--------------------------------------------------------------------------------
+-- Archaeology stuff
+--------------------------------------------------------------------------------
+
+function XToLevel:OnDigsiteComplete()
+    XToLevel.digsiteProgress = 0
+    local digSitesRequired = XToLevel.Player:GetDigsitesRequired(true)
+    if digSitesRequired > 0 then
+        XToLevel.Messages.Floating:PrintDigsites(digSitesRequired)
+        XToLevel.Messages.Chat:PrintDigsites(digSitesRequired)
+    end
 end
 
 --------------------------------------------------------------------------------
