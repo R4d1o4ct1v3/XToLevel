@@ -65,7 +65,7 @@ XToLevel.Player = {
     petBattleListLength = 50,
 	bgListLength = 300,
 	dungeonListLength = 100,
-    digListLength = 100,
+    digListLength = 1,
 	hasEnteredBG = true,
     
     guildLevel = nil,
@@ -472,6 +472,15 @@ end
 function XToLevel.Player:AddDig(xpGained)
     self.digAverage = nil
     self.currentXP = self.currentXP + xpGained
+    if self.restedXP > 0 then
+        if ceil(xpGained / 2) > self.restedXP then
+            xpGained = xpGained - self.restedXP
+            self.restedXP = 0
+        else
+            xpGained = ceil(xpGained / 2)
+            self.restedXP = self.restedXP - xpGained
+        end
+    end
     table.insert(XToLevel.db.char.data.digs, 1, xpGained)
     if(# XToLevel.db.char.data.digs > self.digListLength) then
         table.remove(XToLevel.db.char.data.digs)
@@ -692,7 +701,8 @@ end
 function XToLevel.Player:GetDigsRequired()
     local maxXP = self:GetHighestDigXP()
     if type(maxXP) == "number" and maxXP > 0 then
-        local required = ceil((self.maxXP - self.currentXP) / maxXP);
+        -- Digs are calculated the same way as kills, so reusing that code.
+        local required = self:GetKillsRequired(maxXP)
         if type(required) == "number" and required > 0 then
             return required, maxXP
         else
