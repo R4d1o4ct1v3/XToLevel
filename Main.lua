@@ -719,8 +719,8 @@ function XToLevel:OnAreaChanged()
 			XToLevel.db.char.data.bgList[1].name = newZone
 			console:log(" - BG name set. ")
 		else
-            if oldZone ~= newZone then
-			    console:log(" - BG names don't match (" .. oldZone .." vs " .. newZone ..").")
+            if oldZone ~= newZone and not C_PvP.IsBattleground() then
+                console:log(" - Player not in a battleground. Ending")
                 local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
                 XToLevel.Player:BattlegroundEnd()
                 XToLevel.Average:Update()
@@ -729,12 +729,6 @@ function XToLevel:OnAreaChanged()
                 if bgsRequired > 0 then
                     XToLevel.Messages.Floating:PrintBattleground(bgsRequired)
                     XToLevel.Messages.Chat:PrintBattleground(bgsRequired)
-                end
-                if XToLevel.Lib:IsInBattleground() then
-                    console:log(" - Player switched battlegrounds. Starting new.")
-					XToLevel.Player:BattlegroundStart()
-                else
-                    console:log(" - Player not in a battleground. Ending")
                 end
 			end
 		end
