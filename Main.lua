@@ -122,43 +122,35 @@ function XToLevel:RegisterEvents(level)
         --self.frame:RegisterAllEvents();
 	    self.frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
         self.frame:RegisterEvent("CHAT_MSG_OPENING");
-	    
 	    self.frame:RegisterEvent("PLAYER_LEVEL_UP");
 	    self.frame:RegisterEvent("PLAYER_XP_UPDATE");
 	    self.frame:RegisterEvent("PLAYER_ENTERING_BATTLEGROUND");
 	    self.frame:RegisterEvent("PLAYER_ENTERING_WORLD");
 	    self.frame:RegisterEvent("CHAT_MSG_BG_SYSTEM_NEUTRAL");
-	    
 	    self.frame:RegisterEvent("ZONE_CHANGED_INDOORS");
 	    self.frame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
 	    self.frame:RegisterEvent("ZONE_CHANGED");
-	    
 	    self.frame:RegisterEvent("PLAYER_UNGHOST");
 	    self.frame:RegisterEvent("CONFIRM_XP_LOSS");
 	    self.frame:RegisterEvent("CANCEL_SUMMON");
 	    self.frame:RegisterEvent("RESURRECT_REQUEST");
 	    self.frame:RegisterEvent("CONFIRM_SUMMON");
 	    self.frame:RegisterEvent("PLAYER_ALIVE");
-	    self.frame:RegisterEvent("LFG_PROPOSAL_SUCCEEDED")
-		self.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-		
-		self.frame:RegisterEvent("TIME_PLAYED_MSG")
+		self.frame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+		self.frame:RegisterEvent("TIME_PLAYED_MSG");
+        self.frame:RegisterEvent("QUEST_FINISHED");
+        self.frame:RegisterEvent("QUEST_COMPLETE");
+        self.frame:RegisterEvent("PLAYER_TARGET_CHANGED");
+        self.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+        self.frame:RegisterEvent("PLAYER_REGEN_ENABLED");
+        self.frame:RegisterEvent("PLAYER_REGEN_DISABLED");
         
-        --self.frame:RegisterEvent("GUILD_XP_UPDATE")
-        --self.frame:RegisterEvent("PLAYER_GUILD_UPDATE")
-        
-        self.frame:RegisterEvent("QUEST_FINISHED")
-        self.frame:RegisterEvent("QUEST_COMPLETE")
-        
-        self.frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-        self.frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-        self.frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-        self.frame:RegisterEvent("PLAYER_REGEN_DISABLED")
-        
-        self.frame:RegisterEvent("PET_BATTLE_OVER");
-        
-        self.frame:RegisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
-        self.frame:RegisterEvent("ARTIFACT_DIGSITE_COMPLETE");
+        if not XToLevel.Lib:IsClassic() then
+            self.frame:RegisterEvent("LFG_PROPOSAL_SUCCEEDED");
+            self.frame:RegisterEvent("PET_BATTLE_OVER");
+            self.frame:RegisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
+            self.frame:RegisterEvent("ARTIFACT_DIGSITE_COMPLETE");
+        end
     end
     
     -- Register slash commands
@@ -172,40 +164,33 @@ end
 function XToLevel:UnregisterEvents()
 	self.frame:UnregisterEvent("CHAT_MSG_COMBAT_XP_GAIN");
     self.frame:UnregisterEvent("CHAT_MSG_SYSTEM");
-
     self.frame:UnregisterEvent("PLAYER_LEVEL_UP");
     self.frame:UnregisterEvent("PLAYER_XP_UPDATE");
     self.frame:UnregisterEvent("PLAYER_ENTERING_BATTLEGROUND");
     self.frame:UnregisterEvent("PLAYER_ENTERING_WORLD");
     self.frame:UnregisterEvent("CHAT_MSG_BG_SYSTEM_NEUTRAL");
-    
     self.frame:UnregisterEvent("ZONE_CHANGED_INDOORS");
     self.frame:UnregisterEvent("ZONE_CHANGED_NEW_AREA");
     self.frame:UnregisterEvent("ZONE_CHANGED");
-    
     self.frame:UnregisterEvent("PLAYER_UNGHOST");
     self.frame:UnregisterEvent("CONFIRM_XP_LOSS");
     self.frame:UnregisterEvent("CANCEL_SUMMON");
     self.frame:UnregisterEvent("RESURRECT_REQUEST");
     self.frame:UnregisterEvent("CONFIRM_SUMMON");
     self.frame:UnregisterEvent("PLAYER_ALIVE");
-    self.frame:UnregisterEvent("LFG_PROPOSAL_SUCCEEDED")
-	self.frame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
-	
-	self.frame:UnregisterEvent("TIME_PLAYED_MSG")
-    
-    --self.frame:UnregisterEvent("GUILD_XP_UPDATE")
-    --self.frame:UnregisterEvent("PLAYER_GUILD_UPDATE")
-    
-    self.frame:UnregisterEvent("PLAYER_TARGET_CHANGED")
-    self.frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    self.frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
-    self.frame:UnregisterEvent("PLAYER_REGEN_DISABLED")
-    
-    self.frame:UnregisterEvent("PET_BATTLE_OVER");
-    
-    self.frame:UnregisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
-    self.frame:UnregisterEvent("ARTIFACT_DIGSITE_COMPLETE");
+	self.frame:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED");
+	self.frame:UnregisterEvent("TIME_PLAYED_MSG");
+    self.frame:UnregisterEvent("PLAYER_TARGET_CHANGED");
+    self.frame:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+    self.frame:UnregisterEvent("PLAYER_REGEN_ENABLED");
+    self.frame:UnregisterEvent("PLAYER_REGEN_DISABLED");
+
+    if not XToLevel.Lib:IsClassic() then
+        self.frame:UnregisterEvent("LFG_PROPOSAL_SUCCEEDED");
+        self.frame:UnregisterEvent("PET_BATTLE_OVER");
+        self.frame:UnregisterEvent("ARCHAEOLOGY_FIND_COMPLETE");
+        self.frame:UnregisterEvent("ARTIFACT_DIGSITE_COMPLETE");
+    end
 end
 
 --- PLAYER_LOGIN callback. Initializes the config, locale and c Objects.
@@ -301,10 +286,6 @@ function XToLevel:OnCombatLogEventUnfiltered()
     if cl_event ~= nil then
         if cl_event == "UNIT_DIED" then
             local npc_guid = select(8, CombatLogGetCurrentEventInfo())
-            -- 4.1 backwards compatibility fix.
-            if tonumber(select(4, GetBuildInfo())) < 40200 then
-                npc_guid = select(7, CombatLogGetCurrentEventInfo())
-            end
             for i, data in ipairs(targetList) do
                 if data.guid == npc_guid then
                     data.dead = true
@@ -645,18 +626,27 @@ function XToLevel:OnPlayerEnteringWorld()
     if GetRealZoneText() ~= "" then
 	    -- GetRealZoneText is set to an empty string the first time this even fires,
 	    -- making IsInBattleground return a false negative when actually in bg.
-		if XToLevel.Player:IsBattlegroundInProgress() and not XToLevel.Lib:IsInBattleground() then
-			if XToLevel.Player.isActive then
-				local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
-				XToLevel.Player:BattlegroundEnd()
-				XToLevel.Average:Update()
-		        XToLevel.LDB:BuildPattern();
-				XToLevel.LDB:Update()
-				if bgsRequired > 0 then
-					XToLevel.Messages.Floating:PrintBattleground(bgsRequired)
-					XToLevel.Messages.Chat:PrintBattleground(bgsRequired)
-				end
-			end
+        if XToLevel.Player:IsBattlegroundInProgress() then
+            if C_PvP.IsBattleground() then
+                local latestBG = XToLevel.db.char.data.bgList[1] or nil
+                if latestBG ~= nil and latestBG.name == nil then
+                    -- Workaround an issue where BG names are not set when UI reloads while
+                    -- in the BG starting are of some instances.
+                    XToLevel.db.char.data.bgList[1].name = XToLevel.Lib:GetCurrentBattlegroundName() or GetRealZoneText();
+                end
+            else
+                if XToLevel.Player.isActive then
+                    local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
+                    XToLevel.Player:BattlegroundEnd()
+                    XToLevel.Average:Update()
+                    XToLevel.LDB:BuildPattern();
+                    XToLevel.LDB:Update()
+                    if bgsRequired > 0 then
+                        XToLevel.Messages.Floating:PrintBattleground(bgsRequired)
+                        XToLevel.Messages.Chat:PrintBattleground(bgsRequired)
+                    end
+                end
+            end
 		else
 			local inInstance, type = IsInInstance()
 			if not XToLevel.Player:IsDungeonInProgress() and inInstance and type == "party" then
@@ -715,8 +705,12 @@ function XToLevel:OnAreaChanged()
 	if XToLevel.Player:IsBattlegroundInProgress() and XToLevel.Player.isActive then
 		local oldZone = XToLevel.db.char.data.bgList[1].name
 		local newZone = GetRealZoneText()
-		if oldZone == false then
-			XToLevel.db.char.data.bgList[1].name = newZone
+        if oldZone == false then
+            local bgName = XToLevel.Lib:GetCurrentBattlegroundName()
+            if bgName == nil then
+                bgName = GetRealZoneText()
+            end
+			XToLevel.db.char.data.bgList[1].name = bgName
 			console:log(" - BG name set. ")
 		else
             if oldZone ~= newZone and not C_PvP.IsBattleground() then
@@ -838,14 +832,9 @@ function XToLevel:OnSlashCommand(arg1)
         end
     elseif arg1 == "blist" then
         console:log("-- BG list--")
-        for index, data in ipairs(XToLevel.db.char.data.bgList) do
-            console:log("#" .. tostring(index))
-            console:log("  inProgress: ".. tostring(data.inProgress))
-            console:log("  name: ".. tostring(data.name))
-            console:log("  level: ".. tostring(data.level))
-            console:log("  totalXP: ".. tostring(data.totalXP))
-            console:log("  killCount: ".. tostring(data.killCount))
-            console:log("  killTotal: ".. tostring(data.killTotal))
+        for index=1,GetMaxBattlefieldID() do
+            local status, name = GetBattlefieldStatus(index)
+            console:log(status .. " > " .. name)
         end
     elseif arg1 == "pblist" then
         console:log("-- Pet Battle list--")
@@ -862,13 +851,14 @@ function XToLevel:OnSlashCommand(arg1)
     elseif arg1 == "debug" then
         if type(XToLevel.db.char.data.npcXP) == "table" then
             for playerLevel, playerData in pairs(XToLevel.db.char.data.npcXP) do
-                console:log(playerLevel .. ": ");
-                for mobLevel, mobData in pairs(playerData) do
-                    console:log("  " .. mobLevel .. ": ")
-                    for classification, xpData in pairs(mobData) do
-                        console:log("    " .. classification .. ": ")
-                        for __, xp in ipairs(xpData) do
-                            console:log("      " .. xp);
+                if playerLevel == XToLevel.Player.level then
+                    console:log("--- " .. playerLevel .. " ---");
+                    for mobLevel, mobData in pairs(playerData) do
+                        console:log("" .. mobLevel .. "")
+                        for classification, xpData in pairs(mobData) do
+                            for __, xp in ipairs(xpData) do
+                                console:log("  " .. xp .. " xp");
+                            end
                         end
                     end
                 end

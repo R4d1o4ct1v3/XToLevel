@@ -1534,18 +1534,19 @@ end
 function XToLevel.Player:GetBattlegroundsListed ()
     if(# XToLevel.db.char.data.bgList > 0) then
         local count = 0
+        local bgList = {}
         for index, value in ipairs(XToLevel.db.char.data.bgList) do
             if value.level == nil then
                 value.level = self.level
                 XToLevel.db.char.data.bgList[index].level = self.level
             end
             if self.level - value.level < 5 and value.totalXP > 0 and not value.inProgress then
-                self.bgList[value.name] = (self.bgList[value.name] or 0) + 1
+                bgList[value.name] = (bgList[value.name] or 0) + 1
                 count = count + 1
             end
         end
         if count > 0 then
-            return self.bgList;
+            return bgList;
         else
             return nil
         end

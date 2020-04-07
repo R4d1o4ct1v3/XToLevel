@@ -60,11 +60,14 @@ end
 function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
-        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
+        -- Some mobs register as trivial AND normal. (Sheep outside Stormwind in Classic, for example.)
+        local isCritter = string.lower(UnitCreatureType(unit)) == "critter"
+        local isNormalMob = not UnitIsTrivial(unit) and UnitClassification(unit) == "normal" and not isCritter
+        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and isNormalMob and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
             local classification = UnitClassification(unit)
 
-            if level < XToLevel.Player.level - 4 then
+            if level < XToLevel.Player.level - 5 or level > XToLevel.Player.level + 5 then
                 return nil
             end
 
@@ -520,7 +523,7 @@ function XToLevel.Tooltip:AddBattles()
                 GameTooltip:AddLine(L['Last Battleground'] .. ":")
             end
             if type(latestData.name) ~= "string" then
-                lastData.name = "Unknown"
+                latestData.name = "Unknown"
             end
 
             GameTooltip:AddDoubleLine(" ".. L['Name'] ..": " , latestData.name, self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
