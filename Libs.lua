@@ -11,7 +11,6 @@
    ZoneID() - Returns the ID of the zone the player is current in
    IsPlayerRafEligable() - Determines whether the player is eligable for the 3x RAF bonus.
    IsRafApplied() - Determines whether the RAF bonus should be applied.
-   ZeroDifference(charLevel) - Used for Mob XP calculations.
    IsInBattleground() - Determines whether the player is currently inside a battleground zone.
    ShowBattlegroundData() - Determines whether the BG data should be displayed in the tooltip.
    ShowDungeonData() - Determines whether the Dungeon data should be displayed in the tooltip.
@@ -39,57 +38,82 @@ function XToLevel.Lib:round(number)
 	return floor(number + 0.5)
 end
 
+function XToLevel.Lib:IsClassic()
+	local interfaceNumber = select(4, GetBuildInfo())
+	return interfaceNumber < 80000
+	-- If this check ever needs an update... I guess the corona virus didn't turn into a zombie apocalypse?
+end
+
+---
+-- Either returns the name of the ongoing battleground, or a nil of no battleground is in progress.
+function XToLevel.Lib:GetCurrentBattlegroundName()
+	local bgName = nil
+	for index=1,GetMaxBattlefieldID() do
+		local status, name = GetBattlefieldStatus(index)
+		if status == "active" then
+			bgName = name
+		end
+	end
+	return bgName
+end
+
 ---
 -- Determines whether item fitted in the given slot is an heirloom.
 -- NOTE that it doesn't check if the item has any XP bonus on it.
 -- @param slotType See https://wow.gamepedia.com/InventorySlotId#Values (Use the string values, e.g: "HEADSLOT")
 function XToLevel.Lib:IsActiveHeirloom(slotType)
-	local itemID = GetInventoryItemID("player", GetInventorySlotInfo(slotType))
-	if not itemID then
-		return false
+	if not self:IsClassic() then
+		local itemID = GetInventoryItemID("player", GetInventorySlotInfo(slotType))
+		if not itemID then
+			return false
+		end
+		
+		local heirloomInfo = {C_Heirloom.GetHeirloomInfo(itemID)}
+		if # heirloomInfo == 0 then
+			return false
+		end
+		
+		if heirloomInfo[10] < XToLevel.Player.level then
+			return false
+		end
+		
+		return true
 	end
-	
-	local heirloomInfo = {C_Heirloom.GetHeirloomInfo(itemID)}
-	if # heirloomInfo == 0 then
-		return false
-	end
-	
-	if heirloomInfo[10] < XToLevel.Player.level then
-		return false
-	end
-	
-	return true
 end
 
 ---
 -- Checks for heirlooms, and returns a multiplier value that should be used with any 
 -- XP estimates that are not based on collected data. (As collected data will include this already.)
 function XToLevel.Lib:GetHeirloomMultiplier()
-	-- Slots that always have 10% xp bonuses on them.
-	local checkList = {
-		{slot = "HEADSLOT", modifier = 0.1},
-		{slot = "SHOULDERSLOT", modifier = 0.1},
-		{slot = "CHESTSLOT", modifier = 0.1},
-		{slot = "LEGSSLOT", modifier = 0.1},
-		{slot = "BACKSLOT", modifier = 0.05},
-		{slot = "FINGER0SLOT", modifier = 0.05},
-		{slot = "FINGER1SLOT", modifier = 0.05},
-	}
+	if not self:IsClassic() then
+		-- Slots that always have 10% xp bonuses on them.
+		local checkList = {
+			{slot = "HEADSLOT", modifier = 0.1},
+			{slot = "SHOULDERSLOT", modifier = 0.1},
+			{slot = "CHESTSLOT", modifier = 0.1},
+			{slot = "LEGSSLOT", modifier = 0.1},
+			{slot = "BACKSLOT", modifier = 0.05},
+			{slot = "FINGER0SLOT", modifier = 0.05},
+			{slot = "FINGER1SLOT", modifier = 0.05},
+		}
 
-	local multiplier = 1.0
-	for _, d in pairs(checkList) do
-		if self:IsActiveHeirloom(d.slot) then
-			multiplier = multiplier + d.modifier
+		local multiplier = 1.0
+		for _, d in pairs(checkList) do
+			if self:IsActiveHeirloom(d.slot) then
+				multiplier = multiplier + d.modifier
+			end
 		end
-	end
-	
-	-- Temporarily adding a flat 100% increase here for the "Winds of Wisdom" buff
-	-- added by Blizzard in March 2020. Should be removed after April 20th, 2020.
-	if time() < time({year=2020,month=4,day=21}) then
-		multiplier = multiplier + 1
-	end
+		
+		-- Temporarily adding a flat 100% increase here for the "Winds of Wisdom" buff
+		-- added by Blizzard in March 2020. Should be removed after April 20th, 2020.
+		if time() < time({year=2020,month=4,day=21}) then
+			multiplier = multiplier + 1
+		end
 
-	return multiplier
+		return multiplier
+	else
+		return 1
+	end
 end
 
 ---
@@ -261,18 +285,6 @@ function XToLevel.Lib:IsRafApplied()
 end
 
 ---
--- Used to find the Zero Difference used to calculate XP from low level mobs
----
-function XToLevel.Lib:ZeroDifference(charLevel)
-	for i,v in ipairs(XToLevel.ZD_Table) do
-		if charLevel >= v[1] and charLevel <= v[2] then
-			return v[3];
-		end
-	end
-	return 16 -- Assume 60's char.
-end
-
----
 -- Determines whether the player is currently inside a battleground zone.
 ---
 function XToLevel.Lib:IsInBattleground()
@@ -309,47 +321,60 @@ function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
     end
     
     if type(charLevel) ~= "number" then charLevel = UnitLevel("player") end
-    if type(mobLevel) ~= "number" then mobLevel = charLevel end
+	if type(mobLevel) ~= "number" then mobLevel = charLevel end
     
     if type(XToLevel.db.char.data.npcXP[charLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) == "table" and # XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex] > 0 then
-        local high = 0
+		local high = 0
         for i, v in ipairs(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) do
             if v > high then high = v end
         end
         return high;
-	elseif mobLevel > charLevel - 5 then
+	elseif mobLevel >= charLevel - 5 then
 		-- Standard base formula for all zones now. Previously the addition would vary.
 		local baseXP = (charLevel * 5) + 45
-		local heirloomBonus = XToLevel.Lib:GetHeirloomMultiplier()
+		local heirloomBonus = self:GetHeirloomMultiplier()
 
 		-- Mobs that are higher level than the player seem to always add 5% to the base
 		-- value, even at low level. (Slight variations at the lowest level, but not worth coding around now)
 		-- Mobs that are lower level seem to subtract 7% for each level at level 60 or higher. Levels
 		-- prior to that seem to increase that % on a gradient down to around 27% at level 1. 
-		
 		local levelDelta = mobLevel - charLevel
 		if levelDelta ~= 0 then
 			local modifier = 0.05 -- Default for higher levels
-			if levelDelta < 0 then
-				-- TODO: Make this less shit
-				if charLevel <= 3 then
-					modifier = 0.27
-				elseif charLevel <= 7 then
-					modifier = 0.23
-				elseif charLevel <= 11 then
-					modifier = 0.19
-				elseif charLevel <= 15 then
-					modifier = 0.15
-				elseif charLevel <= 25 then
-					modifier = 0.13
-				elseif charLevel <= 32 then
-					modifier = 0.11
-				elseif charLevel <= 45 then
-					modifier = 0.1
-				elseif charLevel <= 60 then
-					modifier = 0.085
-				else -- Assuming everything above 60 is -7% per mob for now. To be updated.
-					modifier = 0.07
+			if not self:IsClassic() then
+				if levelDelta < 0 then
+					-- TODO: Make this less shit
+					if charLevel <= 3 then
+						modifier = 0.27
+					elseif charLevel <= 7 then
+						modifier = 0.23
+					elseif charLevel <= 11 then
+						modifier = 0.19
+					elseif charLevel <= 15 then
+						modifier = 0.15
+					elseif charLevel <= 25 then
+						modifier = 0.13
+					elseif charLevel <= 32 then
+						modifier = 0.11
+					elseif charLevel <= 45 then
+						modifier = 0.1
+					elseif charLevel <= 60 then
+						modifier = 0.085
+					else -- Assuming everything above 60 is -7% per mob for now. To be updated.
+						modifier = 0.07
+					end
+				end
+			else 
+				-- So far, in Classic, I've observed a -20% per level below, and +5% per level above.
+				-- Will update as I level on Classic if that changes at high level.
+				if levelDelta < 0 then
+					if charLevel < 10 then
+						modifier = 0.2
+					else
+						modifier = 0.125
+					end
+				else
+					modifier = 0.05
 				end
 			end
 			local multiplier = (modifier * levelDelta) + 1
