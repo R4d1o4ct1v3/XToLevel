@@ -857,7 +857,7 @@ function XToLevel:OnSlashCommand(arg1)
                         console:log("" .. mobLevel .. "")
                         for classification, xpData in pairs(mobData) do
                             for __, xp in ipairs(xpData) do
-                                console:log("  " .. xp .. " xp");
+                                console:log("  " .. xp .. " xp (class " .. tostring(classification) .. ")");
                             end
                         end
                     end

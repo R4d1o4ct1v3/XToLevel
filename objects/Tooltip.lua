@@ -60,10 +60,7 @@ end
 function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
-        -- Some mobs register as trivial AND normal. (Sheep outside Stormwind in Classic, for example.)
-        local isCritter = string.lower(UnitCreatureType(unit) or "unknown") == "critter"
-        local isNormalMob = not UnitIsTrivial(unit) and UnitClassification(unit) == "normal" and not isCritter
-        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and isNormalMob and UnitHealthMax(unit) > -1 then
+        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
             local classification = UnitClassification(unit)
 
