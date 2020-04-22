@@ -340,18 +340,10 @@ function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassifi
     end
     
     -- Add the data
-    local alreadyRecorded = false
     if # XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
-        for i, v in ipairs(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex]) do
-            if v == xp then
-                alreadyRecorded = true
-            end
-        end
+        table.wipe(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex])
     end
-    
-    if not alreadyRecorded then
-        table.insert(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
-    end
+    table.insert(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
 end
 
 --- Fires when the player's equipment changes

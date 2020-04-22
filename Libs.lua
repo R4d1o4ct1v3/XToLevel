@@ -106,9 +106,9 @@ function XToLevel.Lib:GetHeirloomMultiplier()
 		
 		-- Temporarily adding a flat 100% increase here for the "Winds of Wisdom" buff
 		-- added by Blizzard in March 2020. Should be removed after April 20th, 2020.
-		if time() < time({year=2020,month=4,day=21}) then
-			multiplier = multiplier + 1
-		end
+		-- UPDATE: buff extended until Shadowland pre-patch. Date not announced. Needs
+		-- to be updated at that point.
+		multiplier = multiplier + 1
 
 		return multiplier
 	else
