@@ -67,7 +67,7 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
                 return nil
             end
 
-            local thexp = XToLevel.Lib:MobXP(name, level);
+            local thexp, valueType = XToLevel.Lib:MobXP(name, level);
 
             local requiredText = ""
             local cl = nil
@@ -91,7 +91,11 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
                         color = XToLevel.Lib:GetProgressColor(percent)
                     end
 
-                    GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
+                    if valueType == "estimate" then
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. "~" .. output .. "|r", 0.75, 0.75, 0.75)
+                    else
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
+                    end
                     XToLevel.Tooltip:ResizeTooltip()
                 else
                     requiredText = nil

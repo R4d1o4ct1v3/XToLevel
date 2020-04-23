@@ -308,6 +308,8 @@ end
 
 ---
 -- Calculates the XP gained from killing a mob
+-- First return value is the XP.
+-- Second return value indicates if it's an "exact" value based on recorded data, or an "estimate" based on mob level.
 ---
 function XToLevel.Lib:MobXP(mobName, mobLevel)
 	if type(mobName) ~= "string" then
@@ -320,7 +322,7 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
     if mobName ~= nil then
         for _, mobData in pairs(XToLevel.db.char.data.npcXP) do
 			if mobData.name == mobName and mobData.level == mobLevel then
-				return mobData.xp
+				return mobData.xp, "exact"
 			end
         end
 	end
@@ -339,25 +341,12 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 			local modifier = 0.05 -- Default for higher levels
 			if not self:IsClassic() then
 				if levelDelta < 0 then
-					-- TODO: Make this less shit
-					if charLevel <= 3 then
-						modifier = 0.27
-					elseif charLevel <= 7 then
-						modifier = 0.23
-					elseif charLevel <= 11 then
-						modifier = 0.19
-					elseif charLevel <= 15 then
-						modifier = 0.15
-					elseif charLevel <= 25 then
-						modifier = 0.13
-					elseif charLevel <= 32 then
-						modifier = 0.11
-					elseif charLevel <= 45 then
-						modifier = 0.1
-					elseif charLevel <= 60 then
-						modifier = 0.085
-					else -- Assuming everything above 60 is -7% per mob for now. To be updated.
-						modifier = 0.07
+					for _, loop in ipairs(XToLevel.XP_MULTIPLIERS) do
+						if loop.level <= charLevel then
+							modifier = loop.modifier
+						else
+							break
+						end
 					end
 				end
 			else 
@@ -369,17 +358,15 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 					else
 						modifier = 0.125
 					end
-				else
-					modifier = 0.05
 				end
 			end
 			local multiplier = (modifier * levelDelta) + 1
-			return floor((baseXP * multiplier * heirloomBonus) + 0.5)
+			return floor((baseXP * multiplier * heirloomBonus) + 0.5), "estimate"
 		else
-			return floor((baseXP * heirloomBonus) + 0.5)
+			return floor((baseXP * heirloomBonus) + 0.5), "estimate"
 		end
     else
-        return 0; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
+        return 0, "exact"; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
     end
 end
 
