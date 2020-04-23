@@ -309,27 +309,23 @@ end
 ---
 -- Calculates the XP gained from killing a mob
 ---
-function XToLevel.Lib:MobXP(charLevel, mobLevel, mobClassification)
-    -- Validate the mob classification. Default to normal if none is given
-    if type(mobClassification) ~= "string" then
-        mobClassification = "normal"
-    end
-    local mobClassIndex = XToLevel.Lib:ConvertClassification(mobClassification)
-    if mobClassIndex == nil then
-        console:log("Lib->MobXP: Invalid mobClassification passed. Defaulting to 'normal'. ('" .. tostring(mobClassification) .."')")
-        mobClassIndex = 1
-    end
-    
-    if type(charLevel) ~= "number" then charLevel = UnitLevel("player") end
+function XToLevel.Lib:MobXP(mobName, mobLevel)
+	if type(mobName) ~= "string" then
+		mobName = nil
+	end
+
+	local charLevel = UnitLevel("player")
 	if type(mobLevel) ~= "number" then mobLevel = charLevel end
     
-    if type(XToLevel.db.char.data.npcXP[charLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel]) == "table" and type(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) == "table" and # XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex] > 0 then
-		local high = 0
-        for i, v in ipairs(XToLevel.db.char.data.npcXP[charLevel][mobLevel][mobClassIndex]) do
-            if v > high then high = v end
+    if mobName ~= nil then
+        for _, mobData in pairs(XToLevel.db.char.data.npcXP) do
+			if mobData.name == mobName and mobData.level == mobLevel then
+				return mobData.xp
+			end
         end
-        return high;
-	elseif mobLevel >= charLevel - 5 then
+	end
+	
+	if mobLevel >= charLevel - 5 then
 		-- Standard base formula for all zones now. Previously the addition would vary.
 		local baseXP = (charLevel * 5) + 45
 		local heirloomBonus = self:GetHeirloomMultiplier()

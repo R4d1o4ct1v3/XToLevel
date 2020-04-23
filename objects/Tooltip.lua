@@ -62,25 +62,15 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
         local name, unit = GameTooltip:GetUnit()
         if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
-            local classification = UnitClassification(unit)
 
             if level < XToLevel.Player.level - 5 or level > XToLevel.Player.level + 5 then
                 return nil
             end
 
-            local thexp = XToLevel.Lib:MobXP(XToLevel.Player.level, level, classification);
+            local thexp = XToLevel.Lib:MobXP(name, level);
 
             local requiredText = ""
             local cl = nil
-
-            if thexp == 0 then
-                -- Search for an approximation from lower levels.
-                cl = XToLevel.Player.level - 1
-                while thexp == 0 and cl > XToLevel.Player.level - 5 do
-                    thexp = XToLevel.Lib:MobXP(cl, level)
-                    cl = cl - 1
-                end
-            end
 
             if thexp > 0 then
                 local killsRequired = XToLevel.Player:GetKillsRequired(thexp);

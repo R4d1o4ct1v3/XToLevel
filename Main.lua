@@ -329,21 +329,25 @@ function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassifi
     if type(XToLevel.db.char.data.npcXP) ~= "table" then
         XToLevel.db.char.data.npcXP = { }
     end
-    if XToLevel.db.char.data.npcXP[playerLevel] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel] = { }
-    end
-    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel][mobLevel] = { }
-    end
-    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] = { }
-    end
     
-    -- Add the data
-    if # XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
-        table.wipe(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex])
+    -- Check if the Mob already exists.
+    local existingIndex = -1
+    for i, d in ipairs(XToLevel.db.char.data.npcXP) do
+        if d.name == mobName and d.level == mobLevel then
+            existingIndex = i
+            break
+        end
     end
-    table.insert(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
+
+    if existingIndex == -1 then
+        table.insert(XToLevel.db.char.data.npcXP, {
+            ["name"] = mobName,
+            ["level"] = mobLevel,
+            ["xp"] = xp
+        })
+    elseif XToLevel.db.char.data.npcXP[existingIndex].xp ~= xp then
+        XToLevel.db.char.data.npcXP[existingIndex].xp = xp
+    end
 end
 
 --- Fires when the player's equipment changes
@@ -368,7 +372,9 @@ function XToLevel:OnPlayerLevelUp(newLevel)
         XToLevel.Player.isActive = false
         XToLevel:UnregisterEvents()
         XToLevel:RegisterEvents(newLevel)
-	end
+    end
+    
+    XToLevel.Player:ClearKills()
     
 	XToLevel.Average:Update()
     XToLevel.LDB:BuildPattern();
@@ -842,18 +848,8 @@ function XToLevel:OnSlashCommand(arg1)
         end
     elseif arg1 == "debug" then
         if type(XToLevel.db.char.data.npcXP) == "table" then
-            for playerLevel, playerData in pairs(XToLevel.db.char.data.npcXP) do
-                if playerLevel == XToLevel.Player.level then
-                    console:log("--- " .. playerLevel .. " ---");
-                    for mobLevel, mobData in pairs(playerData) do
-                        console:log("" .. mobLevel .. "")
-                        for classification, xpData in pairs(mobData) do
-                            for __, xp in ipairs(xpData) do
-                                console:log("  " .. xp .. " xp (class " .. tostring(classification) .. ")");
-                            end
-                        end
-                    end
-                end
+            for _, m in pairs(XToLevel.db.char.data.npcXP) do
+                console:log(m.name .. " = " .. m.xp .. " (" .. m.level .. ")")
             end
         else
             console:log("No mob data")
