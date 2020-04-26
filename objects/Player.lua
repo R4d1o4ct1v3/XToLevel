@@ -424,49 +424,18 @@ function XToLevel.Player:AddPetBattle (xpGained)
 end
 
 ---
--- Adds XP gain from a gathering profession. Keeps a detailed list of gathered
--- items for future reference.
--- @param action The action taken. (Like: "Mining" or "Herb Gathering")
--- @param target The target of the action. ("Silverleaf", "Copper Vein")
--- @param xp The XP gained.
-function XToLevel.Player:AddGathering(action, target, xp)
-    if(action == nil or target == nil or xp == nil) then
-        console:log("Attempt to add invalid gathering data: " .. tostring(action) .. ", " .. tostring(target) .. ", " .. tostring(xp))
-        return nil
-    else
-        self.currentXP = self.currentXP + xp
-
-        if XToLevel.db.char.data.gathering[action] == nil then
-            XToLevel.db.char.data.gathering[action] = {};
-        end
-
-        local zoneID = XToLevel.Lib:ZoneID();
-
-        local incremented = false
-        for i, v in ipairs(XToLevel.db.char.data.gathering[action]) do
-            if v["target"] == target and v["level"] == XToLevel.Player.level and v["zoneID"] == zoneID then
-                incremented = true
-                XToLevel.db.char.data.gathering[action][i]["count"] = XToLevel.db.char.data.gathering[action][i]["count"] + 1
-
-                -- The XP of an item can change, apparently. I'm guessing it's
-                -- a combination of player level vs the item's level range
-                -- and the players skill at the given profession.
-                -- In any case, if there is a change it should alter the record
-                -- rather than be calculated as an average.
-                XToLevel.db.char.data.gathering[action][i]["xp"] = xp
-            end
-        end
-
-        if not incremented then
-            table.insert(XToLevel.db.char.data.gathering[action], {
-                ["target"] = target,
-                ["xp"] = xp,
-                ["level"] = XToLevel.Player.level,
-                ["zoneID"] = zoneID,
-                ["count"] = 1
-            });
-        end
+-- Adds gathering XP to the player status, and returns back the XP
+-- without any rested bonuses that may have been applied to it.
+---
+function XToLevel.Player:AddGathering(xpGained)
+    self.currentXP = self.currentXP + xpGained
+    local unrestedXP = XToLevel.Player:GetUnrestedXP(xpGained)
+    if self.restedXP > unrestedXP then
+        self.restedXP = self.restedXP - unrestedXP
+    elseif self.restedXP > 0 then
+        self.restedXP = 0
     end
+    return unrestedXP
 end
 
 function XToLevel.Player:AddDig(xpGained)
@@ -549,120 +518,32 @@ function XToLevel.Player:GetGatheringRequired_ByItem(itemName, levelRange)
 end
 
 ---
--- Get the gathering actions recorded. That is; "Mining" and/or "Herb Gathering"
-function XToLevel.Player:GetGatheringActions()
-    local actions = { };
-    for action, __ in pairs(XToLevel.db.char.data.gathering) do
-        table.insert(actions, action);
-    end
-    if # actions > 0 then
-        return actions
-    else
-        return nil
-    end
-end
-
----
--- Get the items recorded for a given action. (Things like, "Iron Deposit"
--- or "Silverleaf")
-function XToLevel.Player:GetGatheringItems(action)
-    local items = { }
-    for a, __ in pairs(XToLevel.db.char.data.gathering) do
-        if action == a then
-            for _, c_item in ipairs(XToLevel.db.char.data.gathering[a]) do
-                local alreadyListed = false;
-                for _, r_item in ipairs(items) do
-                    if c_item.target == r_item then
-                        alreadyListed = true
-                    end
-                end
-                if not alreadyListed then
-                    table.insert(items, c_item.target)
-                end
-            end
-        end
-    end
-    if # items > 0 then
-        return items;
-    else
-        return nil;
-    end
-end
-
----
--- Get the average XP value for all gathering items within a specific range.
--- @param levelRange The number of levels to go back to fetch data.
---                   Defaults to 2 (that is: this and the last level)
--- @return Returns the avarge xp as a number on success or nil on failure.
-function XToLevel.Player:GetAverageGatheringXP(levelRange)
-    if type(XToLevel.db.char.data.gathering) == "table" then
-        if type(levelRange) ~= "number" or levelRange <= 0 then
-            levelRange = 2
-        end
-        local tXP = 0;
-        local tCount = 0;
-        for action, dataTable in pairs(XToLevel.db.char.data.gathering) do
-            for i, data in ipairs(dataTable) do
-                if data["level"] > XToLevel.Player.level - levelRange then
-                    tXP = tXP + (data["xp"] * data["count"]);
-                    tCount = tCount + data["count"]
-                end
-            end
-        end
-        if tXP > 0 and tCount > 0 then
-            return (tXP / tCount)
-        else
-            return nil
-        end
-    else
-        return nil
-    end
-end
-
----
 -- Returns the average number of gathered items required to level, or nil if
 -- there is no gathering data avaialble.
--- @param levelRange The number of levels backwards to go to fetch data.
---                   Defaults to 2 (that is: this and the last level)
 -- @return Returns the required nodes and the averageXP per node on success,
 --         or nil on failure.
-function XToLevel.Player:GetAverageGatheringRequired(levelRange)
-    local averageXP = self:GetAverageGatheringXP(levelRange)
-    if type(averageXP) == "number" and averageXP > 0 then
-        local required = ceil((self.maxXP - self.currentXP) / averageXP);
+function XToLevel.Player:GetGatheringRequired()
+    local baseXP = XToLevel.Lib:GatheringXP()
+    if type(baseXP) == "number" and baseXP > 0 then
+        local heirloomModifier = XToLevel.Lib:GetHeirloomMultiplier()
+        local actualXP = XToLevel.Lib:round(baseXP * heirloomModifier)
+        --console:log("Base: " .. baseXP .. ", Multiplier: " .. heirloomModifier .. ", Final: " .. actualXP)
+        local required = ceil(self:GetUnrestedXP() / actualXP);
+        local restedXP = actualXP
+        if self:IsRested() then
+            if self.restedXP > actualXP then
+                restedXP = actualXP * 2
+            else
+                restedXP = actualXP + self.restedXP
+            end
+        end
         if type(required) == "number" and required > 0 then
-            return required, averageXP
+            return required, actualXP, restedXP
         else
             return nil
         end
     else
         return nil
-    end
-end
-
----
--- Determines whether there is any gathering info to show.
--- Similar in many ways to the GetGatheringActions function but cheaper.
-function XToLevel.Player:HasGatheringInfo(levelRange)
-    if type(XToLevel.db.char.data.gathering) == "table" then
-        if type(levelRange) ~= "number" or levelRange <= 0 then
-            levelRange = 2
-        end
-        local actionCount = 0
-        for _, dataList in pairs(XToLevel.db.char.data.gathering) do
-            local addAction = false
-            for _, data in pairs(dataList) do
-                if data["level"] > XToLevel.Player.level - levelRange then
-                    addAction = true
-                end
-            end
-            if addAction then
-                actionCount = actionCount + 1
-            end
-        end
-        return actionCount > 0
-    else
-        return false
     end
 end
 

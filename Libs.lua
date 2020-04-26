@@ -34,10 +34,6 @@ end
 
 XToLevel.Lib = { }
 
-function XToLevel.Lib:round(number)
-	return floor(number + 0.5)
-end
-
 function XToLevel.Lib:IsClassic()
 	local interfaceNumber = select(4, GetBuildInfo())
 	return interfaceNumber < 80000
@@ -223,6 +219,7 @@ end
 ---
 -- Returns the ID of the zone the player is currently in.
 -- Borrowed from: https://www.wowinterface.com/forums/showpost.php?p=328804&postcount=4
+-- /dump C_Map.GetMapInfo(C_Map.GetMapInfo(XToLevel.Lib:ZoneID())["parentMapID"])["name"]
 ---
 function XToLevel.Lib:ZoneID()
 	local mapID = C_Map.GetBestMapForUnit("player")
@@ -371,6 +368,33 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 end
 
 ---
+-- Gets the gathering XP expected for a player at the given level.
+function XToLevel.Lib:GatheringXP(playerLevel)
+	if type(playerLevel) ~= "number" then
+		playerLevel = UnitLevel("player")
+	end
+	local questXP = XToLevel.QUEST_XP[playerLevel]
+	if type(questXP) ~= "number" then
+		return 0
+	end
+	-- Panderia and Cataclysm zones seem to defy the usual gathering XP values.
+	-- So I'm hard-coding those lower values here to correct for this.
+	if playerLevel >= 80 and playerLevel < 90 then
+		return 95 -- Seems to always be 95 in these areas, reglardless of anything.
+	end
+	local baseXP = questXP / 10
+	local rounding = 5
+	if baseXP >= 985 then
+		rounding = 50
+	elseif baseXP > 500 then
+		rounding = 25
+	elseif baseXP  > 100 then
+		rounding = 10
+	end
+	return self:round(baseXP / rounding) * rounding
+end
+
+---
 -- Gets the percent bonus received from heirloom items.
 -- @return float Percentage as 0.0 to 1.0
 local heirloom_slot_values = { [3] = 0.1, [5] = 0.1, [11] = 0.05, [12] = 0.05 }
@@ -459,6 +483,9 @@ end
 function XToLevel.Lib:round(input, precision, roundDown)
 	if input == nil then
 		return  nil
+	end
+	if precision == nil then
+		precision = 0
 	end
 
 	precision = 10^(precision or 2)

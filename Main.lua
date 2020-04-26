@@ -487,8 +487,8 @@ function XToLevel:OnChatXPGain(message)
                 end
             else
                 if XToLevel.gatheringTarget ~= nil and XToLevel.gatheringTime ~= nil and GetTime() - XToLevel.gatheringTime < 5 then
-                    XToLevel.Player:AddGathering(XToLevel.gatheringAction, XToLevel.gatheringTarget, xp);
-                    local remaining = XToLevel.Player:GetQuestsRequired(xp)
+                    local unrestedXP = XToLevel.Player:AddGathering(xp)
+                    local remaining = XToLevel.Player:GetKillsRequired(unrestedXP)
                     if type(remaining) == "number" and remaining > 0 then
                         XToLevel.Messages.Floating:PrintKill(XToLevel.gatheringTarget, remaining)
                         XToLevel.Messages.Chat:PrintKill(XToLevel.gatheringTarget, remaining)

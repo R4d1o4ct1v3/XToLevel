@@ -60,7 +60,7 @@ end
 function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
-        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and not UnitIsTrivial(unit) and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
+        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and UnitLevel(unit) > UnitLevel("player") - 5 and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
 
             if level < XToLevel.Player.level - 5 or level > XToLevel.Player.level + 5 then
@@ -92,7 +92,7 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
                     end
 
                     if valueType == "estimate" then
-                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. "~" .. output .. "|r", 0.75, 0.75, 0.75)
+                        GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "*|r", 0.75, 0.75, 0.75)
                     else
                         GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
                     end
@@ -102,34 +102,6 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
                 end
             else
                 requiredText = nil
-            end
-
-            if requiredText then
-
-            end
-        else
-            local addLine = false
-            for i = 1, GameTooltip:NumLines() do
-                local text = _G["GameTooltipTextLeft" .. i]:GetText();
-                if text == UNIT_SKINNABLE_ROCK or text == UNIT_SKINNABLE_HERB then
-                    addLine = i
-                end
-            end
-            if addLine ~= false then
-                -- First line should always be the item's name.
-                local itemName = _G["GameTooltipTextLeft1"]:GetText()
-
-                -- Copy the color of the "Requires Mining/Herbalism" and use
-                -- it as the color of the value.
-                local r, g, b = _G["GameTooltipTextLeft" .. addLine]:GetTextColor()
-                local required, __, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(itemName)
-                if type(required) == "number" and required > 0 then
-                    if isOldData then
-                        required = "~" .. tostring(required)
-                    end
-                    GameTooltip:AddLine("|cFFAAAAAANeeded to level: |r " .. required, (r or 1.0), (g or 1.0), (b or 1.0))
-                    XToLevel.Tooltip:ResizeTooltip()
-                end
             end
         end
     end
@@ -233,10 +205,6 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
         GameTooltip:AddLine(L['Gathering'] or "Gathering")
         self:AddGathering()
         GameTooltip:AddLine(" ")
-        if XToLevel.Player:HasGatheringInfo() then
-            self:AddGatheringDetails()
-            GameTooltip:AddLine(" ")
-        end
     elseif mode == "archaeology" then
         GameTooltip:AddLine(L['Archaeology'] or "Archaeology")
         self:AddArchaeology()
@@ -283,10 +251,6 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
                 GameTooltip:AddLine((L["Gathering"] or "Gathering") .. ": ")
                 self:AddGathering()
                 GameTooltip:AddLine(" ")
-                if XToLevel.Player:HasGatheringInfo() then
-                    self:AddGatheringDetails()
-                    GameTooltip:AddLine(" ")
-                end
             end
             if XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo then
                 GameTooltip:AddLine((L["Archaeology"] or "Archaeology") .. ": ")
@@ -589,10 +553,29 @@ end
 
 function XToLevel.Tooltip:AddGathering()
     local linesAdded = 0
-    local nodesRequired, xpPerNode = XToLevel.Player:GetAverageGatheringRequired()
+    local nodesRequired, xpPerNode, restedXP = XToLevel.Player:GetGatheringRequired()
     if nodesRequired ~= nil then
-        xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
-        GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        local xpShown = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0)) .. " xp"
+        GameTooltip:AddDoubleLine(L["Average"] .. ": ", nodesRequired.. " @ " .. xpShown , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        if restedXP > xpPerNode then
+            local addedRested = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(restedXP - xpPerNode, 0)) .. " xp"
+            GameTooltip:AddDoubleLine("   ", " (+" .. addedRested .. " " .. L["XP Rested"] .. ")" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+        end
+        
+        local zoneName = C_Map.GetMapInfo(XToLevel.Lib:ZoneID())["name"]
+        local continent = C_Map.GetMapInfo(C_Map.GetMapInfo(XToLevel.Lib:ZoneID())["parentMapID"])["name"];
+        if continent ~= nil and continent == "Outland" then
+            GameTooltip:AddLine("   ", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("Note that low-level items somtimes found", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("in the Outlands, such as Vanilla herbs,", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("will yield less XP than shown here.", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+        elseif zoneName ~= nil and (zoneName == "Vashj'ir" or zoneName == "Deepholm" or zoneName == "Twilight Highlands" or zoneName == "Mount Hyjal" or zoneName == "Uldum") then
+            GameTooltip:AddLine("   ", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("Note that many Panderia and Cataclysm gathering items will", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("yield absurdly low XP values, far below what you will get", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("elsewhere. The values shown in this AddOn will likely be useless", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+            GameTooltip:AddLine("until you level past these zones.", self.labelColor.r, self.labelColor.b, self.labelColor.b)
+        end
     else
         GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
     end
@@ -616,32 +599,5 @@ function XToLevel.Tooltip:AddArchaeology()
         end
     else
         GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
-    end
-end
-
-function XToLevel.Tooltip:AddGatheringDetails()
-    local linesAdded = 0
-    local actions = XToLevel.Player:GetGatheringActions();
-    if actions ~= nil and # actions > 0 then
-        for i, action in ipairs(actions) do
-            local items = XToLevel.Player:GetGatheringItems(action);
-            if # items > 0 then
-                GameTooltip:AddLine(action .. ": ")
-                for i, item in ipairs(items) do
-                    local required, averageXP, isOldData = XToLevel.Player:GetGatheringRequired_ByItem(item);
-                    if type(required) == "number" and required > 0 then
-                        if isOldData then
-                            required = "~" .. required
-                        end
-                        local avgxpFormatted = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(averageXP, 1))
-                        GameTooltip:AddDoubleLine(" - " .. item, required.. " @ " .. tostring(avgxpFormatted) .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-                        linesAdded = linesAdded + 1
-                    end
-                end
-                if i < # actions then
-                    GameTooltip:AddLine(" ")
-                end
-            end
-        end
     end
 end

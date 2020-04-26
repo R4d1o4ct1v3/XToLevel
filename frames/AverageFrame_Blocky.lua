@@ -192,7 +192,7 @@ XToLevel.AverageFrameAPI["Blocky"] =
         self.playerBoxes[4]["visible"] = XToLevel.db.profile.averageDisplay.playerBGs and XToLevel.Player.level >= 10
         self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
         self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerPetBattles and XToLevel.Player:HasPetBattleInfo()
-        self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and XToLevel.Player:HasGatheringInfo()
+        self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering
         self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerDigs and XToLevel.Player:HasDigInfo()
         self.playerBoxes[9]["visible"] = XToLevel.db.profile.averageDisplay.playerProgress
 		self.playerBoxes[10]["visible"] = XToLevel.db.profile.averageDisplay.playerTimer and XToLevel.db.profile.averageDisplay.playerTimer
