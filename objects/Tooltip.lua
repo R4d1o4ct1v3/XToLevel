@@ -242,17 +242,12 @@ function XToLevel.Tooltip:Show(frame, anchorPont, relativeFrame, relativePoint, 
                 self:AddExperience()
                 GameTooltip:AddLine(" ")
             end
-            if XToLevel.db.profile.ldb.tooltip.showGuildInfo then
-                GameTooltip:AddLine(L['Guild'] .. ": ")
-                self:AddGuildInfo()
-                GameTooltip:AddLine(" ")
-            end
-            if XToLevel.db.profile.ldb.tooltip.showGatheringInfo then
+            if XToLevel.db.profile.ldb.tooltip.showGatheringInfo and not XToLevel.Lib:IsClassic() then
                 GameTooltip:AddLine((L["Gathering"] or "Gathering") .. ": ")
                 self:AddGathering()
                 GameTooltip:AddLine(" ")
             end
-            if XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo then
+            if XToLevel.db.profile.ldb.tooltip.showArchaeologyInfo and not XToLevel.Lib:IsClassic() then
                 GameTooltip:AddLine((L["Archaeology"] or "Archaeology") .. ": ")
                 self:AddArchaeology()
                 GameTooltip:AddLine(" ")
