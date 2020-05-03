@@ -350,10 +350,13 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 				-- So far, in Classic, I've observed a -20% per level below, and +5% per level above.
 				-- Will update as I level on Classic if that changes at high level.
 				if levelDelta < 0 then
-					if charLevel < 10 then
-						modifier = 0.2
-					else
-						modifier = 0.125
+					-- XToLevel.XP_CLASSIC_ZERO_DIFFERENCE
+					for _, loop in ipairs(XToLevel.XP_CLASSIC_ZERO_DIFFERENCE) do
+						if loop.level <= charLevel then
+							modifier = 1/loop.divider
+						else
+							break
+						end
 					end
 				end
 			end

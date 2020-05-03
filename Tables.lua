@@ -85,6 +85,21 @@ XToLevel.XP_MULTIPLIERS = {
     {["level"] = 60, ["modifier"] = 0.07}   -- All mobs above 60 are -7% per level
 }
 
+XToLevel.XP_CLASSIC_ZERO_DIFFERENCE = {
+    {["level"] = 1, ["divider"] = 5},
+    {["level"] = 8, ["divider"] = 6},
+    {["level"] = 10, ["divider"] = 7},
+    {["level"] = 12, ["divider"] = 8},
+    {["level"] = 16, ["divider"] = 9},
+    {["level"] = 20, ["divider"] = 11},
+    {["level"] = 30, ["divider"] = 12},
+    {["level"] = 40, ["divider"] = 13},
+    {["level"] = 45, ["divider"] = 14},
+    {["level"] = 50, ["divider"] = 15},
+    {["level"] = 55, ["divider"] = 16},
+    {["level"] = 60, ["divider"] = 17} -- Future proofing, for if/when TBC is released.
+}
+
 XToLevel.QUEST_XP = {
     -- 1-9
     120, 260, 250, 360, 450, 625, 825, 1050, 1300,
