@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 11304
 ## Title: XToLevel
 ## Author: @project-author@
 ## Version: @project-version@
