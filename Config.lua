@@ -1366,4 +1366,10 @@ function XToLevel.Config:Verify()
     		XToLevel.db.char.data.dungeonList[index].rested = 0
     	end
     end
+
+    -- Clear the NPC XP table if it has the old structure.
+    if type(XToLevel.db.char.data.npcXP) == "table" and (XToLevel.db.char.data.npcXP[1] == nil or type(XToLevel.db.char.data.npcXP[1].name) ~= "string") then
+        table.wipe(XToLevel.db.char.data.npcXP)
+        XToLevel.db.char.data.npcXP = { }
+    end
 end

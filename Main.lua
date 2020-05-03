@@ -329,28 +329,24 @@ function XToLevel:AddMobXpRecord(mobName, mobLevel, playerLevel, xp, mobClassifi
     if type(XToLevel.db.char.data.npcXP) ~= "table" then
         XToLevel.db.char.data.npcXP = { }
     end
-    if XToLevel.db.char.data.npcXP[playerLevel] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel] = { }
-    end
-    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel][mobLevel] = { }
-    end
-    if XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] == nil then
-        XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] = { }
-    end
     
-    -- Add the data
-    local alreadyRecorded = false
-    if # XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex] > 0 then
-        for i, v in ipairs(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex]) do
-            if v == xp then
-                alreadyRecorded = true
-            end
+    -- Check if the Mob already exists.
+    local existingIndex = -1
+    for i, d in ipairs(XToLevel.db.char.data.npcXP) do
+        if d.name == mobName and d.level == mobLevel then
+            existingIndex = i
+            break
         end
     end
-    
-    if not alreadyRecorded then
-        table.insert(XToLevel.db.char.data.npcXP[playerLevel][mobLevel][mobClassIndex], xp)
+
+    if existingIndex == -1 then
+        table.insert(XToLevel.db.char.data.npcXP, {
+            ["name"] = mobName,
+            ["level"] = mobLevel,
+            ["xp"] = xp
+        })
+    elseif XToLevel.db.char.data.npcXP[existingIndex].xp ~= xp then
+        XToLevel.db.char.data.npcXP[existingIndex].xp = xp
     end
 end
 
@@ -376,7 +372,9 @@ function XToLevel:OnPlayerLevelUp(newLevel)
         XToLevel.Player.isActive = false
         XToLevel:UnregisterEvents()
         XToLevel:RegisterEvents(newLevel)
-	end
+    end
+    
+    XToLevel.Player:ClearKills()
     
 	XToLevel.Average:Update()
     XToLevel.LDB:BuildPattern();
@@ -489,8 +487,8 @@ function XToLevel:OnChatXPGain(message)
                 end
             else
                 if XToLevel.gatheringTarget ~= nil and XToLevel.gatheringTime ~= nil and GetTime() - XToLevel.gatheringTime < 5 then
-                    XToLevel.Player:AddGathering(XToLevel.gatheringAction, XToLevel.gatheringTarget, xp);
-                    local remaining = XToLevel.Player:GetQuestsRequired(xp)
+                    local unrestedXP = XToLevel.Player:AddGathering(xp)
+                    local remaining = XToLevel.Player:GetKillsRequired(unrestedXP)
                     if type(remaining) == "number" and remaining > 0 then
                         XToLevel.Messages.Floating:PrintKill(XToLevel.gatheringTarget, remaining)
                         XToLevel.Messages.Chat:PrintKill(XToLevel.gatheringTarget, remaining)
@@ -850,18 +848,8 @@ function XToLevel:OnSlashCommand(arg1)
         end
     elseif arg1 == "debug" then
         if type(XToLevel.db.char.data.npcXP) == "table" then
-            for playerLevel, playerData in pairs(XToLevel.db.char.data.npcXP) do
-                if playerLevel == XToLevel.Player.level then
-                    console:log("--- " .. playerLevel .. " ---");
-                    for mobLevel, mobData in pairs(playerData) do
-                        console:log("" .. mobLevel .. "")
-                        for classification, xpData in pairs(mobData) do
-                            for __, xp in ipairs(xpData) do
-                                console:log("  " .. xp .. " xp");
-                            end
-                        end
-                    end
-                end
+            for _, m in pairs(XToLevel.db.char.data.npcXP) do
+                console:log(m.name .. " = " .. m.xp .. " (" .. m.level .. ")")
             end
         else
             console:log("No mob data")

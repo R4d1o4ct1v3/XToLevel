@@ -47,7 +47,7 @@ function XToLevel.Average:Update()
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetBattles     (XToLevel.Player:GetAverageBGsRemaining() or nil)
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetObjectives  (XToLevel.Player:GetAverageBGObjectivesRemaining() or nil)
                 XToLevel.AverageFrameAPI[self.activeAPI]:SetProgress    (XToLevel.Lib:round((XToLevel.Player.currentXP or 0) / (XToLevel.Player.maxXP or 1) * 100, 1))
-                XToLevel.AverageFrameAPI[self.activeAPI]:SetGathering   (XToLevel.Player:GetAverageGatheringRequired())
+                XToLevel.AverageFrameAPI[self.activeAPI]:SetGathering   (XToLevel.Player:GetGatheringRequired())
                 
                 if XToLevel.db.profile.averageDisplay.archaeologyAsSites then
                     XToLevel.AverageFrameAPI[self.activeAPI]:SetDigs    (XToLevel.Player:GetDigsitesRequired() or nil)
