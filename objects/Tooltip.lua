@@ -60,7 +60,7 @@ end
 function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
     if XToLevel.db.profile.general.showNpcTooltipData and XToLevel.Player.level < XToLevel.Player.maxLevel then
         local name, unit = GameTooltip:GetUnit()
-        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and UnitLevel(unit) > UnitLevel("player") - 5 and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
+        if unit and not UnitIsPlayer(unit) and not UnitIsFriend("player", unit) and UnitLevel(unit) > 0 and UnitLevel(unit) >= UnitLevel("player") - 5 and UnitClassification(unit) == "normal" and UnitHealthMax(unit) > -1 then
             local level = UnitLevel(unit)
 
             if level < XToLevel.Player.level - 5 or level > XToLevel.Player.level + 5 then
@@ -91,7 +91,7 @@ function XToLevel.Tooltip:OnTooltipSetUnit_HookCallback(...)
                         color = XToLevel.Lib:GetProgressColor(percent)
                     end
 
-                    if valueType == "estimate" then
+                    if valueType == "estimate" and not XToLevel.Lib:IsClassic() then
                         GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "*|r", 0.75, 0.75, 0.75)
                     else
                         GameTooltip:AddLine("|cFFAAAAAA" .. L['Kills to level'] ..": |r |cFF" .. color .. output .. "|r", 0.75, 0.75, 0.75)
