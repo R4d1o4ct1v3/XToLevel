@@ -52,6 +52,11 @@ function XToLevel.LDB:Initialize()
         return;
     end
 
+    -- Modify the default patterns for Classic, to remove items not availble.
+    if XToLevel.Lib:IsClassic() then
+        XToLevel.LDB.textPatterns.default = "{kills}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/kills}{quests}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/quests}{dungeons}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/dungeons}{bgs}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgs}{bgo}{$seperator: }{color=cfcfdf}{$label}:{/color} {progress}{$value}{/progress}{/bgo}{xp}{$seperator: }{progress}[{$value}]{/progress}{/xp}"
+    end
+
     self.timerLabelShown = XToLevel.db.profile.ldb.showLabel
 
     -- Initialize the data object

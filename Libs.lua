@@ -337,6 +337,13 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 		if levelDelta ~= 0 then
 			local modifier = 0.05 -- Default for higher levels
 			if not self:IsClassic() then
+				for _level, _deltas in ipairs(XToLevel.RETAIL_XP_MATRIX) do
+					for _d, _xp in pairs(_deltas) do
+						if _level == charLevel and tonumber(_d) == levelDelta then
+							return floor((_xp * heirloomBonus) + 0.5), "exact"
+						end
+					end
+				end
 				if levelDelta < 0 then
 					for _, loop in ipairs(XToLevel.XP_MULTIPLIERS) do
 						if loop.level <= charLevel then
@@ -363,7 +370,7 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 			local multiplier = (modifier * levelDelta) + 1
 			return floor((baseXP * multiplier * heirloomBonus) + 0.5), "estimate"
 		else
-			return floor((baseXP * heirloomBonus) + 0.5), "estimate"
+			return floor((baseXP * heirloomBonus) + 0.5), "exact"
 		end
     else
         return 0, "exact"; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
@@ -376,14 +383,24 @@ function XToLevel.Lib:GatheringXP(playerLevel)
 	if type(playerLevel) ~= "number" then
 		playerLevel = UnitLevel("player")
 	end
-	local questXP = XToLevel.QUEST_XP[playerLevel]
-	if type(questXP) ~= "number" then
-		return 0
-	end
+
 	-- Panderia and Cataclysm zones seem to defy the usual gathering XP values.
 	-- So I'm hard-coding those lower values here to correct for this.
 	if playerLevel >= 80 and playerLevel < 90 then
 		return 95 -- Seems to always be 95 in these areas, reglardless of anything.
+	end
+
+	-- A couple of observed deviations from the standard formula.
+	-- I'm guessing this comes out of some rounding differences between how the game engine and this code calculate the end result.
+	if playerLevel == 94 then
+		return 1400
+	elseif playerLevel == 112 then
+		return 1650
+	end
+
+	local questXP = XToLevel.QUEST_XP[playerLevel]
+	if type(questXP) ~= "number" then
+		return 0
 	end
 	local baseXP = questXP / 10
 	local rounding = 5

@@ -846,6 +846,14 @@ function XToLevel:OnSlashCommand(arg1)
                 console:log(" " .. tostring(row["target"]) .. ", l:" .. tostring(row["level"]) .. ", xp:" .. tostring(row["xp"]) .. ", z:" .. tostring(row["zoneID"]) .. ", x" .. tostring(row["count"]));
             end
         end
+    elseif arg1 == "est" then
+        local rangeLow = tonumber(UnitLevel("player")) - 5
+        local rangeHigh = rangeLow + 10
+        for i=rangeLow,rangeHigh do
+            local xp, type = XToLevel.Lib:MobXP("Test Mob", i)
+            local toLevel = XToLevel.Player:GetKillsRequired(xp)
+            console:log("[XTL] " .. i .. ": " .. toLevel .. " @ " .. xp .. "xp (" .. type .. ")")
+        end
     elseif arg1 == "debug" then
         if type(XToLevel.db.char.data.npcXP) == "table" then
             for _, m in pairs(XToLevel.db.char.data.npcXP) do

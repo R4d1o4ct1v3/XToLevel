@@ -172,7 +172,7 @@ end
 
 XToLevel.Config.options = nil
 function XToLevel.Config:GetOptions()
-    return {
+    local options = {
 
 name = "XToLevel",
 type = "group",
@@ -1122,6 +1122,27 @@ args = {
     },
 },
     }
+    if XToLevel.Lib:IsClassic() then
+        options.args.Messages.args.colorArchaeology = nil
+        options.args.Messages.args.behaviourArchaeologyDataToggle = nil
+        options.args.Window.args.behaviourArchaeologyDataToggle = nil
+
+        options.args.Window.args.dataGathering = nil
+        options.args.Window.args.dataPetBattle = nil
+        options.args.Window.args.dataArchaeology = nil
+
+        options.args.LDB.args.ldbDataGathering = nil
+        options.args.LDB.args.ldbDataArchaeology = nil
+
+        options.args.Data.args.dataRangePetBattles = nil
+        options.args.Data.args.dataClearPetBattles = nil
+        options.args.Data.args.dataClearGathering = nil
+
+        options.args.Tooltip.args.gatheringInfo = nil
+        options.args.Tooltip.args.archaeologyDetails = nil
+    end
+
+    return options
 end
 
 -- ----------------------------------------------------------------------------
