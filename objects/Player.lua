@@ -526,7 +526,7 @@ function XToLevel.Player:GetGatheringRequired()
     local baseXP = XToLevel.Lib:GatheringXP()
     if type(baseXP) == "number" and baseXP > 0 then
         local heirloomModifier = XToLevel.Lib:GetHeirloomMultiplier()
-        local actualXP = XToLevel.Lib:round(baseXP * heirloomModifier)
+        local actualXP = baseXP * heirloomModifier
         --console:log("Base: " .. baseXP .. ", Multiplier: " .. heirloomModifier .. ", Final: " .. actualXP)
         local required = ceil(self:GetUnrestedXP() / actualXP);
         local restedXP = actualXP
@@ -538,7 +538,7 @@ function XToLevel.Player:GetGatheringRequired()
             end
         end
         if type(required) == "number" and required > 0 then
-            return required, actualXP, restedXP
+            return required, XToLevel.Lib:round(actualXP), XToLevel.Lib:round(restedXP)
         else
             return nil
         end
