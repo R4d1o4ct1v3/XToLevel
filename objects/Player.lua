@@ -128,8 +128,7 @@ end
 ---
 function XToLevel.Player:GetMaxLevel()
     if self.maxLevel == nil then
-        self.maxLevel = 60
-        -- For now I'm assuming all accounts can reach 60. Needs research.
+        self.maxLevel = _G.MAX_PLAYER_LEVEL
     end
     return self.maxLevel
 end

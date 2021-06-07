@@ -556,47 +556,16 @@ function XToLevel.Tooltip:AddGathering()
             local addedRested = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(restedXP - xpPerNode, 0)) .. " xp"
             GameTooltip:AddDoubleLine("   ", " (" .. addedRested .. " " .. L["XP Rested"] .. ")" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
         end
-        
-        local zoneName = C_Map.GetMapInfo(XToLevel.Lib:ZoneID())["name"]
-        local continent = C_Map.GetMapInfo(C_Map.GetMapInfo(XToLevel.Lib:ZoneID())["parentMapID"])["name"];
-        if continent ~= nil and continent == "Outland" then
-            GameTooltip:AddLine("   ", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-            GameTooltip:AddLine("Note that low-level items somtimes found", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-            GameTooltip:AddLine("in the Outlands, such as Vanilla herbs,", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-            GameTooltip:AddLine("will yield less XP than shown here.", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-        elseif XToLevel.Player.level >= 80 and XToLevel.Player.level < 90 then
-            GameTooltip:AddLine("   ", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-            local message = {
-                "Note that gathering XP in Panderia and Cataclysm zones is",
-                "highly irregular. This AddOn uses the lowest common value.",
-                "These values will likely be very inacurrate until level 90."
-            }
-            for _, _textLine in ipairs(message) do
-                GameTooltip:AddLine(_textLine, self.labelColor.r, self.labelColor.b, self.labelColor.b)
-            end
-        end
     else
         GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
     end
 end
 
 function XToLevel.Tooltip:AddArchaeology()
-    local linesAdded = 0
-    local nodesRequired, xpPerNode = XToLevel.Player:GetDigsRequired()
-    if nodesRequired ~= nil then
-        local digsites, xpPerDigsite = XToLevel.Player:GetDigsitesRequired()
-        local xpPerDigsite = XToLevel.Lib:NumberFormat(xpPerDigsite)
-        if CanScanResearchSite() then
-            digsites = digsites .. "*"
-        end
+    --local nodesRequired, nodeTotalXP, nodeRested = XToLevel.Player:GetArchNodes()
+    --if nodeCount then
+     --   local sitesRequired, sideTotalXP, siteRested = XToLevel.Player:GetArchSites()
 
-        xpPerNode = XToLevel.Lib:NumberFormat(XToLevel.Lib:round(xpPerNode, 0))
-        GameTooltip:AddDoubleLine(L["Digs"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-        GameTooltip:AddDoubleLine(L["Digsites"] .. ": ", digsites .. " @ " .. xpPerDigsite .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
-        if CanScanResearchSite() then
-            GameTooltip:AddLine("* Includes the current site", self.labelColor.r, self.labelColor.b, self.labelColor.b)
-        end
-    else
-        GameTooltip:AddLine(" " .. L['No Battles Fought'], self.labelColor.r, self.labelColor.b, self.labelColor.b)
-    end
+    --    GameTooltip:AddDoubleLine(L["Digs"] .. ": ", nodesRequired.. " @ " .. xpPerNode .. " xp" , self.labelColor.r, self.labelColor.g, self.labelColor.b, self.dataColor.r, self.dataColor.b, self.dataColor.b)
+    --end
 end
