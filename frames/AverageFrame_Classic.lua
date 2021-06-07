@@ -14,7 +14,7 @@ XToLevel.AverageFrameAPI["Classic"] =
 {
     isMoving = false,
     window = nil,
-    backdrop = nil,
+    --backdrop = nil,
     lines = {},
     textMargin = 5,
     lineSpacing = 2,
@@ -26,7 +26,7 @@ XToLevel.AverageFrameAPI["Classic"] =
     Initialize = function(self)
         if XToLevel_AverageFrame_Classic ~= nil then
             self.window = XToLevel_AverageFrame_Classic
-            self.backdrop = self.window:GetBackdrop();
+            --self.backdrop = self.window:GetBackdrop();
             self:CreateLines()
             self:Update()
             -- self.window:SetScript("OnEnter", function() self:ShowTooltip() end)
@@ -117,15 +117,9 @@ XToLevel.AverageFrameAPI["Classic"] =
             XToLevel_AverageFrame_Classic:Show()
             XToLevel_AverageFrame_Classic:SetScale(XToLevel.db.profile.averageDisplay.scale)
             
-            -- Show or hide the backrop
-            if XToLevel.db.profile.averageDisplay.backdrop then
-                self.window:SetBackdrop(self.backdrop);
-                self.window:SetBackdropColor("0.0", "0.75", "0.5", "0.75");
-                self.window:SetBackdropBorderColor("0.0", "0.0", "0.0", "1.0");
-            else
-                self.window:SetBackdrop(nil);
-            end
-            
+            -- TODO: Find out how to set the backdrop properly.
+            -- Apparently the 9.0 changes messed up the previous method used.
+
             self:UpdateLineVisibility()
             self:UpdateLinePositions()
             self:UpdateFrameSize()

@@ -54,65 +54,6 @@ function XToLevel.Lib:GetCurrentBattlegroundName()
 end
 
 ---
--- Determines whether item fitted in the given slot is an heirloom.
--- NOTE that it doesn't check if the item has any XP bonus on it.
--- @param slotType See https://wow.gamepedia.com/InventorySlotId#Values (Use the string values, e.g: "HEADSLOT")
-function XToLevel.Lib:IsActiveHeirloom(slotType)
-	if not self:IsClassic() then
-		local itemID = GetInventoryItemID("player", GetInventorySlotInfo(slotType))
-		if not itemID then
-			return false
-		end
-		
-		local heirloomInfo = {C_Heirloom.GetHeirloomInfo(itemID)}
-		if # heirloomInfo == 0 then
-			return false
-		end
-		
-		if heirloomInfo[10] < XToLevel.Player.level then
-			return false
-		end
-		
-		return true
-	end
-end
-
----
--- Checks for heirlooms, and returns a multiplier value that should be used with any 
--- XP estimates that are not based on collected data. (As collected data will include this already.)
-function XToLevel.Lib:GetHeirloomMultiplier()
-	if not self:IsClassic() then
-		-- Slots that always have 10% xp bonuses on them.
-		local checkList = {
-			{slot = "HEADSLOT", modifier = 0.1},
-			{slot = "SHOULDERSLOT", modifier = 0.1},
-			{slot = "CHESTSLOT", modifier = 0.1},
-			{slot = "LEGSSLOT", modifier = 0.1},
-			{slot = "BACKSLOT", modifier = 0.05},
-			{slot = "FINGER0SLOT", modifier = 0.05},
-			{slot = "FINGER1SLOT", modifier = 0.05},
-		}
-
-		local multiplier = 1.0
-		for _, d in pairs(checkList) do
-			if self:IsActiveHeirloom(d.slot) then
-				multiplier = multiplier + d.modifier
-			end
-		end
-		
-		-- Temporarily adding a flat 100% increase here for the "Winds of Wisdom" buff
-		-- added by Blizzard in March 2020. Should be removed after April 20th, 2020.
-		-- UPDATE: buff extended until Shadowland pre-patch. Date not announced. Needs
-		-- to be updated at that point.
-		multiplier = multiplier + 1
-
-		return multiplier
-	else
-		return 1
-	end
-end
-
----
 -- Counts the number of times the needle is found in the heystack.
 -- @param needle The needle
 -- @param heystack The heystack
@@ -326,8 +267,7 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 	
 	if mobLevel >= charLevel - 5 then
 		-- Standard base formula for all zones now. Previously the addition would vary.
-		local baseXP = (charLevel * 5) + 45
-		local heirloomBonus = self:GetHeirloomMultiplier()
+		local baseXP = (charLevel * 5) + 15
 
 		-- Mobs that are higher level than the player seem to always add 5% to the base
 		-- value, even at low level. (Slight variations at the lowest level, but not worth coding around now)
@@ -340,7 +280,7 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 				for _level, _deltas in ipairs(XToLevel.RETAIL_XP_MATRIX) do
 					for _d, _xp in pairs(_deltas) do
 						if _level == charLevel and tonumber(_d) == levelDelta then
-							return floor((_xp * heirloomBonus) + 0.5), "exact"
+							return floor(_xp + 0.5), "exact"
 						end
 					end
 				end
@@ -368,9 +308,9 @@ function XToLevel.Lib:MobXP(mobName, mobLevel)
 				end
 			end
 			local multiplier = (modifier * levelDelta) + 1
-			return floor((baseXP * multiplier * heirloomBonus) + 0.5), "estimate"
+			return floor((baseXP * multiplier) + 0.5), "estimate"
 		else
-			return floor((baseXP * heirloomBonus) + 0.5), "exact"
+			return floor(baseXP + 0.5), "exact"
 		end
     else
         return 0, "exact"; -- Return 0 instead of for backwards compatibility. The function always returned a number back when it was a static formula.
@@ -384,34 +324,10 @@ function XToLevel.Lib:GatheringXP(playerLevel)
 		playerLevel = UnitLevel("player")
 	end
 
-	-- Panderia and Cataclysm zones seem to defy the usual gathering XP values.
-	-- So I'm hard-coding those lower values here to correct for this.
-	if playerLevel >= 80 and playerLevel < 90 then
-		return 95 -- Seems to always be 95 in these areas, reglardless of anything.
-	end
-
-	-- A couple of observed deviations from the standard formula.
-	-- I'm guessing this comes out of some rounding differences between how the game engine and this code calculate the end result.
-	if playerLevel == 94 then
-		return 1400
-	elseif playerLevel == 112 then
-		return 1650
-	end
-
-	local questXP = XToLevel.QUEST_XP[playerLevel]
-	if type(questXP) ~= "number" then
-		return 0
-	end
-	local baseXP = questXP / 10
-	local rounding = 5
-	if baseXP >= 985 then
-		rounding = 50
-	elseif baseXP > 500 then
-		rounding = 25
-	elseif baseXP  > 100 then
-		rounding = 10
-	end
-	return self:round(baseXP / rounding) * rounding
+    local baseXP = XToLevel.GATHERING_XP[playerLevel]
+    -- TODO: Check if War Mode affects this
+    
+    return baseXP
 end
 
 ---

@@ -185,12 +185,12 @@ XToLevel.AverageFrameAPI["Blocky"] =
     
     ---
     -- function description
-    StackPlayer = function(self)           
+    StackPlayer = function(self)
         self.playerBoxes[1]["visible"] = XToLevel.db.profile.averageDisplay.playerKills
         self.playerBoxes[2]["visible"] = XToLevel.db.profile.averageDisplay.playerQuests
-        self.playerBoxes[3]["visible"] = XToLevel.db.profile.averageDisplay.playerDungeons and XToLevel.Player.level >= 15
-        self.playerBoxes[4]["visible"] = XToLevel.db.profile.averageDisplay.playerBGs and XToLevel.Player.level >= 10
-        self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 10
+        self.playerBoxes[3]["visible"] = XToLevel.db.profile.averageDisplay.playerDungeons and XToLevel.Player.level >= 10
+        self.playerBoxes[4]["visible"] = XToLevel.db.profile.averageDisplay.playerBGs and XToLevel.Player.level >= 15
+        self.playerBoxes[5]["visible"] = XToLevel.db.profile.averageDisplay.playerBGOs and XToLevel.Player.level >= 15
         self.playerBoxes[6]["visible"] = XToLevel.db.profile.averageDisplay.playerPetBattles and XToLevel.Player:HasPetBattleInfo()
         self.playerBoxes[7]["visible"] = XToLevel.db.profile.averageDisplay.playerGathering and not XToLevel.Lib:IsClassic()
         self.playerBoxes[8]["visible"] = XToLevel.db.profile.averageDisplay.playerDigs and XToLevel.Player:HasDigInfo()

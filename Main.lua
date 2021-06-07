@@ -375,6 +375,7 @@ function XToLevel:OnPlayerLevelUp(newLevel)
     end
     
     XToLevel.Player:ClearKills()
+    XToLevel.Player:ClearQuests()
     
 	XToLevel.Average:Update()
     XToLevel.LDB:BuildPattern();

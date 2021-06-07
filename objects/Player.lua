@@ -128,7 +128,7 @@ end
 ---
 function XToLevel.Player:GetMaxLevel()
     if self.maxLevel == nil then
-        self.maxLevel = MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
+        self.maxLevel = _G.MAX_PLAYER_LEVEL
     end
     return self.maxLevel
 end
@@ -525,9 +525,7 @@ end
 function XToLevel.Player:GetGatheringRequired()
     local baseXP = XToLevel.Lib:GatheringXP()
     if type(baseXP) == "number" and baseXP > 0 then
-        local heirloomModifier = XToLevel.Lib:GetHeirloomMultiplier()
-        local actualXP = XToLevel.Lib:round(baseXP * heirloomModifier)
-        --console:log("Base: " .. baseXP .. ", Multiplier: " .. heirloomModifier .. ", Final: " .. actualXP)
+        local actualXP = baseXP -- Keeping this here because I will need it later.
         local required = ceil(self:GetUnrestedXP() / actualXP);
         local restedXP = actualXP
         if self:IsRested() then
@@ -538,7 +536,7 @@ function XToLevel.Player:GetGatheringRequired()
             end
         end
         if type(required) == "number" and required > 0 then
-            return required, actualXP, restedXP
+            return required, XToLevel.Lib:round(actualXP), XToLevel.Lib:round(restedXP)
         else
             return nil
         end
@@ -1147,9 +1145,7 @@ function XToLevel.Player:GetAverageQuestXP ()
             end
             self.questAverage = (total / maxUsed);
         else
-            -- A very VERY rought and quite possibly very wrong estimate.
-            -- But it is accurate for the first few levels, which is where the inaccuracy would be most visible, so...
-            self.questAverage = XToLevel.Lib:MobXP() * math.floor(((self.level + 9) / (self.maxLevel + 9)) * 20)
+            self.questAverage = XToLevel.QUEST_XP[self.level];
         end
     end
     -- Recruit A Friend beta test.
@@ -1198,7 +1194,7 @@ function XToLevel.Player:GetQuestXpRange ()
     else
         -- A very VERY rought and quite possibly very wrong estimate.
         -- But it is accurate for the first few levels, which is where the inaccuracy would be most visible, so...
-        self.questAverage = XToLevel.Lib:MobXP() * math.floor(((self.level + 9) / (self.maxLevel + 9)) * 20)
+        self.questAverage = XToLevel.QUEST_XP[self.level]
         self.questRange.high = self.questAverage
         self.questRange.low = self.questAverage
         self.questRange.average = self.questAverage
