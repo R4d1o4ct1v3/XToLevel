@@ -40,6 +40,14 @@ function XToLevel.Lib:IsClassic()
 	-- If this check ever needs an update... I guess the corona virus didn't turn into a zombie apocalypse?
 end
 
+function XToLevel.Lib:IsBattleground()
+	if XToLevel.Lib.IsClassic() then
+		return XToLevel.Lib.GetCurrentBattlegroundName() ~= nil
+	else
+		return C_PvP.IsBattleground()
+	end
+end
+
 ---
 -- Either returns the name of the ongoing battleground, or a nil of no battleground is in progress.
 function XToLevel.Lib:GetCurrentBattlegroundName()

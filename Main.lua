@@ -626,7 +626,7 @@ function XToLevel:OnPlayerEnteringWorld()
 	    -- GetRealZoneText is set to an empty string the first time this even fires,
 	    -- making IsInBattleground return a false negative when actually in bg.
         if XToLevel.Player:IsBattlegroundInProgress() then
-            if C_PvP.IsBattleground() then
+            if XToLevel.Lib:IsBattleground() then
                 local latestBG = XToLevel.db.char.data.bgList[1] or nil
                 if latestBG ~= nil and latestBG.name == nil then
                     -- Workaround an issue where BG names are not set when UI reloads while
@@ -712,7 +712,7 @@ function XToLevel:OnAreaChanged()
 			XToLevel.db.char.data.bgList[1].name = bgName
 			console:log(" - BG name set. ")
 		else
-            if oldZone ~= newZone and not C_PvP.IsBattleground() then
+            if oldZone ~= newZone and not XToLevel.Lib:IsBattleground() then
                 console:log(" - Player not in a battleground. Ending")
                 local bgsRequired = XToLevel.Player:GetQuestsRequired(XToLevel.db.char.data.bgList[1].totalXP)
                 XToLevel.Player:BattlegroundEnd()
