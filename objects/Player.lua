@@ -1264,8 +1264,9 @@ end
 -- @return A number. -1 if the function fails.
 ---
 function XToLevel.Player:GetAverageQuestsRemaining ()
-    if(self:GetAverageQuestXP() > 0) then
-        return self:GetQuestsRequired(self:GetAverageQuestXP())
+    local average = self:GetAverageQuestXP()
+    if(average ~= nil and average > 0) then
+        return self:GetQuestsRequired(average)
     else
         return -1
     end
@@ -1277,8 +1278,9 @@ end
 -- @return A number. -1 if the function fails.
 ---
 function XToLevel.Player:GetAveragePetBattlesRemaining ()
-    if(self:GetAveragePetBattleXP() > 0) then
-        return self:GetPetBattlesRequired(self:GetAveragePetBattleXP())
+    local average = self:GetAveragePetBattleXP()
+    if(average ~= nil and average > 0) then
+        return self:GetPetBattlesRequired(average)
     else
         return -1
     end
