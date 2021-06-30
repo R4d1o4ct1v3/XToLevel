@@ -508,6 +508,10 @@ function XToLevel:OnChatXPGain(message)
                 else
                     -- This estimate is made before the XP is updated, so -1 to compensate.
                     local remaining = XToLevel.Player:GetQuestsRequired(xp) - 1
+                    if XToLevel.Player:IsDungeonInProgress() then
+                        console:log("Dungeon Bonus detected: " .. tostring(xp))
+                        XToLevel.Player:AddDungeonKill(xp, "Bonus", 0)
+                    end
                     if type(remaining) == "number" and remaining > 0 then
                         XToLevel.Messages.Floating:PrintAnonymous(remaining)
                         XToLevel.Messages.Chat:PrintAnonymous(remaining)
